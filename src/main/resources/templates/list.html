@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+
+    <div class="row mt-3">
+        <form action="/" method="get">
+            <div class="col">
+<!--               <span class="login-info_user" th:if="${loginInfo != null}">-->
+<!--                   <span th:text="${loginInfo.getName()}"></span>-->
+<!--               </span>-->
+<!--                <span class="login-info_logout" th:if="${loginInfo == null}">-->
+<!--                    <a href="/loginForm">로그인</a>-->
+<!--                </span>-->
+<!--                <span class="login-info_logout" th:if="${loginInfo != null}">-->
+<!--                    <a href="/logout">로그아웃</a>-->
+<!--                </span>-->
+<!--                </span>-->
+<!--                <span class="login-info_join" th:if="${loginInfo == null}">-->
+<!--                    <a href="/userRegForm">회원가입</a> &lt;!&ndash; Get방식으로 요청 !&ndash;&gt;-->
+<!--                </span>-->
+            </div>
+        </form>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+
+            <div class="card">
+                <div class="card-header">
+                    글 목록
+                </div>
+                <div class="card-body" >
+                    <h5 class="card-title">글 목록</h5>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">번호</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">조회수</th>
+                            <th scope="col">작성자</th>
+                            <th scope="col">등록일</th>
+                        </tr>
+                        </thead>
+
+                        <tr th:each="board : ${list}"  >
+                            <th scope="row">[[${board.boardId}]]</th>
+                            <td>
+                                <a th:href="|@{/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
+                            </td>
+                            <td>[[${board.viewCnt}]]</td>
+                            <td>[[${board.name}]]</td>
+                            <td>[[${#temporals.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+                        </tr>
+
+                        <div>
+                            <a href="/writeForm" th:if="${loginInfo != null}">글쓰기</a>
+                            <span th:if="${loginInfo == null}">글쓰기</span>
+                        </div>
+                    </table>
+
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
+
+                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
+                                <li th:class="${page == i}?'page-item active':'page-item'" >
+                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+
+<!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
+<!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
+<!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
+<!--                                </li>-->
+<!--                            </th:block>-->
+
+<!--                            <li class="page-item" th:if="${prev}">-->
+<!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
+<!--                            </li>-->
+
+<!--                            <li class="page-item" th:if="${next}">-->
+<!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
+<!--                            </li>-->
+
+
+                        </ul>
+                    </div>
+
+                </div><!--end card body-->
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+</script>
