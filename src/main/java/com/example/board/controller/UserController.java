@@ -5,6 +5,7 @@ import com.example.board.dto.User;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +62,13 @@ public class UserController {
     @GetMapping("/loginForm")
     public String loginForm(){
         return "loginForm";
+    }
+
+    @GetMapping("/mypage")
+    public String mypage(HttpSession httpSession, Model model) {
+        LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
+        model.addAttribute("loginInfo", loginInfo);
+        return "mypage";
     }
 
     @PostMapping("/login")

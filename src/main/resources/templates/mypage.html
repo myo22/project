@@ -1,0 +1,57 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>회원가입환영</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>마이페이지</h1>-->
+<!--<sapn th:text="${loginInfo.name}"></sapn>-->
+<!--<sapn th:text="${loginInfo.email}"></sapn>-->
+<!--<sapn th:text="${loginInfo.userId}"></sapn>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+  <title>마이페이지</title>
+</head>
+
+<div layout:fragment="content">
+  <div class="row mt-3">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          마이페이지
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+              <span class="input-group-text">이름</span>
+              <span class="input-group-text">[[${loginInfo.name}]]</span>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">아이디</span>
+              <span class="input-group-text">[[${loginInfo.userId}]]</span>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">이메일</span>
+              <span class="input-group-text">[[${loginInfo.email}]]</span>
+            </div>
+
+        </div><!--end card body-->
+
+      </div><!--end card-->
+    </div><!-- end col-->
+  </div><!-- end row-->
+
+
+</div>
