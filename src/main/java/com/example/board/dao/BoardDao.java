@@ -79,6 +79,20 @@ public class BoardDao {
     }
 
     @Transactional
+    public void updateLike(int boardId){
+        String sql = "update board\n" +
+                "set likehit = likehit + 1\n" +
+                "where board_id = :boardId";
+    }
+
+    @Transactional
+    public void updateLikeCancel(int boardId){
+        String sql = "update board" +
+                "set likehit = likehit - 1" +
+                "where board_id = :boardId";
+    }
+
+    @Transactional
     public void deleteBoard(int boardId){
         String sql = "delete from board where board_id = :boardId";
         jdbcTemplate.update(sql, Map.of("boardId", boardId));
