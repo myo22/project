@@ -1,7 +1,7 @@
 package com.example.board.controller;
 
 import com.example.board.dto.LoginInfo;
-import com.example.board.dto.User;
+import com.example.board.domain.User;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -88,11 +88,11 @@ public class UserController {
             System.out.println(user);
             if (user.getPassword().equals(password)){
                 System.out.println("암호가 같습니다.");
-                LoginInfo loginInfo = new LoginInfo(user.getUser_id(), user.getEmail(), user.getName());
+                LoginInfo loginInfo = new LoginInfo(user.getUserId(), user.getEmail(), user.getName());
                 // 여기서 포인트* 각각의 브라우저마다 세션이 다르게 만들어진다. -> 서버에 접속한 클라이언트가 10개면 세션이 10개이다.
 
                 // 권한 정보를 읽어와서 loginInfo에 추가한다.
-                List<String> roles = userService.getRoles(user.getUser_id());
+                List<String> roles = userService.getRoles(user.getUserId());
                 loginInfo.setRoles(roles);
 
 

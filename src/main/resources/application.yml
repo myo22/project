@@ -1,8 +1,16 @@
 spring:
   datasource:
-    url: jdbc:mysql://my-rds.cuxgidnqcd32.ap-northeast-2.rds.amazonaws.com:3306/my_rds?useUnicode=true&serverTimezone=Asia/Seoul
-    username: myo220211
-    password: Rdbckr69173!
-  thymeleaf:
+    url: jdbc:mysql://127.0.0.1:3306/examplesdb?useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: Rdbckr69173+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          show_sql: true
+          format_sql: true
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+
 #    prefix: classpath:/html/ default?? ????? ??? ??? ????
 #    suffix: .fm
