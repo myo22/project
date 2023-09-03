@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.dto.Board;
+import com.example.board.domain.Board;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 // HTTP요청을 받아서 응답을 받는 컴포넌트, 스프링 부트가 자동으로 Bean으로 생성한다.
@@ -25,14 +24,14 @@ public class BoardController {
     // http://localhost:8080/ -----> "list"라는 이름의 템플릿을 사용(forward)하여 화면에 출력.
     // list를 리턴한다는 것은 classpath:/templates/list.html을 사용한다는 뜻이다. classpath:/경로나  .html(확장자)를 바꿔주고 싶다면 prefix랑 suffix를 바꿔주면 가능하다.
     @GetMapping("/")
-    public String list(HttpSession httpSession, Model model,@RequestParam(name = "page", defaultValue = "1") int page){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
+    public String list(HttpSession httpSession, Model model,@RequestParam(name = "page", defaultValue = "0") int page){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
 
         // 게시물 목록을 읽어온다. 페이징 처리한다.
-        int total = boardService.getTotalCount(); // 11
+        long total = boardService.getTotalCount(); // 11
         List<Board> list = boardService.getBoards(page); // page가 1,2,3,4 ....
-        int pageCount = total / 10; // 1;
+        long pageCount = total / 10; // 1;
         if (total % 10> 0) { // 나머지가 있을 경우 1page를 추가
             pageCount++;
         }
@@ -170,7 +169,7 @@ public class BoardController {
         }
 
         Board board =boardService.getBoard(boardId, false);
-        if(board.getUserId() != loginInfo.getUserId()){
+        if(board.getUser().getUserId() != loginInfo.getUserId()){
             return "redirect:/board?boardId=" + boardId; // 글보기로 이동한다.
         }
 

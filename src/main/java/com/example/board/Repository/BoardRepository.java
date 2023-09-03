@@ -1,6 +1,8 @@
 package com.example.board.Repository;
 
 import com.example.board.domain.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,9 @@ public interface BoardRepository extends JpaRepository<Board, Integer> { // 게�
 //    // 일반 조인, Board가 가진 속성이 아니고 별도의 엔티티를 이용해서 조인한 것. -> 1 + N 문제는 해결되지 않음.
 //    @Query(value = "select b from Board b join fetch User u on b.user.userId = u.userId")
 //    List<Board> getBoards();
+
+    // 페이징 처리로 가지고 오는데 날짜를 desc로 정렬해서 가지고 온다.
+    Page<Board> findByOrderOrderByRegdateDesc(Pageable pageable);
 
     @Query(value = "select count(b) from Board b")
     Long getBoardCount();

@@ -52,7 +52,7 @@
                                 <a th:href="|@{/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
                             </td>
                             <td>[[${board.viewCnt}]]</td>
-                            <td>[[${board.name}]]</td>
+                            <td>[[${board.user.name}]]</td>
                             <td>[[${#temporals.format(board.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>
 
