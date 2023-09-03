@@ -23,7 +23,7 @@ public interface BoardRepository extends JpaRepository<Board, Integer> { // 게�
 //    List<Board> getBoards();
 
     // 페이징 처리로 가지고 오는데 날짜를 desc로 정렬해서 가지고 온다.
-    Page<Board> findByOrderOrderByRegdateDesc(Pageable pageable);
+    Page<Board> findByOrderByRegdateDesc(Pageable pageable);
 
     @Query(value = "select count(b) from Board b")
     Long getBoardCount();

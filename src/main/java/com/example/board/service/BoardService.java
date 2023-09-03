@@ -40,7 +40,7 @@ public class BoardService {
     @Transactional(readOnly = true) // 마찬가지로 읽어오기만 할거니
     public List<Board> getBoards(int page) { // page : 0 - 첫번째 페이지.
         Pageable pageable = PageRequest.of(page, 10);
-        return boardRepository.findByOrderOrderByRegdateDesc(pageable).getContent();
+        return boardRepository.findByOrderByRegdateDesc(pageable).getContent();
     }
 
     @Transactional
