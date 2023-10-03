@@ -11,6 +11,12 @@ spring:
           show_sql: true
           format_sql: true
       database-platform: org.hibernate.dialect.MySQL8Dialect
-
+# 카카오 로그인 설정
+kakao:
+  client:
+    id: 1fc73df4c21852bc9cc9eb86076cba80
+    secret: 1m1XagCpBLMZ45VQBP3I0OBinKCOtEoU
+  redirect:
+    url: http://localhost:8080/login/oauth2/code/kakao
 #    prefix: classpath:/html/ default?? ????? ??? ??? ????
 #    suffix: .fm
