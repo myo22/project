@@ -41,7 +41,7 @@ public interface BoardRepository extends JpaRepository<Board, Integer> { // 게�
     // select * from board b, user u, user_role ur, role r where b.user_id = u.user_id and u.user_id = ur.user_id and ur.role_id = r.role_id and r.name = "ROLE_ADMIN";
 //    @Query(value = "select b from Board b join fetch b.user u join u.roles r where r.name = :roleName") // jpql에서는 물음표를 사용하면 안된다.
 //    List<Board> getBoards(@Param("roleName") String roleName);
-    // Board b join b.user 이 부분은 SQL로 따지면 b.user_id = u.user_id 와 같다.
+    // Board b joinx b.user 이 부분은 SQL로 따지면 b.user_id = u.user_id 와 같다.
 
     // fetch를 빼고도 Alias를 이용해서도 동일하게 가능하다.
     @Query(value = "select b, u from Board b join b.user u join u.roles r where r.name = :roleName")

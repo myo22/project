@@ -7,9 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Like {
-    private int likeId;
-    private int boardId;
-    private int userId;
-    private int likeCount;
+public class Course {
+    private int courseId;
+    private String title;
+    private String content;
 }

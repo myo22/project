@@ -1,4 +1,4 @@
 package com.example.board.domain;
 
-public class Class {
+public class Participant {
 }
