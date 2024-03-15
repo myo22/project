@@ -42,6 +42,9 @@ public class User {
     ) // 이렇게 적어줘야 User와 Role을 관계로 맺어주는 것이다.
     Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(mappedBy = "participants")
+    private Set<Course> courses = new HashSet<>();
+
     @Override
     public String toString() {
         return "User{" +
