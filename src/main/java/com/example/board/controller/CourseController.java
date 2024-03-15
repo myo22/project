@@ -106,7 +106,7 @@ public class CourseController {
         Course course = courseService.getCourse(courseId, false);
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
-        return "updateform";
+        return "courseupdateform";
     }
 
     @PostMapping("/updateCourse")

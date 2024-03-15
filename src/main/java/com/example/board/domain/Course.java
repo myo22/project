@@ -17,6 +17,7 @@ public class Course {
 
     @Id
     @Column(name = "course_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer courseId;
 
     @Column(length = 100)

@@ -44,19 +44,18 @@
             </tr>
             </thead>
 
-            <tr th:each="board : ${list}"  >
-              <th scope="row">[[${board.boardId}]]</th>
+            <tr th:each="course : ${list}"  >
+              <th scope="row">[[${course.courseId}]]</th>
               <td>
-                <a th:href="|@{/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
+                <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
               </td>
-              <td>[[${board.viewCnt}]]</td>
-              <td>[[${board.user.name}]]</td>
-              <td>[[${#temporals.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+              <td>[[${course.user.name}]]</td>
+              <td>[[${#temporals.format(course.regdate, 'yyyy-MM-dd')}]]</td>
             </tr>
 
             <div>
-              <a href="/writeForm" th:if="${loginInfo != null}">글쓰기</a>
-              <span th:if="${loginInfo == null}">글쓰기</span>
+              <a href="/coursewriteForm" th:if="${loginInfo != null}">강의 개설</a>
+              <span th:if="${loginInfo == null}">강의 개설</span>
             </div>
           </table>
 

@@ -2,7 +2,6 @@ package com.example.board.dao;
 
 import com.example.board.dto.Board;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -28,7 +27,7 @@ public class BoardDao {
     public BoardDao(DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         insertBoard = new SimpleJdbcInsert(dataSource)
-                .withTableName("board")
+                .withTableName("templates/board")
                 .usingGeneratedKeyColumns("board_id"); // 자동으로 증가되는 id를 설정.
     }
 

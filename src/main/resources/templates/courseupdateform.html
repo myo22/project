@@ -1,0 +1,103 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>수정 폼</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>글수정 폼</h1>-->
+<!--<form action="/update" method="post">-->
+<!--    <input type="hidden" name="boardId" th:value="${board.boardId}" />-->
+<!--    이름 : <span th:text="${board.name}"></span><br>-->
+<!--    제목 : <input type="text" name="title" th:value="${board.title}" /><br /> &lt;!&ndash; 여기는 value는 이거니까 저기에 들어가고 아래는 textarea사이에 들어가야 해서 th:text이다. &ndash;&gt;-->
+<!--    내용 : <br>-->
+<!--    <textarea name="content" cols="50" rows="5" th:text="${board.content}"></textarea><br> &lt;!&ndash; 50개의 컬럼과 5줄로 형성 &ndash;&gt;-->
+<!--    <input type="submit" value="수정" />-->
+<!--</form>-->
+<!--</body>-->
+
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+  <title>게시물 수정</title>
+</head>
+
+<div layout:fragment="content">
+  <div class="row mt-3">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          게시물 수정
+        </div>
+        <div class="card-body">
+          <form action="/updateCourse" method="post" id="f1">
+            <div class="input-group mb-3">
+              <span class="input-group-text">번호</span>
+              <input type="hidden" name="boardId" th:value="${course.courseId}" />
+              <input type="text" class="form-control" th:value="${course.courseId}" name="bno" readonly>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">제목</span>
+              <input type="text" class="form-control" name="title" th:value="${course.title}">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">내용</span>
+              <textarea class="form-control col-sm-5" name="content" cols="50" rows="5" th:text="${course.content}"></textarea>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">글쓴이</span>
+              <input type="text" class="form-control" th:value="${course.user.name}" name="writer" readonly>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">작성일</span>
+              <input type="text" class="form-control" th:value="${course.regdate}" readonly>
+            </div>
+            <!--                        <div class="input-group mb-3">-->
+            <!--                            <span class="input-group-text">ModDate</span>-->
+            <!--                            <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>-->
+            <!--                        </div>-->
+
+            <div class="my-4">
+              <div class="float-end">
+                <a th:href="@{/}" class="text-decoration-none">
+                  <button type="button" class="btn btn-primary listBtn">목록</button>
+                </a>
+                <!--                                <button type="button" th:href="@{/}" class="btn btn-primary listBtn">List</button>-->
+                <button type="submit" value="수정" class="btn btn-secondary modBtn">수정</button>
+
+                <a th:href="@{/delete(courseId=${course.courseId})}" class="text-decoration-none">
+                  <button type="button" class="btn btn-danger removeBtn">삭제</button>
+                </a>
+
+
+                <!--                            <button type="button" class="btn btn-danger removeBtn">Remove</button>-->
+              </div>
+            </div>
+          </form>
+
+
+        </div><!--end card body-->
+
+
+
+      </div><!--end card-->
+    </div><!-- end col-->
+  </div><!-- end row-->
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+
+
+
+</script>
