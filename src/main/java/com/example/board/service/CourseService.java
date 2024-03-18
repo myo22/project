@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,21 @@ public class CourseService {
         course.setTitle(title);
         course.setContent(content);
         courseRepository.save(course);
+    }
+
+    @Transactional
+    public void joinCourse(int courseId, int userId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Set<User> participants = course.getParticipants();
+        participants.add(user);
+        courseRepository.save(course);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Course> getUserCourses(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getCourses();
     }
 
     @Transactional(readOnly = true)

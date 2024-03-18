@@ -1,17 +1,20 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Course;
+import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -125,6 +128,35 @@ public class CourseController {
         }
 
         courseService.updateCourse(courseId, title, content);
+        return "redirect:/course?courseId=" + courseId;
+    }
+
+    @PostMapping ("/courses")
+    public String joinCourse(@RequestParam("courseId") int courseId,
+                             HttpSession httpSession) {
+
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if (loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+//        Course course = courseService.getCourse(courseId, false);
+
+//        List<String> roles = loginInfo.getRoles();
+//        if (roles.contains("ROLE_USER")) {
+//            courseService.deleteCourse(courseId);
+//        }
+
+        // 사용자가 강좌에 참가하도록 Service에 요청합니다.
+        courseService.joinCourse(courseId, loginInfo.getUserId());
+
+        Course course = courseService.getCourse(courseId, false);
+
+        Set<User> participants = course.getParticipants();
+        for (User participant : participants) {
+            System.out.println("Participant: " + participant.getName());
+        }
+        // 강좌 참가가 완료되면 다시 해당 강좌 페이지로 리다이렉트합니다.
         return "redirect:/course?courseId=" + courseId;
     }
 }
