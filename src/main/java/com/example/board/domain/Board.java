@@ -1,5 +1,6 @@
 package com.example.board.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,8 @@ public class Board {
                 ", viewCnt=" + viewCnt +
                 '}';
     }
+
+
 }
 
 //'board_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'

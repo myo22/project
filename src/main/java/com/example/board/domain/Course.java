@@ -18,9 +18,9 @@ import java.util.Set;
 public class Course {
 
     @Id
-    @Column(name = "course_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer courseId;
+    @Column(name = "course_id")
+    private Long courseId;
 
     @Column(length = 100)
     private String title;
@@ -31,11 +31,15 @@ public class Course {
     @CreationTimestamp
     private LocalDateTime regdate;
 
-    @ManyToOne(fetch = FetchType.LAZY) // 게시물 N --- 1 사용자, FetchType.EAGER(안써줘도 기본값이다) -> 무조건 데이터를 가지고와라.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany(mappedBy = "courses")
     private Set<User> participants = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AttachedFile> attachedFiles = new HashSet<>();
 
 }
