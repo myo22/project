@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.FileRepository;
 import com.example.board.domain.AttachedFile;
 import com.example.board.domain.Course;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class FileService {
 
     private final FileRepository fileRepository;
-    private final CourseService courseService;
+    private final CourseRepository courseRepository;
 
     @Value("${file.upload.dir}")
     private String uploadDir;
@@ -46,7 +47,7 @@ public class FileService {
 
     // 파일 정보 저장
     public void saveFile(MultipartFile file, int courseId) throws IOException {
-        Course course = courseService.getCourse(courseId);
+        Course course = courseRepository.getcourse(courseId);
 
         // 파일 정보 저장
         String originalFilename = file.getOriginalFilename();

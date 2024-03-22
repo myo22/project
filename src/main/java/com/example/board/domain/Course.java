@@ -38,8 +38,10 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private Set<User> participants = new HashSet<>();
 
-
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AttachedFile> attachedFiles = new HashSet<>();
+
+    @OneToMany(mappedBy = "course",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Assignment> assignments = new HashSet<>();
 
 }

@@ -17,6 +17,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Query(value = "select c from Course c join fetch c.user")
     List<Course> getCourses();
 
+    @Query(value = "select c from Course c where c.courseId = :courseId")
+    Course getcourse(@Param("courseId") int courseId);
+
     Page<Course> findByOrderByRegdateDesc(Pageable pageable);
 
     // Course 테이블의 레코드 수를 가져옵니다.
