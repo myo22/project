@@ -7,9 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileDto {
-    private Long fileId;
+    private int fileId;
     private String origFilename;
     private String filename;
     private String filePath;
-    private Long courseId; // 강의 ID
+    private int courseId; // 강의 ID
 }

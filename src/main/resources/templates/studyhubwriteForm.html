@@ -16,6 +16,7 @@
         </div>
         <div class="card-body">
           <form action="/studyhubwrite" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="courseId" th:value="${course.courseId}" />
 
             <div class="input-group mb-3">
               <span th:text="${loginInfo.name}"></span>

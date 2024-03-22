@@ -32,10 +32,10 @@
                         <tbody>
                         <!-- 강의 자료 목록 표시 -->
                         <tr th:each="file : ${fileList}">
-                            <td th:text="${file.origFilename}"></td> <!-- origFilename으로 변경 -->
-                            <td>
+                            <td th:if="${file.courseId == course.courseId}" th:text="${file.origFilename}"></td> <!-- origFilename으로 변경 -->
+                            <td th:if="${file.courseId == course.courseId}">
                                 <!-- 다운로드 링크 추가 -->
-                                <a th:href="@{'/download/' + ${file.fileId}}" download th:text="'다운로드'"></a>
+                            <a th:href="@{'/download/' + ${file.fileId}}" download th:text="'다운로드'"></a>
                             </td>
                         </tr>
                         </tbody>
@@ -43,9 +43,16 @@
 
                     <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
                     <div>
-                        <a href="/studyhubwriteForm" th:if="${loginInfo != null}">강의 자료 업로드</a>
+                        <a th:href="@{/studyhubwriteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}" class="text-decoration-none">
+                            <button type="button" class="btn btn-primary listBtn">강의 자료 업로드</button>
+                        </a>
+                        <input type="hidden" name="courseId" th:value="${course.courseId}" />
                         <span th:if="${loginInfo == null}">강의 자료 업로드</span>
                     </div>
+
+                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                        <button type="button" class="btn btn-primary listBtn">이전</button>
+                    </a>
 
                 </div><!--end card body-->
             </div><!--end card-->

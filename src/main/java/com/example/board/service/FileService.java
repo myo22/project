@@ -2,8 +2,10 @@ package com.example.board.service;
 
 import com.example.board.Repository.FileRepository;
 import com.example.board.domain.AttachedFile;
+import com.example.board.domain.Course;
 import com.example.board.dto.FileDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -20,30 +22,46 @@ import java.util.stream.Collectors;
 public class FileService {
 
     private final FileRepository fileRepository;
+    private final CourseService courseService;
 
+    @Value("${file.upload.dir}")
+    private String uploadDir;
 
-    // 파일을 업로드하고 DB에 정보 저장
-    public FileDto uploadFile(MultipartFile file) throws IOException {
-        // 파일 정보 저장
-        AttachedFile attachedFile = AttachedFile.builder()
-                .origFilename(file.getOriginalFilename())
-                .filename(file.getOriginalFilename())
-                .filePath("uploads/")  // 저장된 경로를 변경할 수 있습니다.
-                .build();
-
-        // 파일 정보를 DB에 저장
-        attachedFile = fileRepository.save(attachedFile);
-
-        return toFileDto(attachedFile);
-    }
+//    // 파일을 업로드하고 DB에 정보 저장
+//    public FileDto uploadFile(MultipartFile file, int courseId) throws IOException {
+//        Course course = courseService.getCourse(courseId);
+//        // 파일 정보 저장
+//        AttachedFile attachedFile = AttachedFile.builder()
+//                .origFilename(file.getOriginalFilename())
+//                .filename(file.getOriginalFilename())
+//                .filePath("uploads/")  // 저장된 경로를 변경할 수 있습니다.
+//                .course(course)
+//                .build();
+//
+//        // 파일 정보를 DB에 저장
+//        attachedFile = fileRepository.save(attachedFile);
+//
+//        return toFileDto(attachedFile);
+//    }
 
     // 파일 정보 저장
-    public void saveFile(FileDto fileDto) {
+    public void saveFile(MultipartFile file, int courseId) throws IOException {
+        Course course = courseService.getCourse(courseId);
+
+        // 파일 정보 저장
+        String originalFilename = file.getOriginalFilename();
+        String filename = UUID.randomUUID().toString() + "_" + originalFilename;
+        String filePath = uploadDir + File.separator + filename; // 파일 경로 변경
+        file.transferTo(new File(filePath));
+
+        // 파일 정보를 DB에 저장
         AttachedFile attachedFile = AttachedFile.builder()
-                .origFilename(fileDto.getOrigFilename())
-                .filename(fileDto.getFilename())
-                .filePath(fileDto.getFilePath())
+                .origFilename(originalFilename)
+                .filename(filename)
+                .filePath(filePath)
+                .course(course)
                 .build();
+
         fileRepository.save(attachedFile);
     }
 
@@ -56,7 +74,7 @@ public class FileService {
     }
 
     // 파일 ID로 파일 정보 조회
-    public FileDto getFile(Long fileId) {
+    public FileDto getFile(int fileId) {
         AttachedFile attachedFile = fileRepository.findById(fileId)
                 .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + fileId));
         return toFileDto(attachedFile);
@@ -69,6 +87,7 @@ public class FileService {
                 .origFilename(attachedFile.getOrigFilename())
                 .filename(attachedFile.getFilename())
                 .filePath(attachedFile.getFilePath())
+                .courseId(attachedFile.getCourse().getCourseId())
                 .build();
     }
 }

@@ -15,12 +15,13 @@ public class AttachedFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
-    private Long fileId;
+    private Integer fileId;
 
     @Column(name = "orig_filename")
     private String origFilename;
 
     private String filename;
+
 
     @Column(name = "file_path")
     private String filePath;
@@ -30,9 +31,10 @@ public class AttachedFile {
     private Course course;
 
     @Builder
-    public AttachedFile(String origFilename, String filename, String filePath) {
+    public AttachedFile(String origFilename, String filename, String filePath, Course course) {
         this.origFilename = origFilename;
         this.filename = filename;
         this.filePath = filePath;
+        this.course = course;
     }
 }
