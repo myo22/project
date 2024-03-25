@@ -35,8 +35,13 @@ public class AssignmentController {
 
     private static final String VIDEO_DIRECTORY = "video";
 
-    @GetMapping("/assignmentWriteForm")
-    public String assignmentWriteForm(HttpSession httpSession,
+    @GetMapping("/assignmentWrite")
+    public String assignmentWrite(){
+        return "assignmentWrite";
+    }
+
+    @GetMapping("/assignmentFileWriteForm")
+    public String assignmentFileWriteForm(HttpSession httpSession,
                                       Model model,
                                       @RequestParam("courseId") int courseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
@@ -49,8 +54,8 @@ public class AssignmentController {
         return "assignmentWriteForm";
     }
 
-    @PostMapping("/assignmentWrite")
-    public String assignmentwirte(@RequestParam("file")MultipartFile file,
+    @PostMapping("/assignmentFileWrite")
+    public String assignmentFileWrite(@RequestParam("file")MultipartFile file,
                                   @RequestParam("courseId") int courseId,
                                   @RequestParam("usserId") int userId) {
         try {

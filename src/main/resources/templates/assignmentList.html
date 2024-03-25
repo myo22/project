@@ -43,10 +43,10 @@
                     <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
                     <div>
                         <a th:href="@{/assignmentwirteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}" class="text-decoration-none">
-                            <button type="button" class="btn btn-primary listBtn">강의 자료 업로드</button>
+                            <button type="button" class="btn btn-primary listBtn">과제 업로드</button>
                         </a>
                         <input type="hidden" name="courseId" th:value="${course.courseId}" />
-                        <span th:if="${loginInfo == null}">강의 자료 업로드</span>
+                        <span th:if="${loginInfo == null}">과제 업로드</span>
                     </div>
 
                     <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">

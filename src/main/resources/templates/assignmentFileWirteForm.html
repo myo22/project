@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>과제</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    과제 작성
+                </div>
+                <div class="card-body">
+                    <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="courseId" th:value="${course.courseId}" />
+
+                        <div class="input-group mb-3">
+                            <span th:text="${loginInfo.name}"></span>
+
+                            <div class="input-group mb-3">
+                                <label for="file">파일 선택:</label >
+                                <input type="file" id="file" name="file" accept=".pdf, .doc, .docx, .txt">  <!-- 허용할 파일 형식에 대한 제한을 설정할 수 있음 -->
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <label for="desc">파일 설명:</label>
+                                <input type="text" id="desc" name="desc">
+                            </div>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit">업로드</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><!--end card body-->
+
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+</script>

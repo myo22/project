@@ -1,5 +1,6 @@
 package com.example.board.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,5 +31,13 @@ public class Assignment {
 
     @OneToMany(mappedBy = "assignment")
     private List<AssignmentFile> assignmentFiles = new ArrayList<>();
+
+    @Builder
+    public Assignment(int assignmentId, String title, String content, Course course){
+        this.assignmentId = assignmentId;
+        this.title = title;
+        this.content = content;
+        this.course = course;
+    }
 
 }
