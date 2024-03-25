@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.Repository.AssignmentFileRepository;
 import com.example.board.Repository.AssignmentRepository;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AssignmentService {
 
+    private final AssignmentFileRepository assignmentFileRepository;
     private final AssignmentRepository assignmentRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
@@ -48,12 +50,12 @@ public class AssignmentService {
                 .user(user)
                 .build();
 
-        assignmentRepository.save(assignmentFile);
+        assignmentFileRepository.save(assignmentFile);
     }
 
     // 모든 파일 목록 조회
     public List<AssignmentFileDto> getAllFiles() {
-        List<AssignmentFile> assignmentFiles = assignmentRepository.findAll();
+        List<AssignmentFile> assignmentFiles = assignmentFileRepository.findAll();
         return assignmentFiles.stream()
                 .map(this::toAssignmentDto)
                 .collect(Collectors.toList());
@@ -61,7 +63,7 @@ public class AssignmentService {
 
     // 파일 ID로 파일 정보 조회
     public AssignmentFileDto getFile(int assignmentId) {
-        AssignmentFile assignmentFile = assignmentRepository.findById(assignmentId)
+        AssignmentFile assignmentFile = assignmentFileRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + assignmentId));
         return toAssignmentDto(assignmentFile);
     }
@@ -69,12 +71,12 @@ public class AssignmentService {
     // AttachedFile을 FileDto로 변환하는 메서드
     private AssignmentFileDto toAssignmentDto(AssignmentFile assignmentFile) {
         return AssignmentFileDto.builder()
-                .assignmentId(assignmentFile.getAssignmentId())
+                .assignmentId(assignmentFile.getAssignmentFileId())
                 .origFilename(assignmentFile.getOrigFilename())
                 .assignmentName(assignmentFile.getAssignmentName())
                 .assignmentPath(assignmentFile.getAssignmentPath())
-                .courseId(assignmentFile.getCourse().getCourseId())
                 .userId(assignmentFile.getUser().getUserId())
+                .assignmentId(assignmentFile.getAssignment().getAssignmentId())
                 .build();
     }
 }
