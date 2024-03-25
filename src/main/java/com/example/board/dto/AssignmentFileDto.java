@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssignmentDto {
+public class AssignmentFileDto {
 
-    private int assignmentId;
+    private int assignmentFileId;
 
     private String origFilename;
 
@@ -19,11 +19,7 @@ public class AssignmentDto {
 
     private String assignmentPath;
 
-    private String title;
-
-    private String content;
-
-    private int courseId;
-
     private int userId;
+
+    private int assignmentId;
 }

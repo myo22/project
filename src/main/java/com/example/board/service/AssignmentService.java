@@ -3,11 +3,10 @@ package com.example.board.service;
 import com.example.board.Repository.AssignmentRepository;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
-import com.example.board.domain.Assignment;
+import com.example.board.domain.AssignmentFile;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
-import com.example.board.dto.AssignmentDto;
-import com.example.board.dto.FileDto;
+import com.example.board.dto.AssignmentFileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,41 +41,40 @@ public class AssignmentService {
         file.transferTo(new File(filePath));
 
         // 파일 정보를 DB에 저장
-        Assignment assignment = Assignment.builder()
+        AssignmentFile assignmentFile = AssignmentFile.builder()
                 .origFilename(originalFilename)
                 .assignmentName(filename)
                 .assignmentPath(filePath)
-                .course(course)
                 .user(user)
                 .build();
 
-        assignmentRepository.save(assignment);
+        assignmentRepository.save(assignmentFile);
     }
 
     // 모든 파일 목록 조회
-    public List<AssignmentDto> getAllFiles() {
-        List<Assignment> assignments = assignmentRepository.findAll();
-        return assignments.stream()
+    public List<AssignmentFileDto> getAllFiles() {
+        List<AssignmentFile> assignmentFiles = assignmentRepository.findAll();
+        return assignmentFiles.stream()
                 .map(this::toAssignmentDto)
                 .collect(Collectors.toList());
     }
 
     // 파일 ID로 파일 정보 조회
-    public AssignmentDto getFile(int assignmentId) {
-        Assignment assignment = assignmentRepository.findById(assignmentId)
+    public AssignmentFileDto getFile(int assignmentId) {
+        AssignmentFile assignmentFile = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + assignmentId));
-        return toAssignmentDto(assignment);
+        return toAssignmentDto(assignmentFile);
     }
 
     // AttachedFile을 FileDto로 변환하는 메서드
-    private AssignmentDto toAssignmentDto(Assignment assignment) {
-        return AssignmentDto.builder()
-                .assignmentId(assignment.getAssignmentId())
-                .origFilename(assignment.getOrigFilename())
-                .assignmentName(assignment.getAssignmentName())
-                .assignmentPath(assignment.getAssignmentPath())
-                .courseId(assignment.getCourse().getCourseId())
-                .userId(assignment.getUser().getUserId())
+    private AssignmentFileDto toAssignmentDto(AssignmentFile assignmentFile) {
+        return AssignmentFileDto.builder()
+                .assignmentId(assignmentFile.getAssignmentId())
+                .origFilename(assignmentFile.getOrigFilename())
+                .assignmentName(assignmentFile.getAssignmentName())
+                .assignmentPath(assignmentFile.getAssignmentPath())
+                .courseId(assignmentFile.getCourse().getCourseId())
+                .userId(assignmentFile.getUser().getUserId())
                 .build();
     }
 }

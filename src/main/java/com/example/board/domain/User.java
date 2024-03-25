@@ -51,7 +51,7 @@ public class User {
     private Set<Course> courses = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Assignment> assignments = new HashSet<>();
+    private Set<AssignmentFile> assignmentFiles = new HashSet<>();
 
     @Override
     public String toString() {

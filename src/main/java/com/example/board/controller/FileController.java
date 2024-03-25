@@ -35,7 +35,7 @@ public class FileController {
 
     private static final String VIDEO_DIRECTORY = "video";
 
-    @GetMapping("/studyhubwriteForm")
+    @GetMapping("/studyHubWriteForm")
     public String studyhub(HttpSession httpSession,
                            Model model,
                            @RequestParam("courseId") int courseId){
@@ -46,10 +46,10 @@ public class FileController {
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
-        return "studyhubwriteForm";
+        return "studyHubWriteForm";
     }
 
-    @PostMapping("/studyhubwrite")
+    @PostMapping("/studyHubWrite")
     public String studyhubwrite(@RequestParam("file") MultipartFile file,
                                 @RequestParam("courseId") int courseId) {
         try {
@@ -58,10 +58,10 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/studyhublist?currentCourseId=" + courseId;
+        return "redirect:/studyHubList?currentCourseId=" + courseId;
     }
 
-    @GetMapping("/studyhublist")
+    @GetMapping("/studyHubList")
     public String studyhublist(HttpSession httpSession, Model model, @RequestParam("currentCourseId") Integer currentCourseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if(loginInfo == null){
@@ -74,7 +74,7 @@ public class FileController {
         List<FileDto> fileList = fileService.getAllFiles();
         model.addAttribute("fileList", fileList);
 
-        return "studyhublist";
+        return "studyHubList";
     }
 
     @GetMapping("/download/{fileId}")

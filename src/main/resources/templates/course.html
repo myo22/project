@@ -66,9 +66,13 @@
               <input type="hidden" name="courseId" th:value="${course.courseId}" />
               <button type="submit" class="btn btn-primary">참가신청</button>
             </form>
-            <form th:action="@{/studyhublist}" method="get">
+            <form th:action="@{/studyHubList}" method="get">
               <input type="hidden" name="currentCourseId" th:value="${course.courseId}" />
               <button type="submit" class="btn btn-primary">강의자료실</button>
+            </form>
+            <form th:action="@{/assignmentList}" method="get">
+              <input type="hidden" name="currentCourseId" th:value="${course.courseId}" />
+              <button type="submit" class="btn btn-primary">과제</button>
             </form>
 
 

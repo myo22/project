@@ -4,7 +4,7 @@
       layout:decorate="~{layout/basic.html}">
 
 <head>
-  <title>강의자료실</title>
+  <title>과제</title>
 </head>
 
 <div layout:fragment="content">
@@ -12,10 +12,10 @@
     <div class="col">
       <div class="card">
         <div class="card-header">
-          강의자료실 작성
+          과제 작성
         </div>
         <div class="card-body">
-          <form action="/studyhubwrite" method="post" enctype="multipart/form-data">
+          <form action="/assignmentWrite" method="post" enctype="multipart/form-data">
             <input type="hidden" name="courseId" th:value="${course.courseId}" />
 
             <div class="input-group mb-3">

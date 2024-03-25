@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+
+    <div class="row mt-3">
+        <form action="/assignmentList" method="get">
+            <div class="col">
+            </div>
+        </form>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+
+            <div class="card">
+                <div class="card-header">
+                    과제 목록
+                </div>
+                <div class="card-body" >
+                    <h5 class="card-title">과제 목록</h5>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">과제명</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 강의 자료 목록 표시 -->
+                        <tr th:each="file : ${fileList}">
+                            <td th:if="${file.courseId == course.courseId}" th:text="${file.origFilename}"></td> <!-- origFilename으로 변경 -->
+                            <td th:if="${file.courseId == course.courseId}">
+                                <!-- 다운로드 링크 추가 -->
+                                <a th:href="@{'/download/' + ${file.assignmentId}}" download th:text="'다운로드'"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
+                    <div>
+                        <a th:href="@{/assignmentwirteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}" class="text-decoration-none">
+                            <button type="button" class="btn btn-primary listBtn">강의 자료 업로드</button>
+                        </a>
+                        <input type="hidden" name="courseId" th:value="${course.courseId}" />
+                        <span th:if="${loginInfo == null}">강의 자료 업로드</span>
+                    </div>
+
+                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                        <button type="button" class="btn btn-primary listBtn">이전</button>
+                    </a>
+
+                </div><!--end card body-->
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+</script>
+</html>
