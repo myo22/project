@@ -8,6 +8,19 @@
     <div class="row mt-3">
         <form action="/assignmentList" method="get">
             <div class="col">
+                <!--               <span class="login-info_user" th:if="${loginInfo != null}">-->
+                <!--                   <span th:text="${loginInfo.getName()}"></span>-->
+                <!--               </span>-->
+                <!--                <span class="login-info_logout" th:if="${loginInfo == null}">-->
+                <!--                    <a href="/loginForm">로그인</a>-->
+                <!--                </span>-->
+                <!--                <span class="login-info_logout" th:if="${loginInfo != null}">-->
+                <!--                    <a href="/logout">로그아웃</a>-->
+                <!--                </span>-->
+                <!--                </span>-->
+                <!--                <span class="login-info_join" th:if="${loginInfo == null}">-->
+                <!--                    <a href="/userRegForm">회원가입</a> &lt;!&ndash; Get방식으로 요청 !&ndash;&gt;-->
+                <!--                </span>-->
             </div>
         </form>
     </div>
@@ -20,38 +33,68 @@
                     과제 목록
                 </div>
                 <div class="card-body" >
-                    <h5 class="card-title">과제 목록</h5>
+                    <h5 class="card-title"> 과제 목록</h5>
 
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">과제명</th>
+                            <th scope="col">번호</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">작성자</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <!-- 강의 자료 목록 표시 -->
-                        <tr th:each="file : ${fileList}">
-                            <td th:if="${file.courseId == course.courseId}" th:text="${file.origFilename}"></td> <!-- origFilename으로 변경 -->
-                            <td th:if="${file.courseId == course.courseId}">
-                                <!-- 다운로드 링크 추가 -->
-                                <a th:href="@{'/download/' + ${file.assignmentId}}" download th:text="'다운로드'"></a>
+
+                        <tr th:each="assignment : ${list}"  >
+                            <th scope="row">[[${assignment.assignmentId}]]</th>
+                            <td>
+                                <a th:href="@{/assignment/{assignmentId}(assignmentId=${assignment.assignmentId})}"> [[${assignment.title}]] </a>
                             </td>
+                            <td>[[${assignment.user.name}]]</td>
+                            <td>[[${#temporals.format(assignment.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>
-                        </tbody>
+
+                        <div>
+                            <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}">과제 개설</a>
+                            <span th:if="${loginInfo == null}">과제 개설</span>
+                        </div>
+                        <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                            <button type="button" class="btn btn-primary listBtn">이전</button>
+                        </a>
+
+                        <!--            <div>-->
+                        <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
+                        <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
+                        <!--            </div>-->
+
+
                     </table>
 
-                    <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
-                    <div>
-                        <a th:href="@{/assignmentwirteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}" class="text-decoration-none">
-                            <button type="button" class="btn btn-primary listBtn">과제 업로드</button>
-                        </a>
-                        <input type="hidden" name="courseId" th:value="${course.courseId}" />
-                        <span th:if="${loginInfo == null}">과제 업로드</span>
-                    </div>
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
 
-                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
-                        <button type="button" class="btn btn-primary listBtn">이전</button>
-                    </a>
+                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
+                                <li th:class="${page == i}?'page-item active':'page-item'" >
+                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+
+                            <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
+                            <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
+                            <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
+                            <!--                                </li>-->
+                            <!--                            </th:block>-->
+
+                            <!--                            <li class="page-item" th:if="${prev}">-->
+                            <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
+                            <!--                            </li>-->
+
+                            <!--                            <li class="page-item" th:if="${next}">-->
+                            <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
+                            <!--                            </li>-->
+
+
+                        </ul>
+                    </div>
 
                 </div><!--end card body-->
             </div><!--end card-->
@@ -61,4 +104,3 @@
 
 <script layout:fragment="script" th:inline="javascript">
 </script>
-</html>

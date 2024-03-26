@@ -2,6 +2,8 @@ package com.example.board.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,10 @@ public class AssignmentDTO {
 
     private String content;
 
+    private LocalDateTime regdate;
+
     private int courseId;
+
+    private int userId;
 
 }

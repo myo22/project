@@ -4,13 +4,17 @@ import com.example.board.Repository.AssignmentFileRepository;
 import com.example.board.Repository.AssignmentRepository;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
+import com.example.board.domain.Assignment;
 import com.example.board.domain.AssignmentFile;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.dto.AssignmentFileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -31,6 +35,38 @@ public class AssignmentService {
     @Value("${file.upload.dir}")
     private String uploadDir;
 
+    @Transactional
+    public void addAssignment(int courseId, int userId, String title, String content){
+        Course course = courseRepository.getcourse(courseId);
+        User user = userRepository.findById(userId).orElseThrow();
+        Assignment assignment = Assignment.builder()
+                .content(content)
+                .title(title)
+                .course(course)
+                .user(user)
+                .build();
+
+        assignmentRepository.save(assignment);
+    }
+
+    @Transactional
+    public Assignment getAssignment(int assignmentId){
+        Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
+        return assignment;
+    }
+
+    @Transactional(readOnly = true)
+    public Long getTotalCount() {
+        return assignmentRepository.getAssignmentCount();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Assignment> getAssignments(int page){
+        Pageable pageable = PageRequest.of(page, 10);
+        return assignmentRepository.findByOrderByRegdateDesc(pageable).getContent();
+    }
+
+    @Transactional
     public void saveFile(MultipartFile file, int courseId, int userId) throws IOException {
         Course course = courseRepository.getcourse(courseId);
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
@@ -54,6 +90,7 @@ public class AssignmentService {
     }
 
     // 모든 파일 목록 조회
+    @Transactional
     public List<AssignmentFileDto> getAllFiles() {
         List<AssignmentFile> assignmentFiles = assignmentFileRepository.findAll();
         return assignmentFiles.stream()
@@ -62,6 +99,7 @@ public class AssignmentService {
     }
 
     // 파일 ID로 파일 정보 조회
+    @Transactional
     public AssignmentFileDto getFile(int assignmentId) {
         AssignmentFile assignmentFile = assignmentFileRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + assignmentId));

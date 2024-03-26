@@ -8,6 +8,7 @@ import com.example.board.dto.FileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class FileService {
 //    }
 
     // 파일 정보 저장
+    @Transactional
     public void saveFile(MultipartFile file, int courseId) throws IOException {
         Course course = courseRepository.getcourse(courseId);
 
@@ -67,6 +69,7 @@ public class FileService {
     }
 
     // 모든 파일 목록 조회
+    @Transactional
     public List<FileDto> getAllFiles() {
         List<AttachedFile> attachedFiles = fileRepository.findAll();
         return attachedFiles.stream()
@@ -75,6 +78,7 @@ public class FileService {
     }
 
     // 파일 ID로 파일 정보 조회
+    @Transactional
     public FileDto getFile(int fileId) {
         AttachedFile attachedFile = fileRepository.findById(fileId)
                 .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + fileId));

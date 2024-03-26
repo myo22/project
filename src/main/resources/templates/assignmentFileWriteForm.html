@@ -12,15 +12,26 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    과제 작성
+                    과제 파일 제출
                 </div>
                 <div class="card-body">
                     <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="courseId" th:value="${course.courseId}" />
+                        <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
 
                         <div class="input-group mb-3">
-                            <span th:text="${loginInfo.name}"></span>
+                            <span class="input-group-text">글쓴이</span>
+                            <input type="text" class="form-control" th:value="${loginInfo.getName()}" readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">제목</span>
+                            <input type="text" class="form-control" th:value="${assignment.title}" readonly>
+                        </div>
 
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">내용</span>
+                            <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
+                        </div>
+                        <div class="input-group mb-3">
                             <div class="input-group mb-3">
                                 <label for="file">파일 선택:</label >
                                 <input type="file" id="file" name="file" accept=".pdf, .doc, .docx, .txt">  <!-- 허용할 파일 형식에 대한 제한을 설정할 수 있음 -->
