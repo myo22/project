@@ -80,6 +80,54 @@ public class AssignmentController {
         return "assignment";
     }
 
+    @GetMapping("/assignmentUpdateForm")
+    public String assignmentUpdateForm(HttpSession httpSession,
+                                       Model model,
+                                       @RequestParam("assignmentId") int assignmentId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        model.addAttribute("assignment", assignment);
+        model.addAttribute("loginInfo", loginInfo);
+        return "assignmentUpdateForm";
+    }
+
+    @PostMapping("/updateAssignment")
+    public String updateAssignment(HttpSession httpSession,
+                                       Model model,
+                                       @RequestParam("assignmentId") int assignmentId,
+                                       @RequestParam("title") String title,
+                                       @RequestParam("content") String content){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        model.addAttribute("assignmentId", assignmentId);
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        if(assignment.getUser().getUserId() != loginInfo.getUserId()){
+            return "redirect:/assignment?assignmentId=" + assignmentId;
+        }
+        assignmentService.updateAssignment(assignmentId, title, content);
+        return "redirect:/assignment?assignmentId=" + assignmentId;
+    }
+
+    @GetMapping("/deleteAssignment")
+    public String deleteAssignment(@RequestParam("assignmentId") int assignmentId,
+                                  HttpSession httpSession){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if (loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+        List<String> roles = loginInfo.getRoles();
+        if(roles.contains("ROLE_ADMIN")){
+            assignmentService.deleteAssignment(assignmentId);
+        }
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        return "redirect:/assignmentList?currentCourseId=" + assignment.getCourse().getCourseId();
+    }
+
     @GetMapping("/assignmentFileWriteForm")
     public String assignmentFileWriteForm(HttpSession httpSession,
                                       Model model,

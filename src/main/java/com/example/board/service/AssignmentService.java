@@ -50,6 +50,18 @@ public class AssignmentService {
     }
 
     @Transactional
+    public void updateAssignment(int assignmentId, String title, String content){
+        Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
+        assignment.setTitle(title);
+        assignment.setContent(content);
+    }
+
+    @Transactional
+    public void deleteAssignment(int assignmentId){
+        assignmentRepository.deleteById(assignmentId);
+    }
+
+    @Transactional
     public Assignment getAssignment(int assignmentId){
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
         return assignment;
