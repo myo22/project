@@ -1,8 +1,10 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Assignment;
+import com.example.board.domain.AssignmentFile;
 import com.example.board.domain.Course;
 import com.example.board.dto.AssignmentFileDto;
+import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.AssignmentService;
 import com.example.board.service.CourseService;
@@ -66,20 +68,6 @@ public class AssignmentController {
         return "redirect:/assignmentList?currentCourseId=" + courseId;
     }
 
-    @GetMapping("/assignmentFileWriteForm")
-    public String assignmentFileWriteForm(HttpSession httpSession,
-                                      Model model,
-                                      @RequestParam("assignmentId") int assignmentId){
-        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
-        if(loginInfo == null){
-            return "redirect:/loginForm";
-        }
-        Assignment assignment = assignmentService.getAssignment(assignmentId);
-        model.addAttribute("assignment", assignment);
-        model.addAttribute("loginInfo", loginInfo);
-        return "assignmentFileWriteForm";
-    }
-
     @GetMapping("/assignment")
     public  String assignment(@RequestParam("assignmentId") int assignmentId,
                               Model model,
@@ -92,6 +80,22 @@ public class AssignmentController {
         return "assignment";
     }
 
+    @GetMapping("/assignmentFileWriteForm")
+    public String assignmentFileWriteForm(HttpSession httpSession,
+                                      Model model,
+                                      @RequestParam("assignmentId") int assignmentId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+        model.addAttribute("loginInfo", loginInfo);
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        model.addAttribute("assignment", assignment);
+
+
+        return "assignmentFileWriteForm";
+    }
+
     @PostMapping("/assignmentFileWrite")
     public String assignmentFileWrite(@RequestParam("file")MultipartFile file,
                                   @RequestParam("assignmentId") int assignmentId,
@@ -101,7 +105,7 @@ public class AssignmentController {
         }catch (IOException e){
             e.printStackTrace();
         }
-        return "redirect:/assignmentList?assignmentId=" + assignmentId;
+        return "redirect:/assignment?assignmentId=" + assignmentId;
     }
 
     @GetMapping("/assignmentList")
@@ -116,6 +120,7 @@ public class AssignmentController {
         model.addAttribute("loginInfo",loginInfo);
         Course course = courseService.getCourse(currentCourseId);
         model.addAttribute("course", course);
+
         long total = assignmentService.getTotalCount();
         List<Assignment> list = assignmentService.getAssignments(page);
         long pageCount = total / 10;
@@ -130,5 +135,18 @@ public class AssignmentController {
         return "assignmentList";
 
     }
+
+    @GetMapping("/Assignment/download/{fileId}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") int fileId) throws IOException {
+        AssignmentFileDto assignmentFileDto = assignmentService.getFile(fileId);
+        Path path = Paths.get(assignmentFileDto.getAssignmentPath());
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + assignmentFileDto.getOrigFilename() + "\"")
+                .body(resource);
+    }
+
+
 
 }

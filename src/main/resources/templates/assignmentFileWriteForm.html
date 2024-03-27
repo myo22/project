@@ -17,10 +17,11 @@
                 <div class="card-body">
                     <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
+                        <input type="hidden" name="userId" th:value="${assignment.user.getUserId()}">
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">글쓴이</span>
-                            <input type="text" class="form-control" th:value="${loginInfo.getName()}" readonly>
+                            <input type="text" class="form-control" th:value="${assignment.user.name}" readonly>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>

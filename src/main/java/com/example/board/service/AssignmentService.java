@@ -67,8 +67,8 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void saveFile(MultipartFile file, int courseId, int userId) throws IOException {
-        Course course = courseRepository.getcourse(courseId);
+    public void saveFile(MultipartFile file, int assignmentId, int userId) throws IOException {
+        Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow(() -> new IllegalArgumentException("user not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
 
@@ -84,6 +84,7 @@ public class AssignmentService {
                 .assignmentName(filename)
                 .assignmentPath(filePath)
                 .user(user)
+                .assignment(assignment)
                 .build();
 
         assignmentFileRepository.save(assignmentFile);
@@ -109,7 +110,7 @@ public class AssignmentService {
     // AttachedFile을 FileDto로 변환하는 메서드
     private AssignmentFileDto toAssignmentDto(AssignmentFile assignmentFile) {
         return AssignmentFileDto.builder()
-                .assignmentId(assignmentFile.getAssignmentFileId())
+                .assignmentFileId(assignmentFile.getAssignmentFileId())
                 .origFilename(assignmentFile.getOrigFilename())
                 .assignmentName(assignmentFile.getAssignmentName())
                 .assignmentPath(assignmentFile.getAssignmentPath())

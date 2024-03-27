@@ -77,7 +77,7 @@ public class FileController {
         return "studyHubList";
     }
 
-    @GetMapping("/download/{fileId}")
+    @GetMapping("/File/download/{fileId}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") int fileId) throws IOException {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());

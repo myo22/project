@@ -44,10 +44,10 @@
                         </tr>
                         </thead>
 
-                        <tr th:each="assignment : ${list}"  >
+                        <tr th:each="assignment : ${list}" th:if="${course.courseId == assignment.course.courseId}" >
                             <th scope="row">[[${assignment.assignmentId}]]</th>
                             <td>
-                                <a th:href="@{/assignment/{assignmentId}(assignmentId=${assignment.assignmentId})}"> [[${assignment.title}]] </a>
+                                <a th:href="|@{/assignment(assignmentId=${assignment.assignmentId})}|"> [[${assignment.title}]] </a>
                             </td>
                             <td>[[${assignment.user.name}]]</td>
                             <td>[[${#temporals.format(assignment.regdate, 'yyyy-MM-dd')}]]</td>

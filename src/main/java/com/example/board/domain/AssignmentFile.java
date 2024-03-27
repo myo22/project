@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class AssignmentFile {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignmentfile_id")
     private Integer assignmentFileId;
 

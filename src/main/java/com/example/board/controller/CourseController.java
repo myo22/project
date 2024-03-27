@@ -44,6 +44,9 @@ public class CourseController {
     @GetMapping("/course")
     public String course(@RequestParam("courseId") int courseId, Model model, HttpSession httpSession) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
         model.addAttribute("loginInfo", loginInfo);
 
         Course course = courseService.getCourse(courseId);
