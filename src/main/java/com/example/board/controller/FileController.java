@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,6 +62,13 @@ public class FileController {
         return "redirect:/studyHubList?currentCourseId=" + courseId;
     }
 
+    @GetMapping("/File/delete/{fileId}")
+    public String fileDelete(@PathVariable("fileId") int fileId) {
+        // 파일 삭제 기능 구현
+        fileService.deleteFile(fileId);
+        return "redirect:/studyHubList"; // 파일 삭제 후 목록 페이지로 리다이렉트
+    }
+
     @GetMapping("/studyHubList")
     public String studyhublist(HttpSession httpSession, Model model, @RequestParam("currentCourseId") Integer currentCourseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
@@ -70,7 +78,6 @@ public class FileController {
         model.addAttribute("loginInfo",loginInfo);
         Course course = courseService.getCourse(currentCourseId);
         model.addAttribute("course", course);
-
         List<FileDto> fileList = fileService.getAllFiles();
         model.addAttribute("fileList", fileList);
 

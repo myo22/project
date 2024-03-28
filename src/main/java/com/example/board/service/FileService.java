@@ -1,6 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.Repository.CourseRepository;
+import java.io.FileNotFoundException;
 import com.example.board.Repository.FileRepository;
 import com.example.board.domain.AttachedFile;
 import com.example.board.domain.Course;
@@ -66,6 +67,20 @@ public class FileService {
                 .build();
 
         fileRepository.save(attachedFile);
+    }
+
+    @Transactional
+    public void deleteFile(int fileId){
+        AttachedFile attachedFile = fileRepository.findById(fileId).orElseThrow();
+
+        fileRepository.delete(attachedFile);
+
+        Path filePath = Paths.get(attachedFile.getFilePath());
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete file: " + attachedFile.getOrigFilename(), e);
+        }
     }
 
     // 모든 파일 목록 조회
