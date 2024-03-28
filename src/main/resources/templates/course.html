@@ -74,6 +74,10 @@
               <input type="hidden" name="currentCourseId" th:value="${course.courseId}" />
               <button type="submit" class="btn btn-primary">과제</button>
             </form>
+            <form th:action="@{/videoList}" method="get">
+              <input type="hidden" name="currentCourseId" th:value="${course.courseId}">
+              <button type="submit" class="btn btn-primary">동영상</button>
+            </form>
 
 
             <!--                        <a th:href="@{/delete(boardId=${board.boardId})}" class="text-decoration-none">-->

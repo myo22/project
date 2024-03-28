@@ -44,4 +44,6 @@ public class Course {
     @OneToMany(mappedBy = "course",  cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Assignment> assignments = new HashSet<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Video> videos = new HashSet<>();
 }

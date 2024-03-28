@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+
+  <div class="row mt-3">
+    <form action="/videoList" method="get">
+      <div class="col">
+      </div>
+    </form>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col">
+
+      <div class="card">
+        <div class="card-header">
+          동영상 목록
+        </div>
+        <div class="card-body" >
+          <h5 class="card-title"> 동영상 목록</h5>
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">번호</th>
+              <th scope="col">제목</th>
+              <th scope="col">작성자</th>
+            </tr>
+            </thead>
+
+            <tr th:each="assignment : ${list}" th:if="${course.courseId == video.course.courseId}" >
+              <th scope="row">[[${assignment.assignmentId}]]</th>
+              <td>
+                <a th:href="|@{/video(videoId=${video.videoId})}|"> [[${video.title}]] </a>
+              </td>
+              <td>[[${video.user.name}]]</td>
+              <td>[[${#temporals.format(video.regdate, 'yyyy-MM-dd')}]]</td>
+            </tr>
+
+            <div>
+              <a th:href="@{/videoWriteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}">과제 개설</a>
+              <span th:if="${loginInfo == null}">동영상 개설</span>
+            </div>
+            <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+              <button type="button" class="btn btn-primary listBtn">이전</button>
+            </a>
+
+            <!--            <div>-->
+            <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
+            <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
+            <!--            </div>-->
+
+
+          </table>
+
+          <div class="float-end">
+            <ul class="pagination flex-wrap">
+
+              <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
+                <li th:class="${page == i}?'page-item active':'page-item'" >
+                  <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
+                </li>
+              </th:block>
+
+              <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
+              <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
+              <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
+              <!--                                </li>-->
+              <!--                            </th:block>-->
+
+              <!--                            <li class="page-item" th:if="${prev}">-->
+              <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
+              <!--                            </li>-->
+
+              <!--                            <li class="page-item" th:if="${next}">-->
+              <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
+              <!--                            </li>-->
+
+
+            </ul>
+          </div>
+
+        </div><!--end card body-->
+      </div><!--end card-->
+    </div><!-- end col-->
+  </div><!-- end row-->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+</script>
