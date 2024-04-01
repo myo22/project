@@ -60,6 +60,24 @@ public class VideoService {
         return video;
     }
 
+    @Transactional
+    public Video updateVideo(int videoId, String title, MultipartFile file) {
+        Video video = videoRepository.findById(videoId).orElseThrow();
+        String videoName = StringUtils.cleanPath(file.getOriginalFilename());
+        String videoUrl = "/uploads/" + videoName;
+
+        video.setVideoName(videoName);
+        video.setVideoUrl(videoUrl);
+        video.setTitle(title);
+
+        return video;
+    }
+
+    @Transactional
+    public void deleteVideo(int videoId){
+        videoRepository.deleteById(videoId);
+    }
+
 //    private VideoDTO toVideoDTO(Video video){
 //        return VideoDTO.builder()
 //                .videoId(video.getVideoId())

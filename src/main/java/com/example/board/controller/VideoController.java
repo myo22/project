@@ -88,6 +88,41 @@ public class VideoController {
         return "video";
     }
 
+    @GetMapping("/videoUpdateForm")
+    public String videoUpdateForm(@RequestParam("videoId") int videoId,
+                                  HttpSession httpSession,
+                                  Model model){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+        model.addAttribute("videoId", videoId);
+        model.addAttribute("loginInfo", loginInfo);
+
+        return "videoUpdateForm";
+    }
+
+    @PostMapping("/videoUpdate")
+    public String videoUpdate(@RequestParam("video") MultipartFile file,
+                              @RequestParam("title") String title,
+                              @RequestParam("videoId") int videoId){
+        VideoDTO videoDTO = videoService.getVideo(videoId);
+        videoDTO.setTitle(title);
+
+        if(!file.isEmpty()){
+            videoService.updateVideo(videoId, title ,file);
+        }
+        return "redirect:/video?videoId=" + videoId;
+    }
+
+    @GetMapping("/deleteVideo")
+    public String deleteVideo(@RequestParam("videoId") int videoId){
+        VideoDTO videoDTO = videoService.getVideo(videoId);
+        videoService.deleteVideo(videoId);
+
+        return "redirect:/videoList?currentCourseId=" + videoDTO.getCourseId();
+    }
+
     @GetMapping("/video/stream/{videoId}")
     public ResponseEntity<Resource> streamVideo(@PathVariable int videoId) {
 

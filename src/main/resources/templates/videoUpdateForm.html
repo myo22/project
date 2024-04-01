@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>동영상</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    동영상 수정
+                </div>
+                <div class="card-body">
+                    <form action="/videoUpdate" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="videoId" th:value="${videoId}">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">글쓴이</span>
+                            <input type="text" class="form-control" th:value="${loginInfo.name}" readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">제목</span>
+                            <input type="text" name="title" class="form-control" placeholder="Title">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <label for="video">동영상 선택:</label>
+                            <input type="file" id="video" name="video" accept="video/mp4,video/x-m4v,video/*" required><br><br>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit" value="수정" class="btn btn-secondary modBtn">수정</button>
+
+                                <a th:href="@{/deleteVideo(videoId=${videoId})}" class="text-decoration-none">
+                                    <button type="button" class="btn btn-danger removeBtn">삭제</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div><!--end card body-->
+
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+</script>
