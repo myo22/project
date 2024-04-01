@@ -1,12 +1,11 @@
 package com.example.board.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.board.domain.Video;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class VideoDTO {
 
     private Integer videoId;
@@ -15,4 +14,15 @@ public class VideoDTO {
     private String title;
     private Integer courseId;
     private Integer userId;
+    private String userName;
+
+    public VideoDTO(Video video){
+        this.videoId = video.getVideoId();
+        this.videoName = video.getVideoName();
+        this.videoUrl = video.getVideoUrl();
+        this.title = video.getTitle();
+        this.courseId = video.getCourse().getCourseId();
+        this.userId = video.getUser().getUserId();
+        this.userName = video.getUser().getName();
+    }
 }

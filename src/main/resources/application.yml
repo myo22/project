@@ -11,10 +11,16 @@ spring:
           show_sql: true
           format_sql: true
       database-platform: org.hibernate.dialect.MySQL8Dialect
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 file:
   upload:
     dir: C:/Users/user/directory/
+
+
 
 # 카카오 로그인 설정
 #jwt:
