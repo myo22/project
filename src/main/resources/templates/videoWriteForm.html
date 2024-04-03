@@ -15,7 +15,7 @@
                     동영상 올리기
                 </div>
                 <div class="card-body">
-                    <form action="/videoWrite" method="post" enctype="multipart/form-data">
+                    <form id="uploadForm" action="/videoWrite" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
                         <div class="input-group mb-3">
                             <span class="input-group-text">글쓴이</span>
@@ -32,8 +32,12 @@
                         </div>
 
                         <div class="my-4">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                            <div class="progress-text"></div>
                             <div class="float-end">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button id="uploadButton" type="button" class="btn btn-primary">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </div>
@@ -47,4 +51,73 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
+    // document.getElementById('uploadButton').addEventListener('click', uploadFile);
+    //
+    // const chunkSize = 1024 * 1024; // 1MB
+    // let file;
+    // let startByte = 0;
+    //
+    // function uploadFile() {
+    //     file = document.getElementById('video').files[0];
+    //     startByte = 0;
+    //     uploadNextChunk();
+    // }
+    //
+    // function uploadNextChunk() {
+    //     const chunk = file.slice(startByte, startByte + chunkSize);
+    //     startByte += chunkSize;
+    //
+    //     const formData = new FormData();
+    //     formData.append('file', chunk);
+    //
+    //     const xhr = new XMLHttpRequest();
+    //     xhr.open('POST', '/uploadChunk');
+    //     xhr.onload = function () {
+    //         if (startByte < file.size) {
+    //             uploadNextChunk();
+    //         } else {
+    //             // 파일 전송이 완료되면 /completeUpload 엔드포인트를 호출하여 파일 결합 요청을 보냅니다.
+    //             completeUpload(file.name);
+    //         }
+    //     };
+    //     xhr.onerror = function () {
+    //         alert('파일 업로드 중 오류가 발생했습니다.');
+    //     };
+    //     xhr.upload.onprogress = function (event) {
+    //         const percentComplete = (startByte / file.size) * 100;
+    //         document.querySelector('.progress-bar').style.width = percentComplete + '%';
+    //         document.querySelector('.progress-bar').innerText = percentComplete.toFixed(2) + '%';
+    //     };
+    //     xhr.send(formData);
+    // }
+    //
+    // function completeUpload(fileName) {
+    //     const formData = new FormData();
+    //     formData.append('originalFileName', fileName);
+    //
+    //     const xhr = new XMLHttpRequest();
+    //     xhr.open('POST', '/completeUpload');
+    //     xhr.onload = function () {
+    //         if (xhr.status === 200) {
+    //             // 파일 업로드가 완료되면 /videoWrite 엔드포인트로의 요청을 보냅니다.
+    //             sendVideoWriteRequest();
+    //             alert('파일 업로드가 완료되었습니다.');
+    //         } else {
+    //             alert('파일 업로드 중 오류가 발생했습니다.');
+    //         }
+    //     };
+    //     xhr.onerror = function () {
+    //         alert('파일 업로드 중 오류가 발생했습니다.');
+    //     };
+    //     xhr.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
+    //     xhr.send(JSON.stringify({ originalFileName: fileName })); // JSON 형태로 데이터 전송
+    // }
+    //
+    // function sendVideoWriteRequest() {
+    //     // 파일 업로드가 완료된 후에 /videoWrite 엔드포인트로의 요청을 보냅니다.
+    //     const uploadForm = document.getElementById('uploadForm');
+    //     uploadForm.action = '/videoWrite';
+    //     uploadForm.method = 'POST';
+    //     uploadForm.submit();
+    // }
 </script>
