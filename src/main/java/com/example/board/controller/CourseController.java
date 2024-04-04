@@ -4,6 +4,7 @@ import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
+import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class CourseController {
 
     private final CourseService courseService;
+    private final UserService userService;
 
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
@@ -47,11 +49,21 @@ public class CourseController {
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
-        model.addAttribute("loginInfo", loginInfo);
 
+        model.addAttribute("loginInfo", loginInfo);
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
-        return "course";
+
+        User user = userService.getUser(loginInfo.getEmail());
+        Set<User> participants =  course.getParticipants();
+        if(loginInfo.getUserId() == course.getUser().getUserId()){
+            model.addAttribute("isAdmin", true);
+            return "course";
+        }else if(participants.contains(user)){
+            model.addAttribute("isParticipant", true);
+            return "course";
+        }
+        return "redirect:/";
     }
 
     @GetMapping("/coursewriteForm")
