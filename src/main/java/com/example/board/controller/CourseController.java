@@ -36,6 +36,7 @@ public class CourseController {
         }
         int currentPage = page;
 
+
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("currentPage", currentPage);
@@ -54,7 +55,7 @@ public class CourseController {
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
 
-        User user = userService.getUser(loginInfo.getEmail());
+        User user = userService.getUser(loginInfo.getUserId());
         Set<User> participants =  course.getParticipants();
         if(loginInfo.getUserId() == course.getUser().getUserId()){
             model.addAttribute("isAdmin", true);
@@ -63,6 +64,7 @@ public class CourseController {
             model.addAttribute("isParticipant", true);
             return "course";
         }
+
         return "redirect:/";
     }
 
@@ -154,19 +156,14 @@ public class CourseController {
             return "redirect:/loginForm";
         }
 
-//        Course course = courseService.getCourse(courseId, false);
-
-//        List<String> roles = loginInfo.getRoles();
-//        if (roles.contains("ROLE_USER")) {
-//            courseService.deleteCourse(courseId);
-//        }
-
+        Course course = courseService.getCourse(courseId, false);
+        User user = userService.getUser(loginInfo.getUserId());
+        Set<User> participants = course.getParticipants();
+        if(course.getUser().getUserId() == loginInfo.getUserId() || participants.contains(user)){
+            return "redirect:/";
+        }
         // 사용자가 강좌에 참가하도록 Service에 요청합니다.
         courseService.joinCourse(courseId, loginInfo.getUserId());
-
-        Course course = courseService.getCourse(courseId, false);
-
-        Set<User> participants = course.getParticipants();
         for (User participant : participants) {
             System.out.println("Participant: " + participant.getName());
         }

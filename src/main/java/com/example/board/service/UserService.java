@@ -1,8 +1,10 @@
 package com.example.board.service;
 
+import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.RoleRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.dao.UserDao;
+import com.example.board.domain.Course;
 import com.example.board.domain.Role;
 import com.example.board.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository; // final 변수는 반드시 생성자를 통해 초기화 해저야한다. final 변수가 여러개면 매개변수에 여러개 들어가 줘야한다.
     private final RoleRepository roleRepository;
+    private final CourseRepository courseRepository;
 
     // Spring이 UserService를 Bean으로 생성할때 생성자를 이용해 생성을 하는데, 이때 UserDao Bean이 있는지 보고
     // 그 빈을 주입한다. 생성자 주입.
@@ -54,6 +57,11 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow();
     }
 
+    @Transactional
+    public User getUser(int userId){
+        return userRepository.findById(userId).orElseThrow();
+    }
+
     // get Roles는 위에서 getUser정보를 달라하면 이미 User정보안에 Role권한이 있을거라 필요가 없다.
     @Transactional(readOnly = true)
     public List<String> getRoles(int userId) {
@@ -64,4 +72,18 @@ public class UserService {
         }
         return list;
     }
+
+//    @Transactional
+//    public boolean isCourseOwner(int courseId, int userId){
+//        Course course = courseRepository.getcourse(courseId);
+//        return course != null && course.getUser().getUserId() == userId;
+//    }
+//
+//    @Transactional
+//    public boolean isParticipant(int courseId, int userId){
+//        Course course = courseRepository.getcourse(courseId);
+//        Set<User> participants = course.getParticipants();
+//        User user = userRepository.findById(userId).orElseThrow(null);
+//        return participants != null && participants.contains(user);
+//    }
 }

@@ -22,6 +22,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public void addCourse(int userId, String title, String content) {
@@ -38,6 +39,9 @@ public class CourseService {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Set<User> participants = course.getParticipants();
+//        if (userService.isParticipant(courseId, userId) || userService.isCourseOwner(courseId, userId)) {
+//            return;
+//        }
         participants.add(user);
         courseRepository.save(course);
     }
