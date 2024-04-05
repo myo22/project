@@ -1,10 +1,12 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Course;
+import com.example.board.domain.User;
 import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
 import com.example.board.service.FileService;
+import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -25,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -33,6 +36,7 @@ public class FileController {
 
     private final FileService fileService;
     private final CourseService courseService;
+    private final UserService userService;
 
     private static final String VIDEO_DIRECTORY = "video";
 
@@ -75,10 +79,14 @@ public class FileController {
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
-        model.addAttribute("loginInfo",loginInfo);
         Course course = courseService.getCourse(currentCourseId);
-        model.addAttribute("course", course);
         List<FileDto> fileList = fileService.getAllFiles();
+
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+        model.addAttribute("loginInfo",loginInfo);
+        model.addAttribute("course", course);
         model.addAttribute("fileList", fileList);
 
         return "studyHubList";

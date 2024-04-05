@@ -43,7 +43,7 @@
 
                     <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
                     <div>
-                        <a th:href="@{/studyHubWriteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}" class="text-decoration-none">
+                        <a th:href="@{/studyHubWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}"   class="text-decoration-none">
                             <button type="button" class="btn btn-primary listBtn">강의 자료 업로드</button>
                         </a>
                         <input type="hidden" name="courseId" th:value="${course.courseId}" />

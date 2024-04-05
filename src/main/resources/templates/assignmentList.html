@@ -54,7 +54,7 @@
                         </tr>
 
                         <div>
-                            <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" th:if="${loginInfo != null}">과제 개설</a>
+                            <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">과제 개설</a>
                             <span th:if="${loginInfo == null}">과제 개설</span>
                         </div>
                         <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">

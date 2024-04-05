@@ -54,21 +54,15 @@
                         <a th:href="@{/assignmentList(currentCourseId=${assignment.course.courseId})}" class="text-decoration-none">
                             <button type="button" class="btn btn-primary listBtn">목록</button>
                         </a>
-                        <a th:href="@{/assignmentUpdateForm(assignmentId=${assignment.assignmentId})}" class="text-decoration-none">
+                        <a th:href="@{/assignmentUpdateForm(assignmentId=${assignment.assignmentId})}" class="text-decoration-none" th:if="${isAdmin}">
                             <button type="button" class="btn btn-primary">수정</button>
                         </a>
-<!--                        <a th:href="@{/courseupdateform(courseId=${course.courseId})}" class="text-decoration-none">-->
-<!--                            <button type="button" class="btn btn-primary">수정</button>-->
-<!--                        </a>-->
+
                         <form th:action="@{/assignmentFileWriteForm}" method="get">
-                            <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
+                            <input type="hidden" name="assignmentId" th:if="${isParticipant}" th:value="${assignment.assignmentId}" />
                             <button type="submit" class="btn btn-primary">과제 제출 시작</button>
                         </form>
 
-
-                        <!--                        <a th:href="@{/delete(boardId=${board.boardId})}" class="text-decoration-none">-->
-                        <!--                            <button type="button" class="btn btn-secondary">삭제하기</button>-->
-                        <!--                        </a>-->
                     </div>
 
 

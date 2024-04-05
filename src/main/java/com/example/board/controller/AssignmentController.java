@@ -3,11 +3,13 @@ package com.example.board.controller;
 import com.example.board.domain.Assignment;
 import com.example.board.domain.AssignmentFile;
 import com.example.board.domain.Course;
+import com.example.board.domain.User;
 import com.example.board.dto.AssignmentFileDto;
 import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.AssignmentService;
 import com.example.board.service.CourseService;
+import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -29,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,7 +39,6 @@ public class AssignmentController {
 
     private final AssignmentService assignmentService;
     private final CourseService courseService;
-
     private static final String VIDEO_DIRECTORY = "video";
 
     @GetMapping("/assignmentWriteForm")
@@ -73,9 +75,14 @@ public class AssignmentController {
                               Model model,
                               HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
-        model.addAttribute("loginInfo", loginInfo);
-
         Assignment assignment = assignmentService.getAssignment(assignmentId);
+        if(assignment.getCourse().getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }else{
+            model.addAttribute("isParticipant", true);
+        }
+
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
         return "assignment";
     }
@@ -165,9 +172,6 @@ public class AssignmentController {
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
-        model.addAttribute("loginInfo",loginInfo);
-        Course course = courseService.getCourse(currentCourseId);
-        model.addAttribute("course", course);
 
         long total = assignmentService.getTotalCount();
         List<Assignment> list = assignmentService.getAssignments(page);
@@ -176,6 +180,13 @@ public class AssignmentController {
             pageCount++;
         }
         int currentPage = page;
+
+        Course course = courseService.getCourse(currentCourseId);
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+        model.addAttribute("loginInfo",loginInfo);
+        model.addAttribute("course", course);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount); // 총 페이지 수를 나타내는것 같다.
         model.addAttribute("currentPage",currentPage); // 현재 페이지 번호

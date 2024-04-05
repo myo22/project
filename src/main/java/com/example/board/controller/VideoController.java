@@ -47,11 +47,17 @@ public class VideoController {
         if(loginInfo == null){
             return "redirect:/longinForm";
         }
-        model.addAttribute("loginInfo", loginInfo);
-        Course course = courseService.getCourse(courseId);
-        model.addAttribute("course", course);
         List<VideoDTO> list = videoService.getAllVideos();
+        Course course = courseService.getCourse(courseId);
+
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+
+        model.addAttribute("course", course);
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
+
         return "videoList";
     }
 
@@ -89,8 +95,12 @@ public class VideoController {
                         HttpSession httpSession,
                         Model model){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
-        model.addAttribute("loginInfo", loginInfo);
         VideoDTO video = videoService.getVideo(videoId);
+
+        if(video.getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("video", video);
         return "video";
     }
