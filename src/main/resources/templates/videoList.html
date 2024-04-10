@@ -40,7 +40,7 @@
             </tr>
 
             <div>
-              <a th:href="@{/videoWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">과제 개설</a>
+              <a th:href="@{/videoWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">동영상 개설</a>
               <span th:if="${loginInfo == null}">동영상 개설</span>
             </div>
             <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
