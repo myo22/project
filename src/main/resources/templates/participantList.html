@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+
+    <div class="row mt-3">
+        <form action="/participantList" method="get">
+            <div class="col">
+            </div>
+        </form>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+
+            <div class="card">
+                <div class="card-header">
+                    수강자 목록
+                </div>
+                <div class="card-body" >
+                    <h5 class="card-title"> 수강자 목록</h5>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">번호</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">작성자</th>
+                        </tr>
+                        </thead>
+
+                        <tr th:each="participant : ${participants}">
+                            <th scope="row">[[${participant.userId}]]</th>
+                            <td>[[${participant.email}]]</td>
+                            <td th:text="${participant.name}"></td>
+                        </tr>
+
+<!--                        <div>-->
+<!--                            <a th:href="@{/videoWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">동영상 개설</a>-->
+<!--                            <span th:if="${loginInfo == null}">동영상 개설</span>-->
+<!--                        </div>-->
+                        <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                            <button type="button" class="btn btn-primary listBtn">이전</button>
+                        </a>
+
+                    </table>
+
+                </div><!--end card body-->
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+</script>

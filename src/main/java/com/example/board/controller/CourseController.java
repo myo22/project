@@ -170,4 +170,20 @@ public class CourseController {
         // 강좌 참가가 완료되면 다시 해당 강좌 페이지로 리다이렉트합니다.
         return "redirect:/course?courseId=" + courseId;
     }
+
+    @GetMapping("/participantList")
+    public String participantList(Model model,
+                                  HttpSession httpSession,
+                                  @RequestParam("currentCourseId") int courseId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
+
+
+        Course course = courseService.getCourse(courseId);
+        Set<User> participants = course.getParticipants();
+
+        model.addAttribute("course", course);
+        model.addAttribute("participants", participants);
+        model.addAttribute("loginInfo", loginInfo);
+        return "participantList";
+    }
 }
