@@ -1,8 +1,10 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Course;
+import com.example.board.domain.Video;
 import com.example.board.dto.LoginInfo;
 import com.example.board.dto.VideoDTO;
+import com.example.board.service.AttendanceService;
 import com.example.board.service.CourseService;
 import com.example.board.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class VideoController {
 
     private final VideoService videoService;
     private final CourseService courseService;
+    private final AttendanceService attendanceService;
 
     private static final String UPLOAD_DIR = "C:/uploads/";
     private static final int CHUNK_SIZE = 1024 * 1024; // 1MB
@@ -102,6 +105,8 @@ public class VideoController {
         }
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("video", video);
+        model.addAttribute("videoId", videoId);
+        model.addAttribute("userId", loginInfo.getUserId());
         return "video";
     }
 
@@ -156,6 +161,19 @@ public class VideoController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "video/mp4")
                 .body(videoResource);
+    }
+
+    @PostMapping("/recordAttendance")
+    public ResponseEntity<String> recordAttendance(@RequestParam("videoId") int videoId,
+                                                   @RequestParam("userId") int userId,
+                                                   HttpSession httpSession){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("logInfo");
+        VideoDTO video = videoService.getVideo(videoId);
+        if(video.getUserId() != loginInfo.getUserId()){
+            attendanceService.recordAttendance(videoId, userId);
+            return  ResponseEntity.ok().body("출석 체크가 완료되었습니다.");
+        }
+        return  ResponseEntity.ok().body("출석 체크가 불가능합니다.");
     }
 
 //    @PostMapping("/uploadChunk")
