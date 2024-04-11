@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -176,13 +177,17 @@ public class CourseController {
                                   HttpSession httpSession,
                                   @RequestParam("currentCourseId") int courseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
-
-
         Course course = courseService.getCourse(courseId);
+        Set<User> enrolledParticipants = new HashSet<>();
         Set<User> participants = course.getParticipants();
+        for(User participant : participants){
+            if(participant.getCourses().contains(course)){
+                enrolledParticipants.add(participant);
+            }
+        }
 
         model.addAttribute("course", course);
-        model.addAttribute("participants", participants);
+        model.addAttribute("participants", enrolledParticipants);
         model.addAttribute("loginInfo", loginInfo);
         return "participantList";
     }

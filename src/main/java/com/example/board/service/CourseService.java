@@ -93,9 +93,4 @@ public class CourseService {
         course.setTitle(title);
         course.setContent(content);
     }
-
-    @Transactional
-    public Set<User> getParticipant(int courseId){
-
-    }
 }
