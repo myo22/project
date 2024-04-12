@@ -41,10 +41,14 @@
             <input type="text" class="form-control" th:value="${video.title}" readonly>
           </div>
 
-          <video controls>
+          <video controls onended="submitWatchedVideo()">
             <source th:src="@{'/video/stream/' + ${video.videoId}}" type="video/mp4">
             Your browser does not support the video tag.
           </video>
+
+          <form id="watchedVideoForm" action="/watchVideo" method="POST" style="display: none;">
+            <input type="hidden" name="videoId" th:value="${video.videoId}">
+          </form>
 
           <div class="my-4">
             <a th:href="@{/videoList(currentCourseId=${video.courseId})}" class="text-decoration-none">
@@ -68,7 +72,21 @@
 
 <script layout:fragment="script" th:inline="javascript">
 
+  var isAdmin = [[${isAdmin}]]
 
+  function submitWatchedVideo() {
+    if (!isAdmin) {
+      document.getElementById('watchedVideoForm').submit();
+    }
+  }
+
+  // isAdmin이 아닌 경우에만 Form 제출
+  if (!isAdmin) {
+    var video = document.querySelector('video');
+    video.addEventListener('ended', function() {
+      submitWatchedVideo();
+    });
+  }
 
 </script>
 

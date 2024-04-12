@@ -103,6 +103,8 @@ public class VideoController {
         if(video.getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }
+
+
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("video", video);
         model.addAttribute("videoId", videoId);
@@ -163,17 +165,16 @@ public class VideoController {
                 .body(videoResource);
     }
 
-    @PostMapping("/recordAttendance")
-    public ResponseEntity<String> recordAttendance(@RequestParam("videoId") int videoId,
-                                                   @RequestParam("userId") int userId,
-                                                   HttpSession httpSession){
-        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("logInfo");
-        VideoDTO video = videoService.getVideo(videoId);
-        if(video.getUserId() != loginInfo.getUserId()){
-            attendanceService.recordAttendance(videoId, userId);
-            return  ResponseEntity.ok().body("출석 체크가 완료되었습니다.");
+    @PostMapping("/watchVideo")
+    public String watchVideo(@RequestParam("videoId") int videoId,
+                                   HttpSession httpSession){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
         }
-        return  ResponseEntity.ok().body("출석 체크가 불가능합니다.");
+
+        attendanceService.recordAttendance(videoId, loginInfo.getUserId());
+        return "redirect:/video?videoId=" + videoId;
     }
 
 //    @PostMapping("/uploadChunk")
