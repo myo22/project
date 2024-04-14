@@ -9,15 +9,17 @@ import com.example.board.domain.Video;
 import com.example.board.dto.AttendanceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AttendanceService {
 
-    private AttendanceRepository attendanceRepository;
-    private UserRepository userRepository;
-    private VideoRepository videoRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final UserRepository userRepository;
+    private final VideoRepository videoRepository;
 
+    @Transactional
     public void recordAttendance(int videoId, int userId){
         User user = userRepository.findById(userId).orElseThrow();
         Video video = videoRepository.findById(videoId).orElseThrow();
