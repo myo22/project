@@ -48,6 +48,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AssignmentFile> assignmentFiles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Grade> grades = new HashSet<>();
+
     @Override
     public String toString() {
         return "User{" +
