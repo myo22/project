@@ -61,12 +61,13 @@ public class AssignmentController {
                                   @RequestParam("courseId") int courseId,
                                   @RequestParam("title") String title,
                                 @RequestParam("content") String content,
+                                  @RequestParam("score") int maxScore,
                                   HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if (loginInfo == null) {
             return "redirect:/loginForm";
         }
-        assignmentService.addAssignment(courseId, loginInfo.getUserId(), title, content);
+        assignmentService.addAssignment(courseId, loginInfo.getUserId(), maxScore,title, content);
         return "redirect:/assignmentList?currentCourseId=" + courseId;
     }
 
@@ -76,12 +77,16 @@ public class AssignmentController {
                               HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         Assignment assignment = assignmentService.getAssignment(assignmentId);
+
         if(assignment.getCourse().getUser().getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }else{
             model.addAttribute("isParticipant", true);
         }
 
+        AssignmentFileDto assignmentFile = assignmentService.getFile(assignmentId);
+
+        model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
         return "assignment";
@@ -106,7 +111,8 @@ public class AssignmentController {
                                        Model model,
                                        @RequestParam("assignmentId") int assignmentId,
                                        @RequestParam("title") String title,
-                                       @RequestParam("content") String content){
+                                       @RequestParam("content") String content,
+                                       @RequestParam("score") int maxScore){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         model.addAttribute("assignmentId", assignmentId);
         if(loginInfo == null){
@@ -116,7 +122,7 @@ public class AssignmentController {
         if(assignment.getUser().getUserId() != loginInfo.getUserId()){
             return "redirect:/assignment?assignmentId=" + assignmentId;
         }
-        assignmentService.updateAssignment(assignmentId, title, content);
+        assignmentService.updateAssignment(assignmentId, title, content, maxScore);
         return "redirect:/assignment?assignmentId=" + assignmentId;
     }
 

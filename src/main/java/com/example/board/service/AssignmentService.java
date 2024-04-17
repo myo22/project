@@ -36,11 +36,12 @@ public class AssignmentService {
     private String uploadDir;
 
     @Transactional
-    public void addAssignment(int courseId, int userId, String title, String content){
+    public void addAssignment(int courseId, int userId, int maxScore, String title, String content){
         Course course = courseRepository.getcourse(courseId);
         User user = userRepository.findById(userId).orElseThrow();
         Assignment assignment = Assignment.builder()
                 .content(content)
+                .maxScore(maxScore)
                 .title(title)
                 .course(course)
                 .user(user)
@@ -50,10 +51,11 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void updateAssignment(int assignmentId, String title, String content){
+    public void updateAssignment(int assignmentId, String title, String content, int maxScore){
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
         assignment.setTitle(title);
         assignment.setContent(content);
+        assignment.setMaxScore(maxScore);
     }
 
     @Transactional

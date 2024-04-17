@@ -41,6 +41,11 @@
                     </div>
 
                     <div class="input-group mb-3">
+                        <span class="input-group-text">점수</span>
+                        <input type="number" class="form-control" th:value="${assignment.maxScore}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
                         <span class="input-group-text">내용</span>
                         <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
                     </div>
@@ -48,6 +53,11 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text">작성일</span>
                         <input type="text" class="form-control" th:value="${#temporals.format(assignment.regdate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" th:if="isParticipant">파일</span>
+                        <a th:href="@{${assignmentFile}}" target="_blank">파일 보기</a>
                     </div>
 
                     <div class="my-4">

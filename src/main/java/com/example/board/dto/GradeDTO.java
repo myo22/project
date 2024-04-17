@@ -12,8 +12,9 @@ public class GradeDTO {
 
     private int gradeId;
 
-    private int attendanceScore;
-    private int assignmentScore;
+    // DTO에서 Integer와 int 차이는 NULL값을 가질 수 있냐 없냐에 차이다.
+    private Integer attendanceScore;
+    private Integer assignmentScore;
     private int totalScore;
     private String gradeLetter;
     private LocalDateTime createdAt;

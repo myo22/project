@@ -23,15 +23,22 @@
                             <span class="input-group-text">글쓴이</span>
                             <input type="text" class="form-control" th:value="${assignment.user.name}" readonly>
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
                             <input type="text" class="form-control" th:value="${assignment.title}" readonly>
                         </div>
 
                         <div class="input-group mb-3">
+                            <span class="input-group-text">점수</span>
+                            <input type="number" class="form-control" th:value="${assignment.maxScore}" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
                             <span class="input-group-text">내용</span>
                             <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
                         </div>
+
                         <div class="input-group mb-3">
                             <div class="input-group mb-3">
                                 <label for="file">파일 선택:</label >

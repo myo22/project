@@ -21,11 +21,15 @@ public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignment_id")
-    private int assignmentId;
+    private Integer assignmentId;
 
     private String title;
 
     private String content;
+
+    @Column(name = "max_score")
+    private Integer maxScore;
+    private Integer score;
 
     @CreationTimestamp
     private LocalDateTime regdate;
@@ -42,9 +46,11 @@ public class Assignment {
     private List<AssignmentFile> assignmentFiles = new ArrayList<>();
 
     @Builder
-    public Assignment(String title, String content, Course course, User user){
+    public Assignment(String title, String content, int maxScore, int score, Course course, User user){
         this.title = title;
         this.content = content;
+        this.maxScore = maxScore;
+        this.score = score;
         this.course = course;
         this.user = user;
     }

@@ -37,9 +37,15 @@
               <span class="input-group-text">글쓴이</span>
               <input type="text" class="form-control" th:value="${assignment.user.name}" readonly>
             </div>
+
             <div class="input-group mb-3">
               <span class="input-group-text">제목</span>
               <input type="text" class="form-control" name="title" th:value="${assignment.title}">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">점수</span>
+              <input type="number" class="form-control" name="score" th:value="${assignment.maxScore}">
             </div>
 
             <div class="input-group mb-3">
