@@ -55,9 +55,10 @@
                         <input type="text" class="form-control" th:value="${#temporals.format(assignment.regdate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
                     </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" th:if="isParticipant">파일</span>
-                        <a th:href="@{${assignmentFile}}" target="_blank">파일 보기</a>
+                    <div class="input-group mb-3" th:if="${isParticipant}">
+                        <span class="input-group-text">파일</span>
+                        <a th:if="${assignmentFile != null}" th:href="@{${'/Assignment/download/' + assignmentFile.assignmentFileId}}" download> 내가 제출한 파일 : [[${assignmentFile.origFilename}]]</a>
+                        <span th:if="${assignmentFile == null}">파일이 없습니다.</span>
                     </div>
 
                     <div class="my-4">
@@ -68,8 +69,8 @@
                             <button type="button" class="btn btn-primary">수정</button>
                         </a>
 
-                        <form th:action="@{/assignmentFileWriteForm}" method="get">
-                            <input type="hidden" name="assignmentId" th:if="${isParticipant}" th:value="${assignment.assignmentId}" />
+                        <form th:action="@{/assignmentFileWriteForm}" method="get" th:if="${isParticipant}">
+                            <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
                             <button type="submit" class="btn btn-primary">과제 제출 시작</button>
                         </form>
 

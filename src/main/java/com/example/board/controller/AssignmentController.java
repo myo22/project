@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+import com.example.board.Repository.UserRepository;
 import com.example.board.domain.Assignment;
 import com.example.board.domain.AssignmentFile;
 import com.example.board.domain.Course;
@@ -32,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,7 +41,6 @@ public class AssignmentController {
 
     private final AssignmentService assignmentService;
     private final CourseService courseService;
-    private static final String VIDEO_DIRECTORY = "video";
 
     @GetMapping("/assignmentWriteForm")
     public String assignmentWriteForm(HttpSession httpSession,
@@ -84,7 +85,13 @@ public class AssignmentController {
             model.addAttribute("isParticipant", true);
         }
 
-        AssignmentFileDto assignmentFile = assignmentService.getFile(assignmentId);
+
+        List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
+        AssignmentFile assignmentFile = assignmentFiles.stream()
+                .filter(af -> af.getAssignment().getAssignmentId() == assignmentId)
+                .findFirst()
+                .orElse(null);
+
 
         model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);
@@ -206,9 +213,14 @@ public class AssignmentController {
         AssignmentFileDto assignmentFileDto = assignmentService.getFile(fileId);
         Path path = Paths.get(assignmentFileDto.getAssignmentPath());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
+
+        // 파일 다운로드에 사용될 파일 이름 설정
+        String filename = assignmentFileDto.getOrigFilename();
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + assignmentFileDto.getOrigFilename() + "\"")
+                // Content-Disposition 헤더 설정하여 파일 이름 지정
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(resource);
     }
 

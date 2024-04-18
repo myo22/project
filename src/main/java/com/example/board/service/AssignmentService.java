@@ -115,9 +115,9 @@ public class AssignmentService {
 
     // 파일 ID로 파일 정보 조회
     @Transactional
-    public AssignmentFileDto getFile(int assignmentId) {
-        AssignmentFile assignmentFile = assignmentFileRepository.findById(assignmentId)
-                .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + assignmentId));
+    public AssignmentFileDto getFile(int assignmentFileId) {
+        AssignmentFile assignmentFile = assignmentFileRepository.findById(assignmentFileId)
+                .orElseThrow(() -> new IllegalArgumentException("File not found with ID: " + assignmentFileId));
         return toAssignmentDto(assignmentFile);
     }
 
