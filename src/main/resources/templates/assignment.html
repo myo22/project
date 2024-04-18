@@ -77,6 +77,24 @@
                     </div>
 
 
+                    <table class="table">
+                        <tr>
+                            <th scope="col">이름</th>
+                            <th scope="col">파일</th>
+                            <th scope="col">점수</th>
+                        </tr>
+                        <tr th:each="file : ${participantAssignments}" th:if="${isAdmin}">
+                            <td th:text="${file.user.name}"></td>
+                            <td>
+                                <a th:href="@{'/Assignment/download' + ${file.assignmentFileId}}" download th:text="${file.origFilename}"></a>
+                            </td>
+                        </tr>
+                    </table>
+
+
+
+
+
                 </div><!--end card body-->
 
 

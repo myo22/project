@@ -92,7 +92,11 @@ public class AssignmentController {
                 .findFirst()
                 .orElse(null);
 
+        List<AssignmentFile> participantAssignments = assignmentFiles.stream()
+                .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
+                .collect(Collectors.toList());
 
+        model.addAttribute("participantAssignments", participantAssignments);
         model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
