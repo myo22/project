@@ -85,13 +85,18 @@ public class AssignmentController {
             model.addAttribute("isParticipant", true);
         }
 
+        // 이걸 처음 짠 방식인데 이 방식은 간단하지만 데이터가 커질수록 성능에 영향을 줄 수 있다. 즉 유지보수 측면에선 좋지 않을 수 있음.
+//        List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
+//        AssignmentFile assignmentFile = assignmentFiles.stream()
+//                .filter(af -> af.getAssignment().getAssignmentId() == assignmentId)
+//                .findFirst()
+//                .orElse(null);
+
+        // 이 방법은 대규모 데이터셋에서도 효율적이다. 재사용성도 높아진다.
+        AssignmentFileDto assignmentFile = assignmentService.getAssignmentFile(assignmentId);
+
 
         List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
-        AssignmentFile assignmentFile = assignmentFiles.stream()
-                .filter(af -> af.getAssignment().getAssignmentId() == assignmentId)
-                .findFirst()
-                .orElse(null);
-
         List<AssignmentFile> participantAssignments = assignmentFiles.stream()
                 .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
                 .collect(Collectors.toList());
@@ -101,6 +106,18 @@ public class AssignmentController {
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
         return "assignment";
+    }
+
+    @PostMapping("/submitScore")
+    public String submitScore(@RequestParam("currentCourseId") int currentCourseId,
+                              @RequestParam("score") int score,
+                              @RequestParam("assignmentId") int assignmentId){
+
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        assignment.setScore(score);
+        assignmentService.save(assignment);
+
+        return "redirect:/assignmentList?currentCourseId=" + currentCourseId;
     }
 
     @GetMapping("/assignmentUpdateForm")

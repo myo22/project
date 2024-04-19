@@ -51,6 +51,11 @@ public class AssignmentService {
     }
 
     @Transactional
+    public void save(Assignment assignment){
+        assignmentRepository.save(assignment);
+    }
+
+    @Transactional
     public void updateAssignment(int assignmentId, String title, String content, int maxScore){
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
         assignment.setTitle(title);
@@ -67,6 +72,12 @@ public class AssignmentService {
     public Assignment getAssignment(int assignmentId){
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow();
         return assignment;
+    }
+
+    @Transactional
+    public AssignmentFileDto getAssignmentFile(int assignmentId){
+        AssignmentFile assignmentFile = assignmentFileRepository.getAssignmentFile(assignmentId);
+        return toAssignmentDto(assignmentFile);
     }
 
     @Transactional(readOnly = true)

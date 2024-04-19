@@ -78,7 +78,7 @@
 
 
                     <table class="table">
-                        <tr>
+                        <tr th:if="${isAdmin}">
                             <th scope="col">이름</th>
                             <th scope="col">파일</th>
                             <th scope="col">점수</th>
@@ -87,6 +87,14 @@
                             <td th:text="${file.user.name}"></td>
                             <td>
                                 <a th:href="@{'/Assignment/download' + ${file.assignmentFileId}}" download th:text="${file.origFilename}"></a>
+                            </td>
+                            <td>
+                                <form th:action="@{/submitScore}" method="post">
+                                    <input type="hidden" name="currentCourseId" th:value="${assignment.course.courseId}">
+                                    <input type="hidden" name="assignmentId" th:value="${file.assignment.assignmentId}">
+                                    <input type="number" name="score">
+                                    <button type="submit" class="btn btn-primary">저장</button>
+                                </form>
                             </td>
                         </tr>
                     </table>
