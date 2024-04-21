@@ -80,6 +80,12 @@ public class AssignmentService {
         return toAssignmentDto(assignmentFile);
     }
 
+    @Transactional
+    public List<AssignmentFile> getAssignmentFiles(int assignmentId){
+        List<AssignmentFile> assignmentFiles = assignmentFileRepository.findByAssignment_AssignmentId(assignmentId);
+        return assignmentFiles;
+    }
+
     @Transactional(readOnly = true)
     public Long getTotalCount() {
         return assignmentRepository.getAssignmentCount();

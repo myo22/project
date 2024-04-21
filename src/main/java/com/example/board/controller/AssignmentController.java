@@ -95,13 +95,16 @@ public class AssignmentController {
         // 이 방법은 대규모 데이터셋에서도 효율적이다. 재사용성도 높아진다.
         AssignmentFileDto assignmentFile = assignmentService.getAssignmentFile(assignmentId);
 
+        // 이것도 마찬가지
+//        List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
+//        List<AssignmentFile> participantAssignments = assignmentFiles.stream()
+//                .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
+//                .collect(Collectors.toList());
+        List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
 
-        List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
-        List<AssignmentFile> participantAssignments = assignmentFiles.stream()
-                .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
-                .collect(Collectors.toList());
 
-        model.addAttribute("participantAssignments", participantAssignments);
+
+        model.addAttribute("participantAssignments", assignmentFiles);
         model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
