@@ -29,7 +29,6 @@ public class Assignment {
 
     @Column(name = "max_score")
     private Integer maxScore;
-    private Integer score;
 
     @CreationTimestamp
     private LocalDateTime regdate;
@@ -46,11 +45,12 @@ public class Assignment {
     private List<AssignmentFile> assignmentFiles = new ArrayList<>();
 
     @Builder
-    public Assignment(String title, String content, int maxScore, int score, Course course, User user){
+    public Assignment(int assignmentId, String title, String content, int maxScore, LocalDateTime regdate, Course course, User user){
+        this.assignmentId = assignmentId;
         this.title = title;
         this.content = content;
         this.maxScore = maxScore;
-        this.score = score;
+        this.regdate = regdate;
         this.course = course;
         this.user = user;
     }

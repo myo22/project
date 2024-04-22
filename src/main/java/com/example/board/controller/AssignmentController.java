@@ -103,7 +103,6 @@ public class AssignmentController {
         List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
 
 
-
         model.addAttribute("participantAssignments", assignmentFiles);
         model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);
@@ -116,9 +115,11 @@ public class AssignmentController {
                               @RequestParam("score") int score,
                               @RequestParam("assignmentId") int assignmentId){
 
-        Assignment assignment = assignmentService.getAssignment(assignmentId);
-        assignment.setScore(score);
-        assignmentService.save(assignment);
+        AssignmentFileDto assignmentFileDto = assignmentService.getAssignmentFile(assignmentId);
+        AssignmentFile assignmentFile = assignmentService.toAssignment(assignmentFileDto);
+
+        assignmentFile.setScore(score);
+        assignmentService.saveAssignment(assignmentFile);
 
         return "redirect:/assignmentList?currentCourseId=" + currentCourseId;
     }

@@ -19,8 +19,6 @@ public class AssignmentDTO {
 
     private int maxScore;;
 
-    private int score;
-
     private LocalDateTime regdate;
 
     private int courseId;

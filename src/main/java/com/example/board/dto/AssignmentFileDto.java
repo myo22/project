@@ -15,6 +15,8 @@ public class AssignmentFileDto {
 
     private String origFilename;
 
+    private int score;
+
     private String assignmentName;
 
     private String assignmentPath;

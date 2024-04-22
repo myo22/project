@@ -22,6 +22,8 @@ public class AssignmentFile {
     @Column(name = "orig_filename")
     private String origFilename;
 
+    private Integer score;
+
     @Column(name = "assignment_name")
     private String assignmentName;
 
@@ -37,10 +39,12 @@ public class AssignmentFile {
     private Assignment assignment;
 
     @Builder
-    public AssignmentFile(String assignmentName, String origFilename, String assignmentPath, User user, Assignment assignment){
+    public AssignmentFile(int assignmentFileId, String origFilename ,String assignmentName, int score, String assignmentPath, User user, Assignment assignment){
+        this.assignmentFileId = assignmentFileId;
         this.assignmentName = assignmentName;
         this.assignmentPath = assignmentPath;
         this.origFilename = origFilename;
+        this.score = score;
         this.user = user;
         this.assignment = assignment;
     }

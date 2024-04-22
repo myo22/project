@@ -92,7 +92,7 @@
                                 <form th:action="@{/submitScore}" method="post">
                                     <input type="hidden" name="currentCourseId" th:value="${assignment.course.courseId}">
                                     <input type="hidden" name="assignmentId" th:value="${file.assignment.assignmentId}">
-                                    <input type="number" name="score">
+                                    <input type="number" name="score" th:value="${file.score}">
                                     <button type="submit" class="btn btn-primary">저장</button>
                                 </form>
                             </td>

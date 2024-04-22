@@ -51,8 +51,8 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void save(Assignment assignment){
-        assignmentRepository.save(assignment);
+    public void saveAssignment(AssignmentFile assignmentFile){
+        assignmentFileRepository.save(assignmentFile);
     }
 
     @Transactional
@@ -147,6 +147,20 @@ public class AssignmentService {
                 .assignmentPath(assignmentFile.getAssignmentPath())
                 .userId(assignmentFile.getUser().getUserId())
                 .assignmentId(assignmentFile.getAssignment().getAssignmentId())
+                .build();
+    }
+
+    public AssignmentFile toAssignment(AssignmentFileDto assignmentFileDto){
+        User user = userRepository.findById(assignmentFileDto.getUserId()).orElseThrow();
+        Assignment assignment = assignmentRepository.findById(assignmentFileDto.getAssignmentId()).orElseThrow();
+        return AssignmentFile.builder()
+                .assignmentFileId(assignmentFileDto.getAssignmentFileId())
+                .assignmentName(assignmentFileDto.getAssignmentName())
+                .assignmentPath(assignmentFileDto.getAssignmentPath())
+                .origFilename(assignmentFileDto.getOrigFilename())
+                .score(assignmentFileDto.getScore())
+                .user(user)
+                .assignment(assignment)
                 .build();
     }
 }
