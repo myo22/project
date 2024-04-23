@@ -30,4 +30,18 @@ public class AttendanceService {
                 .build();
         attendanceRepository.save(attendance);
     }
+
+    @Transactional
+    public int calculateAttendanceScore(Attendance attendance){
+        switch (attendance.getAttendanceStatus()){
+            case "출석완료":
+                return 0;
+            case "지각":
+                return 1;
+            case "결석":
+                return 2;
+            default:
+                return 3;
+        }
+    }
 }
