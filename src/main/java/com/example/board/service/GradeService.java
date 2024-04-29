@@ -20,11 +20,11 @@ public class GradeService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public int calculateTotalScore(User user){
-        int totalScore = 0;
+    public void calculateTotalScore(User user, Course course){
+        int assignmentScore = 0;
         List<AssignmentFile> assignmentFiles = assignmentService.getUserAssignmentFiles(user);
         for(AssignmentFile file : assignmentFiles){
-            totalScore += file.getScore();
+            assignmentScore += file.getScore();
         }
 
         List<Attendance> attendances = attendanceService.getUserAttendance(user);
@@ -34,17 +34,27 @@ public class GradeService {
                 absenceCount++;
             }
         }
-
         int attendanceScore = 30;
         if (absenceCount >= 4) {
             attendanceScore = 0;
         }else{
             for(Attendance attendance : attendances){
-                totalScore -= attendanceService.calculateAttendanceScore(attendance);
+                attendanceScore -= attendanceService.calculateAttendanceScore(attendance);
             }
         }
+        int totalScore = assignmentScore + attendanceScore;
 
-        totalScore += attendanceScore;
-        return totalScore;
+        String gradeLetter = determineGradeLetter(totalScore);
+
+        Grade grade = Grade.builder()
+                .user(user)
+                .course(course)
+                .attendanceScore(attendanceScore)
+                .assignmentScore(assignmentScore)
+                .totalScore(totalScore)
+                .gradeLetter(gradeLetter)
+                .build();
+
+        gradeRepository.save(grade);
     }
 }

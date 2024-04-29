@@ -47,11 +47,13 @@ public class Grade {
     private Course course;
 
     @Builder
-    public Grade(int attendanceScore, int assignmentScore, int totalScore, String gradeLetter){
+    public Grade(int attendanceScore, int assignmentScore, int totalScore, String gradeLetter, User user, Course course){
         this.assignmentScore = assignmentScore;
         this.attendanceScore = attendanceScore;
         this.totalScore = totalScore;
         this.gradeLetter = gradeLetter;
+        this.user = user;
+        this.course = course;
     }
 
 }
