@@ -86,6 +86,12 @@ public class AssignmentService {
         return assignmentFiles;
     }
 
+    @Transactional
+    public List<AssignmentFile> getUserAssignmentFiles(User user){
+        List<AssignmentFile> assignmentFiles = assignmentFileRepository.findByUser(user);
+        return assignmentFiles;
+    }
+
     @Transactional(readOnly = true)
     public Long getTotalCount() {
         return assignmentRepository.getAssignmentCount();

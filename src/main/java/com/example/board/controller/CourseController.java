@@ -4,6 +4,7 @@ import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
+import com.example.board.service.GradeService;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final UserService userService;
+    private final GradeService gradeService;
 
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
@@ -178,10 +180,14 @@ public class CourseController {
                                   @RequestParam("currentCourseId") int courseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
         Course course = courseService.getCourse(courseId);
+
         Set<User> enrolledParticipants = new HashSet<>();
         Set<User> participants = course.getParticipants();
         for(User participant : participants){
             if(participant.getCourses().contains(course)){
+                // 어차피 여기서 강의를 가지고 있는지 확인하니까 User만 보내도 해당 강의에 있는 사람들
+                // 자동으로 검색해주는거 아닌가?
+                gradeService.calculateTotalScore(participant);
                 enrolledParticipants.add(participant);
             }
         }

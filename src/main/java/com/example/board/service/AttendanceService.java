@@ -1,21 +1,23 @@
 package com.example.board.service;
 
+import com.example.board.Repository.AssignmentFileRepository;
 import com.example.board.Repository.AttendanceRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.Repository.VideoRepository;
-import com.example.board.domain.Attendance;
-import com.example.board.domain.User;
-import com.example.board.domain.Video;
+import com.example.board.domain.*;
 import com.example.board.dto.AttendanceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
+    private final AssignmentService assignmentService;
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
 
@@ -32,6 +34,12 @@ public class AttendanceService {
     }
 
     @Transactional
+    public List<Attendance> getUserAttendance(User user){
+        List<Attendance> attendances = attendanceRepository.findByUser(user);
+        return attendances;
+    }
+
+    @Transactional
     public int calculateAttendanceScore(Attendance attendance){
         switch (attendance.getAttendanceStatus()){
             case "출석완료":
@@ -44,4 +52,5 @@ public class AttendanceService {
                 return 3;
         }
     }
+
 }
