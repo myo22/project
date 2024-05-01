@@ -35,7 +35,4 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     // roleName에 해당하는 역할을 가진 사용자가 쓴 강의 목록을 가져옵니다.
     @Query(value = "select c from Course c join fetch c.user u join u.roles r where r.name = :roleName")
     List<Course> getCoursesByRole(@Param("roleName") String roleName);
-
-    Assignment findAssignmentByCourseId(int courseId);
-    Video findVideoByCourseId(int courseId);
 }

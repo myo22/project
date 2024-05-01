@@ -25,16 +25,22 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">번호</th>
-                            <th scope="col">제목</th>
+                            <th scope="col">학번</th>
                             <th scope="col">작성자</th>
+                            <th scope="col">과제점수</th>
+                            <th scope="col">출석점수</th>
+                            <th scope="col">총합점수</th>
+                            <th scope="col">학점</th>
                         </tr>
                         </thead>
 
                         <tr th:each="participant : ${participants}">
-                            <th scope="row">[[${participant.userId}]]</th>
-                            <td>[[${participant.email}]]</td>
-                            <td th:text="${participant.name}"></td>
+                            <th scope="row">[[${participant.key.email}]]</th>
+                            <td th:text="${participant.key.name}"></td>
+                            <td th:text="${participant.value.assignmentScore}"></td>
+                            <td th:text="${participant.value.attendanceScore}"></td>
+                            <td th:text="${participant.value.totalScore}"></td>
+                            <td th:text="${participant.value.gradeLetter}"></td>
                         </tr>
 
 <!--                        <div>-->

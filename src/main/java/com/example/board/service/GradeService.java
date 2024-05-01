@@ -3,11 +3,13 @@ package com.example.board.service;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.GradeRepository;
 import com.example.board.domain.*;
+import com.example.board.dto.GradeDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class GradeService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public void calculateTotalScore(User user, Course course){
+    public Grade calculateTotalScore(User user, Course course){
         int assignmentScore = 0;
         List<AssignmentFile> assignmentFiles = assignmentService.getUserAssignmentFiles(user);
         for(AssignmentFile file : assignmentFiles){
@@ -44,17 +46,14 @@ public class GradeService {
         }
         int totalScore = assignmentScore + attendanceScore;
 
-        String gradeLetter = determineGradeLetter(totalScore);
-
         Grade grade = Grade.builder()
                 .user(user)
                 .course(course)
                 .attendanceScore(attendanceScore)
                 .assignmentScore(assignmentScore)
                 .totalScore(totalScore)
-                .gradeLetter(gradeLetter)
                 .build();
 
-        gradeRepository.save(grade);
+        return  gradeRepository.save(grade);
     }
 }

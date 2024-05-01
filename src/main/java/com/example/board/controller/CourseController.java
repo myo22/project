@@ -1,6 +1,7 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Course;
+import com.example.board.domain.Grade;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -181,19 +180,18 @@ public class CourseController {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
         Course course = courseService.getCourse(courseId);
 
-        Set<User> enrolledParticipants = new HashSet<>();
         Set<User> participants = course.getParticipants();
+        Map<User, Grade> participantGrades = new HashMap<>();
         for(User participant : participants){
             if(participant.getCourses().contains(course)){
-                // 어차피 여기서 강의를 가지고 있는지 확인하니까 User만 보내도 해당 강의에 있는 사람들
-                // 자동으로 검색해주는거 아닌가?
-                gradeService.calculateTotalScore(participant);
-                enrolledParticipants.add(participant);
+                // 어차피 여기서 강의를 가지고 있는지 확인하니까 User만 보내도 해당 강의에 있는 사람을 자동으로 검색해주는거 아닌가?
+                Grade grade = gradeService.calculateTotalScore(participant, course);
+                participantGrades.put(participant, grade);
             }
         }
 
         model.addAttribute("course", course);
-        model.addAttribute("participants", enrolledParticipants);
+        model.addAttribute("participants", participantGrades);
         model.addAttribute("loginInfo", loginInfo);
         return "participantList";
     }
