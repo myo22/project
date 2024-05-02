@@ -224,6 +224,4 @@ public class CourseController {
         return "redirect:/participantList?currentCourseId=" + courseId;
     }
 
-
-
 }

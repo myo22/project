@@ -41,16 +41,17 @@
                                 <td th:text="${participant.value.attendanceScore}"></td>
                                 <td th:text="${participant.value.totalScore}"></td>
                                 <td>
+                                    <!-- 학점 입력 필드에 고유 ID를 부여해보는 방식이다. -->
                                     <input type="hidden" name="courseId" th:value="${course.courseId}">
-                                    <input type="text" name="grade" th:value="${participant.value.gradeLetter}">
+                                    <input type="text" th:name="'gradeLetter-' + ${participant.key.userId}" th:value="${participant.value.gradeLetter}">
                                 </td>
                             </tr>
                         </table>
+                        <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                            <button type="button" class="btn btn-primary listBtn">이전</button>
+                        </a>
                         <button type="submit" class="btn btn-primary">저장</button>
                     </form>
-                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
-                        <button type="button" class="btn btn-primary listBtn">이전</button>
-                    </a>
 
                 </div><!--end card body-->
             </div><!--end card-->
