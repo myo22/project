@@ -22,15 +22,63 @@ public class GradeService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public Grade calculateTotalScore(User user, Course course){
+    public void saveGrade(Grade grade){
+
+        if (grade == null) {
+            throw new IllegalArgumentException("Provided grade is null");
+        }
+
+        gradeRepository.save(grade);
+    }
+
+    @Transactional
+    public Grade findGradeByUserAndCourse(User user, Course course){
+        Grade grade = gradeRepository.findByUserAndCourse(user, course);
+        return grade;
+    }
+
+
+    @Transactional
+    public Grade calculateGrade(User user, Course course){
+        Grade existingGrade = gradeRepository.findByUserAndCourse(user, course);
+
+        if (existingGrade == null){
+            throw new IllegalStateException("No existing grade record for the given user and course.");
+        }
+
+
+        // 과제 점수
+        int assignmentScore = calculateAssignmentScore(user, course);
+        // 출석 점수
+        int attendanceScore = calculateAttendanceScore(user, course);
+        // 총점 점수, 학점 계산
+        int totalScore = assignmentScore + attendanceScore;
+        String gradeLetter = determineGradeLetter(totalScore);
+
+        Grade calculateGrade = new Grade().builder()
+                .course(course)
+                .user(user)
+                .assignmentScore(assignmentScore)
+                .attendanceScore(attendanceScore)
+                .gradeLetter(gradeLetter)
+                .totalScore(totalScore)
+                .build();
+
+        return  calculateGrade;
+    }
+
+    private int calculateAssignmentScore(User user, Course course){
         int assignmentScore = 0;
         List<AssignmentFile> assignmentFiles = assignmentService.getUserAssignmentFiles(user);
         for(AssignmentFile file : assignmentFiles){
             assignmentScore += file.getScore();
         }
+        return assignmentScore;
+    }
 
-        List<Attendance> attendances = attendanceService.getUserAttendance(user);
+    private int calculateAttendanceScore(User user, Course course){
         int absenceCount = 0;
+        List<Attendance> attendances = attendanceService.getUserAttendance(user);
         for(Attendance attendance : attendances){
             if(attendance.getAttendanceStatus().equals("결석")){
                 absenceCount++;
@@ -44,16 +92,15 @@ public class GradeService {
                 attendanceScore -= attendanceService.calculateAttendanceScore(attendance);
             }
         }
-        int totalScore = assignmentScore + attendanceScore;
-
-        Grade grade = Grade.builder()
-                .user(user)
-                .course(course)
-                .attendanceScore(attendanceScore)
-                .assignmentScore(assignmentScore)
-                .totalScore(totalScore)
-                .build();
-
-        return  gradeRepository.save(grade);
+        return attendanceScore;
     }
+
+    private String determineGradeLetter(int totalScore) {
+        if (totalScore >= 90) return "A";
+        else if (totalScore >= 80) return "B";
+        else if (totalScore >= 70) return "C";
+        else if (totalScore >= 60) return "D";
+        else return "F";
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Attendance;
 import com.example.board.domain.Course;
 import com.example.board.domain.Video;
 import com.example.board.dto.LoginInfo;
 import com.example.board.dto.VideoDTO;
 import com.example.board.service.AttendanceService;
 import com.example.board.service.CourseService;
+import com.example.board.service.GradeService;
 import com.example.board.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
@@ -37,6 +39,7 @@ public class VideoController {
     private final VideoService videoService;
     private final CourseService courseService;
     private final AttendanceService attendanceService;
+    private final GradeService gradeService;
 
     private static final String UPLOAD_DIR = "C:/uploads/";
     private static final int CHUNK_SIZE = 1024 * 1024; // 1MB
@@ -174,6 +177,7 @@ public class VideoController {
         }
 
         attendanceService.recordAttendance(videoId, loginInfo.getUserId());
+
         return "redirect:/video?videoId=" + videoId;
     }
 

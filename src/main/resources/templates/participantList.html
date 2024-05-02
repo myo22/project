@@ -21,37 +21,36 @@
                 </div>
                 <div class="card-body" >
                     <h5 class="card-title"> 수강자 목록</h5>
+                    <form th:action="@{/confirmGrade}" method="post">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">학번</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">과제점수</th>
+                                <th scope="col">출석점수</th>
+                                <th scope="col">총합점수</th>
+                                <th scope="col">학점</th>
+                            </tr>
+                            </thead>
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">학번</th>
-                            <th scope="col">작성자</th>
-                            <th scope="col">과제점수</th>
-                            <th scope="col">출석점수</th>
-                            <th scope="col">총합점수</th>
-                            <th scope="col">학점</th>
-                        </tr>
-                        </thead>
-
-                        <tr th:each="participant : ${participants}">
-                            <th scope="row">[[${participant.key.email}]]</th>
-                            <td th:text="${participant.key.name}"></td>
-                            <td th:text="${participant.value.assignmentScore}"></td>
-                            <td th:text="${participant.value.attendanceScore}"></td>
-                            <td th:text="${participant.value.totalScore}"></td>
-                            <td th:text="${participant.value.gradeLetter}"></td>
-                        </tr>
-
-<!--                        <div>-->
-<!--                            <a th:href="@{/videoWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">동영상 개설</a>-->
-<!--                            <span th:if="${loginInfo == null}">동영상 개설</span>-->
-<!--                        </div>-->
-                        <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
-                            <button type="button" class="btn btn-primary listBtn">이전</button>
-                        </a>
-
-                    </table>
+                            <tr th:each="participant : ${participants}">
+                                <th scope="row">[[${participant.key.email}]]</th>
+                                <td th:text="${participant.key.name}"></td>
+                                <td th:text="${participant.value.assignmentScore}"></td>
+                                <td th:text="${participant.value.attendanceScore}"></td>
+                                <td th:text="${participant.value.totalScore}"></td>
+                                <td>
+                                    <input type="hidden" name="courseId" th:value="${course.courseId}">
+                                    <input type="text" name="grade" th:value="${participant.value.gradeLetter}">
+                                </td>
+                            </tr>
+                        </table>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </form>
+                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
+                        <button type="button" class="btn btn-primary listBtn">이전</button>
+                    </a>
 
                 </div><!--end card body-->
             </div><!--end card-->
