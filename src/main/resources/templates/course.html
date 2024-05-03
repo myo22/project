@@ -79,6 +79,9 @@
               <input type="hidden" name="currentCourseId" th:value="${course.courseId}">
               <button type="submit" class="btn btn-primary">수강자 목록</button>
             </form>
+            <a th:href="@{/list}" class="text-decoration-none">
+              <button type="button" id="listButton" class="btn btn-primary">토론 게시판</button>
+            </a>
 
 
             <!--                        <a th:href="@{/delete(boardId=${board.boardId})}" class="text-decoration-none">-->
