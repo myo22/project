@@ -55,16 +55,14 @@ public class GradeService {
         int totalScore = assignmentScore + attendanceScore;
         String gradeLetter = determineGradeLetter(totalScore);
 
-        Grade calculateGrade = new Grade().builder()
-                .course(course)
-                .user(user)
-                .assignmentScore(assignmentScore)
-                .attendanceScore(attendanceScore)
-                .gradeLetter(gradeLetter)
-                .totalScore(totalScore)
-                .build();
+        existingGrade.setAssignmentScore(assignmentScore);
+        existingGrade.setAttendanceScore(attendanceScore);
+        existingGrade.setTotalScore(totalScore);
+        if(existingGrade.getGradeLetter() == null){
+            existingGrade.setGradeLetter(gradeLetter);
+        }
 
-        return  calculateGrade;
+        return  existingGrade;
     }
 
     private int calculateAssignmentScore(User user, Course course){
