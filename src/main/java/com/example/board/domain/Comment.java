@@ -1,5 +1,6 @@
 package com.example.board.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,14 +31,23 @@ public class Comment {
     @CreationTimestamp
     private LocalDateTime cratedAt;
 
-
+    // 여기서 nullable = true는 굳이 안써도 되는 기본값이다.
     @ManyToOne
-    @JoinColumn(name = "video_id")
+    @JoinColumn(name = "video_id", nullable = true)
     private Video video;
 
     @ManyToOne
-    @JoinColumn(name = "assignment_id")
+    @JoinColumn(name = "assignment_id", nullable = true)
     private Assignment assignment;
+
+    @Builder
+    public Comment(int commentId, String content, User user, Video video, Assignment  assignment){
+        this.commentId = commentId;
+        this.content = content;
+        this.user = user;
+        this.video = video;
+
+    }
 
 
 }
