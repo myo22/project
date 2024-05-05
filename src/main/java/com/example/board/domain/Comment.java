@@ -31,7 +31,7 @@ public class Comment {
     @CreationTimestamp
     private LocalDateTime cratedAt;
 
-    // 여기서 nullable = true는 굳이 안써도 되는 기본값이다.
+    // 여기서 nullable = true는 굳이 안써도 되는 기본값이다. 유연한 데이터베이스를 위한 것.
     @ManyToOne
     @JoinColumn(name = "video_id", nullable = true)
     private Video video;

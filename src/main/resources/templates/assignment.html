@@ -76,6 +76,38 @@
 
                     </div>
 
+<!--                    <style>-->
+<!--                        input[type="text"], button {-->
+<!--                            height: 50px;  /* 높이 조정 */-->
+<!--                            width: 1000px;-->
+<!--                            font-size: 16px;-->
+<!--                            padding: 5px 10px;-->
+<!--                        }-->
+<!--                        button {-->
+<!--                            height: 50px;-->
+<!--                            width: 100px;-->
+<!--                            font-size: 16px;-->
+<!--                            margin-left: 0px;-->
+<!--                            cursor: pointer;-->
+<!--                        }-->
+<!--                    </style>-->
+
+                    <form action="/submitCommentToAssignment" method="post">
+                        <input type="hidden" name="contentId" th:value="${assignment.assignmentId}">
+                        <input type="hidden" name="contentType" value="assignment">
+                        <input type="text" name="comment" placeholder="댓글을 입력하세요" required>
+                        <button type="submit">작성</button>
+
+                        <table class="table">
+                            <tr>
+                                <th scope="col">이름</th>
+                                <th scope="col">내용</th>
+                                <th scope="col">작성일</th>
+                            </tr>
+
+                        </table>
+                    </form>
+
 
                     <table class="table">
                         <tr th:if="${isAdmin}">
