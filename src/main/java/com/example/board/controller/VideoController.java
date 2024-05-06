@@ -1,14 +1,13 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Attendance;
+import com.example.board.domain.Comment;
 import com.example.board.domain.Course;
 import com.example.board.domain.Video;
+import com.example.board.dto.CommentDTO;
 import com.example.board.dto.LoginInfo;
 import com.example.board.dto.VideoDTO;
-import com.example.board.service.AttendanceService;
-import com.example.board.service.CourseService;
-import com.example.board.service.GradeService;
-import com.example.board.service.VideoService;
+import com.example.board.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -40,6 +39,7 @@ public class VideoController {
     private final CourseService courseService;
     private final AttendanceService attendanceService;
     private final GradeService gradeService;
+    private final CommentService commentService;
 
     private static final String UPLOAD_DIR = "C:/uploads/";
     private static final int CHUNK_SIZE = 1024 * 1024; // 1MB
@@ -106,8 +106,9 @@ public class VideoController {
         if(video.getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }
+        List<Comment> comments = commentService.getCommentByVideo(videoService.toVideo(video));
 
-
+        model.addAttribute("comments", comments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("video", video);
         model.addAttribute("videoId", videoId);

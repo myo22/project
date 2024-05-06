@@ -78,6 +78,19 @@ public class VideoService {
         videoRepository.deleteById(videoId);
     }
 
+    public Video toVideo(VideoDTO videoDTO){
+        User user = userRepository.findById(videoDTO.getUserId()).orElseThrow();
+        Course course = courseRepository.findById(videoDTO.getCourseId()).orElseThrow();
+        return Video.builder()
+                .videoId(videoDTO.getVideoId())
+                .videoName(videoDTO.getVideoName())
+                .videoUrl(videoDTO.getVideoUrl())
+                .title(videoDTO.getTitle())
+                .course(course)
+                .user(user)
+                .build();
+    }
+
 //    private VideoDTO toVideoDTO(Video video){
 //        return VideoDTO.builder()
 //                .videoId(video.getVideoId())

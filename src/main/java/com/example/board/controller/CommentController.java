@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private CommentService commentService;
-    private UserService userService;
+    private final CommentService commentService;
+    private final UserService userService;
 
 
 //    @PostMapping("/submitCommentToAssignment")
@@ -50,14 +50,16 @@ public class CommentController {
                                 @RequestParam("contentType") String contentType,
                                 HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
         User user = userService.getUser(loginInfo.getUserId());
-
         switch (contentType){
             case "assignment":
-                commentService.addCommentToAssignment(contentId, comment, user);
+                commentService.addComment(contentId, comment, user, contentType);
                 return "redirect:/assignment?assignmentId=" + contentId;
             case "video":
-                commentService.addCommentToVideo(contentId, comment, user);
+                commentService.addComment(contentId, comment, user, contentType);
                 return "redirect:/video?videoId=" + contentId;
             default:
                 throw new IllegalArgumentException("Unsupported content type: " + contentType);

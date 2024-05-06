@@ -18,7 +18,7 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commend_id")
+    @Column(name = "comment_id")
     private Integer commentId;
 
     @Column(nullable = false)
@@ -29,7 +29,8 @@ public class Comment {
     private User user;
 
     @CreationTimestamp
-    private LocalDateTime cratedAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     // 여기서 nullable = true는 굳이 안써도 되는 기본값이다. 유연한 데이터베이스를 위한 것.
     @ManyToOne
@@ -41,12 +42,11 @@ public class Comment {
     private Assignment assignment;
 
     @Builder
-    public Comment(int commentId, String content, User user, Video video, Assignment  assignment){
-        this.commentId = commentId;
+    public Comment(String content, User user, Assignment  assignment,  Video video){
         this.content = content;
         this.user = user;
+        this.assignment = assignment;
         this.video = video;
-
     }
 
 

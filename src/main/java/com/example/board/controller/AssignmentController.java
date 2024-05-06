@@ -1,14 +1,12 @@
 package com.example.board.controller;
 
 import com.example.board.Repository.UserRepository;
-import com.example.board.domain.Assignment;
-import com.example.board.domain.AssignmentFile;
-import com.example.board.domain.Course;
-import com.example.board.domain.User;
+import com.example.board.domain.*;
 import com.example.board.dto.AssignmentFileDto;
 import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.AssignmentService;
+import com.example.board.service.CommentService;
 import com.example.board.service.CourseService;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +39,7 @@ public class AssignmentController {
 
     private final AssignmentService assignmentService;
     private final CourseService courseService;
+    private final CommentService commentService;
 
     @GetMapping("/assignmentWriteForm")
     public String assignmentWriteForm(HttpSession httpSession,
@@ -101,8 +100,9 @@ public class AssignmentController {
 //                .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
 //                .collect(Collectors.toList());
         List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
+        List<Comment> comments = commentService.getCommentsByAssignment(assignment);
 
-
+        model.addAttribute("comments", comments);
         model.addAttribute("participantAssignments", assignmentFiles);
         model.addAttribute("assignmentFile", assignmentFile);
         model.addAttribute("loginInfo", loginInfo);

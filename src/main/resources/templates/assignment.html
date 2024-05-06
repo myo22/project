@@ -92,7 +92,7 @@
 <!--                        }-->
 <!--                    </style>-->
 
-                    <form action="/submitCommentToAssignment" method="post">
+                    <form action="/submitComment" method="post">
                         <input type="hidden" name="contentId" th:value="${assignment.assignmentId}">
                         <input type="hidden" name="contentType" value="assignment">
                         <input type="text" name="comment" placeholder="댓글을 입력하세요" required>
@@ -103,6 +103,12 @@
                                 <th scope="col">이름</th>
                                 <th scope="col">내용</th>
                                 <th scope="col">작성일</th>
+                            </tr>
+
+                            <tr th:each="comment : ${comments}">
+                                <td th:text="${comment.user.name}"></td>
+                                <td th:text="${comment.content}"></td>
+                                <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd')}"></td>
                             </tr>
 
                         </table>
