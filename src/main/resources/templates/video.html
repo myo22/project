@@ -62,7 +62,7 @@
           <form action="/submitComment" method="post">
             <input type="hidden" name="contentId" th:value="${video.videoId}">
             <input type="hidden" name="contentType" value="video">
-            <input type="text" name="comment" placeholder="댓글을 입력하세요">
+            <input type="text" name="comment" placeholder="댓글을 입력하세요" required>
             <button type="submit">작성</button>
 
             <table class="table">

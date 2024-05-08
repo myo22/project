@@ -49,7 +49,7 @@ public class CommentService {
                 return commentRepository.save(new Comment(content, user, assignment, null));
             case "video":
                 Video video = videoRepository.findById(commentId).orElseThrow();
-                commentRepository.save(new Comment(content, user, null, video));
+                return commentRepository.save(new Comment(content, user, null, video));
             default:
                 throw new IllegalArgumentException("Unsupported content type: " + contentType);
         }
