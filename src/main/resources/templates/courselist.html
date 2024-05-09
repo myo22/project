@@ -4,106 +4,102 @@
       layout:decorate="~{layout/basic.html}">
 
 <div layout:fragment="content">
-
-  <div class="row mt-3">
-    <form action="/static" method="get">
+  <form action="/static" method="get">
+    <div class="row mt-3">
       <div class="col">
-        <!--               <span class="login-info_user" th:if="${loginInfo != null}">-->
-        <!--                   <span th:text="${loginInfo.getName()}"></span>-->
-        <!--               </span>-->
-        <!--                <span class="login-info_logout" th:if="${loginInfo == null}">-->
-        <!--                    <a href="/loginForm">로그인</a>-->
-        <!--                </span>-->
-        <!--                <span class="login-info_logout" th:if="${loginInfo != null}">-->
-        <!--                    <a href="/logout">로그아웃</a>-->
-        <!--                </span>-->
-        <!--                </span>-->
-        <!--                <span class="login-info_join" th:if="${loginInfo == null}">-->
-        <!--                    <a href="/userRegForm">회원가입</a> &lt;!&ndash; Get방식으로 요청 !&ndash;&gt;-->
-        <!--                </span>-->
-      </div>
-    </form>
-  </div>
 
-  <div class="row mt-3">
-    <div class="col">
+        <div class="card">
+          <div class="card-header">
+            강의 목록
+          </div>
+          <div class="card-body" >
+            <h5 class="card-title">강의 목록</h5>
 
-      <div class="card">
-        <div class="card-header">
-          강의 목록
-        </div>
-        <div class="card-body" >
-          <h5 class="card-title">강의 목록</h5>
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">교수</th>
+              </tr>
+              </thead>
 
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">번호</th>
-              <th scope="col">제목</th>
-              <th scope="col">교수</th>
-            </tr>
-            </thead>
+              <tr th:each="course : ${list}"  >
+                <th scope="row">[[${course.courseId}]]</th>
+                <td>
+                  <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
+                </td>
+                <td>[[${course.user.name}]]</td>
+                <td>[[${#temporals.format(course.regdate, 'yyyy-MM-dd')}]]</td>
+                <td>
+                  <form th:action="@{/courses}" method="post">
+                    <input type="hidden" name="courseId" th:value="${course.courseId}" />
+                    <button type="submit" class="btn btn-primary">참가신청</button>
+                  </form>
+                </td>
+              </tr>
 
-            <tr th:each="course : ${list}"  >
-              <th scope="row">[[${course.courseId}]]</th>
-              <td>
-                <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
-              </td>
-              <td>[[${course.user.name}]]</td>
-              <td>[[${#temporals.format(course.regdate, 'yyyy-MM-dd')}]]</td>
-              <td>
-                <form th:action="@{/courses}" method="post">
-                  <input type="hidden" name="courseId" th:value="${course.courseId}" />
-                  <button type="submit" class="btn btn-primary">참가신청</button>
-                </form>
-              </td>
-            </tr>
+              <div>
+                <a href="/coursewriteForm" th:if="${loginInfo != null}">강의 개설</a>
+                <span th:if="${loginInfo == null}">강의 개설</span>
+              </div>
 
-            <div>
-              <a href="/coursewriteForm" th:if="${loginInfo != null}">강의 개설</a>
-              <span th:if="${loginInfo == null}">강의 개설</span>
+  <!--            <div>-->
+  <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
+  <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
+  <!--            </div>-->
+
+
+            </table>
+
+            <div class="float-end">
+              <ul class="pagination flex-wrap">
+
+                <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
+                  <li th:class="${page == i}?'page-item active':'page-item'" >
+                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
+                  </li>
+                </th:block>
+
+                <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
+                <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
+                <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
+                <!--                                </li>-->
+                <!--                            </th:block>-->
+
+                <!--                            <li class="page-item" th:if="${prev}">-->
+                <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
+                <!--                            </li>-->
+
+                <!--                            <li class="page-item" th:if="${next}">-->
+                <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
+                <!--                            </li>-->
+
+
+              </ul>
             </div>
 
-<!--            <div>-->
-<!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
-<!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
-<!--            </div>-->
-
-
-          </table>
-
-          <div class="float-end">
-            <ul class="pagination flex-wrap">
-
-              <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
-                <li th:class="${page == i}?'page-item active':'page-item'" >
-                  <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
-                </li>
-              </th:block>
-
-              <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
-              <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
-              <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
-              <!--                                </li>-->
-              <!--                            </th:block>-->
-
-              <!--                            <li class="page-item" th:if="${prev}">-->
-              <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
-              <!--                            </li>-->
-
-              <!--                            <li class="page-item" th:if="${next}">-->
-              <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
-              <!--                            </li>-->
-
-
-            </ul>
-          </div>
-
-        </div><!--end card body-->
-      </div><!--end card-->
-    </div><!-- end col-->
-  </div><!-- end row-->
+          </div><!--end card body-->
+        </div><!--end card-->
+      </div><!-- end col-->
+    </div><!-- end row-->
+  </form>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const evtSource = new EventSource('/notify');
+
+    evtSource.onmessage = function (event) {
+      const newElement = document.createElement("p");
+      newElement.textContent = "New notification: " + event.data;
+      document.getElementById("notifications").appendChild(newElement);
+    };
+
+    evtSource.onerror = function (event){
+      console.error("EventSource failed:", event);
+    }
+  })
+
 </script>
