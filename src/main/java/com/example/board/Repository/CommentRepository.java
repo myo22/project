@@ -13,4 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByAssignment(Assignment assignment);
 
     List<Comment> findByVideo(Video video);
+
 }

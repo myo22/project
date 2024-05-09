@@ -2,13 +2,15 @@ package com.example.board.service;
 
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
-import com.example.board.dto.CommentDTO;
-import com.example.board.dto.VideoDTO;
+import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.RequiredArgsConstructor;
+import kr.co.shineware.nlp.komoran.model.Token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +18,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final AssignmentRepository assignmentRepository;
     private final VideoRepository videoRepository;
-    private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+
 
 //    @Transactional
 //    public Comment addCommentToAssignment(int assignmentId, String content, User user){
@@ -66,19 +67,41 @@ public class CommentService {
         return commentRepository.findByVideo(video);
     }
 
+    @Transactional
+    public List<String> analyzeComments(int courseId){
 
-//    public Comment toComment(CommentDTO commentDTO){
-//        User user = userRepository.findById(commentDTO.getUserId()).orElseThrow();
-//        Assignment assignment = assignmentRepository.findById(commentDTO.getAssignmentId()).orElseThrow();
-//        Video video = videoRepository.findById(commentDTO.getVideoId()).orElseThrow();
-//        Comment comment = new Comment();
-//        comment.setCommentId(commentDTO.getCommentId());
-//        comment.setContent(commentDTO.getContent());
-//        comment.setUser(user);
-//        comment.setCreatedAt(commentDTO.getCreatedAt());
-//        comment.setAssignment(assignment);
-//        comment.setVideo(video);
-//        return comment;
-//    }
+        // 전체 모델보단 정확도는 떨어지지만 처리 속도가 빠른 경량 모델을 사용한다.
+        Komoran komoran = new Komoran("model-light");
+
+        List<Comment> comments = commentRepository.findAll();
+
+        // 빈도수 계산한 후 많이 등장하는 형태소를 포함한 댓글을 저장할 곳.
+        Map<String, Set<String>> morphToCommentsMap = new HashMap<>();
+
+        for (Comment comment : comments){
+            String cleanedComment = comment.getContent().trim().replaceAll("\\s+", " ").toLowerCase();
+
+            // 댓글의 형태소를 분석하고, 토큰 리스트를 가져오는 것.
+            List<Token> tokens = komoran.analyze(cleanedComment).getTokenList();
+
+            for (Token token : tokens){
+                String morph = token.getMorph();
+                morphToCommentsMap.computeIfAbsent(morph, k -> new HashSet<>()).add(comment.getContent());
+            }
+        }
+
+        return getTopQuestions(morphToCommentsMap, 3);
+    }
+
+
+    public List<String> getTopQuestions(Map<String, Set<String>> morphToCommentsMap , int topN){
+        return morphToCommentsMap.entrySet().stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .limit(topN)
+                .flatMap(e -> e.getValue().stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
 }
 
