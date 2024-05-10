@@ -18,6 +18,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final AssignmentRepository assignmentRepository;
     private final VideoRepository videoRepository;
+    private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
 
 //    @Transactional
@@ -43,53 +45,48 @@ public class CommentService {
 //    }
 
     @Transactional
-    public Comment addComment(int commentId, String content, User user, String contentType){
-        switch (contentType){
+    public Comment addComment(int contentId, String content, User user, String contentType) {
+        switch (contentType) {
             case "assignment":
-                Assignment assignment = assignmentRepository.findById(commentId).orElseThrow();
+                Assignment assignment = assignmentRepository.findById(contentId).orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+                List<String> assignmentComments = analyzeComments(assignment);
+                for (String comment : assignmentComments) {
+                    notificationService.dispatch(assignment.getUser().getUserId(), comment);
+                }
                 return commentRepository.save(new Comment(content, user, assignment, null));
             case "video":
-                Video video = videoRepository.findById(commentId).orElseThrow();
+                Video video = videoRepository.findById(contentId).orElseThrow(() -> new IllegalArgumentException("Video not found"));
+                List<String> videoComments = analyzeComments(video);
+                for (String comment : videoComments) {
+                    notificationService.dispatch(video.getUser().getUserId(), comment);
+                }
                 return commentRepository.save(new Comment(content, user, null, video));
             default:
                 throw new IllegalArgumentException("Unsupported content type: " + contentType);
         }
     }
 
-    @Transactional
-    public List<Comment> getCommentsByAssignment(Assignment assignment){
-
-        return commentRepository.findByAssignment(assignment);
+    public List<String> analyzeComments(Assignment assignment) {
+        List<Comment> comments = commentRepository.findByAssignment(assignment);
+        return extractImportantComments(comments);
     }
 
-    @Transactional
-    public List<Comment> getCommentByVideo(Video video){
-        return commentRepository.findByVideo(video);
+    public List<String> analyzeComments(Video video) {
+        List<Comment> comments = commentRepository.findByVideo(video);
+        return extractImportantComments(comments);
     }
 
-    @Transactional
-    public List<String> analyzeComments(int courseId){
-
-        // 전체 모델보단 정확도는 떨어지지만 처리 속도가 빠른 경량 모델을 사용한다.
-        Komoran komoran = new Komoran("model-light");
-
-        List<Comment> comments = commentRepository.findAll();
-
-        // 빈도수 계산한 후 많이 등장하는 형태소를 포함한 댓글을 저장할 곳.
+    private List<String> extractImportantComments(List<Comment> comments) {
         Map<String, Set<String>> morphToCommentsMap = new HashMap<>();
-
-        for (Comment comment : comments){
+        Komoran komoran = new Komoran("model-light");
+        for (Comment comment : comments) {
             String cleanedComment = comment.getContent().trim().replaceAll("\\s+", " ").toLowerCase();
-
-            // 댓글의 형태소를 분석하고, 토큰 리스트를 가져오는 것.
             List<Token> tokens = komoran.analyze(cleanedComment).getTokenList();
-
-            for (Token token : tokens){
+            for (Token token : tokens) {
                 String morph = token.getMorph();
                 morphToCommentsMap.computeIfAbsent(morph, k -> new HashSet<>()).add(comment.getContent());
             }
         }
-
         return getTopQuestions(morphToCommentsMap, 3);
     }
 
@@ -101,6 +98,17 @@ public class CommentService {
                 .flatMap(e -> e.getValue().stream())
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<Comment> getCommentsByAssignment(Assignment assignment){
+
+        return commentRepository.findByAssignment(assignment);
+    }
+
+    @Transactional
+    public List<Comment> getCommentByVideo(Video video){
+        return commentRepository.findByVideo(video);
     }
 
 }

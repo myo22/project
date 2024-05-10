@@ -4,6 +4,8 @@ import com.example.board.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -14,6 +16,11 @@ import java.util.Optional;
 // 보통 인터페이스를 선언하면? 인터페이스를 구현하는 클래스를 작성해야지.라고 생각한다.
 // Spring Data JPA는 마법을 부린다 -> UserRepository를 구현하는 Bean을 자동으로 만들어준다.
 public interface UserRepository extends JpaRepository<User, Integer> {
+
+//    @Query("SELECT u FROM User u JOIN u.courses c WHERE c.courseId = :courseId")
+//    List<User> findByCourseId(@Param("courseId") int courseId);
+
+
 
     // Optional이라 값이없으면 Optional User가 나온다.
     Optional<User> findByEmail(String email);
