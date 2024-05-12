@@ -1,12 +1,11 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Comment;
 import com.example.board.domain.Course;
 import com.example.board.domain.Grade;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
-import com.example.board.service.CourseService;
-import com.example.board.service.GradeService;
-import com.example.board.service.UserService;
+import com.example.board.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +24,8 @@ public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
     private final GradeService gradeService;
+    private final CommentService commentService;
+    private final NotificationService notificationService;
 
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
@@ -39,6 +40,18 @@ public class CourseController {
         }
         int currentPage = page;
 
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }else{
+            User user = userService.getUser(loginInfo.getUserId());
+            Set<Course> courses = user.getCourses();
+            for(Course course : courses){
+                List<String> comments = commentService.analyzeComments(course);
+                for (String comment : comments) {
+                    notificationService.dispatch(user.getUserId(), comment);
+                }
+            }
+        }
 
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);

@@ -2,6 +2,7 @@ package com.example.board.service;
 
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.RequiredArgsConstructor;
 import kr.co.shineware.nlp.komoran.model.Token;
@@ -76,9 +77,14 @@ public class CommentService {
         return extractImportantComments(comments);
     }
 
+    public List<String> analyzeComments(Course course){
+        List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+        return extractImportantComments(comments);
+    }
+
     private List<String> extractImportantComments(List<Comment> comments) {
         Map<String, Set<String>> morphToCommentsMap = new HashMap<>();
-        Komoran komoran = new Komoran("model-light");
+        Komoran komoran = new Komoran(DEFAULT_MODEL.LIGHT);
         for (Comment comment : comments) {
             String cleanedComment = comment.getContent().trim().replaceAll("\\s+", " ").toLowerCase();
             List<Token> tokens = komoran.analyze(cleanedComment).getTokenList();
