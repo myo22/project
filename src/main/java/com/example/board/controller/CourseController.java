@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,7 +31,9 @@ public class CourseController {
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
-        model.addAttribute("loginInfo", loginInfo);
+        if (loginInfo == null){
+            return "redirect:/loginForm";
+        }
 
         long total = courseService.getTotalCount();
         List<Course> list = courseService.getCourses(page);
@@ -40,19 +43,35 @@ public class CourseController {
         }
         int currentPage = page;
 
-        if(loginInfo == null){
-            return "redirect:/loginForm";
-        }else{
-            User user = userService.getUser(loginInfo.getUserId());
-            Set<Course> courses = user.getCourses();
-            for(Course course : courses){
-                List<String> comments = commentService.analyzeComments(course);
-                for (String comment : comments) {
-                    notificationService.dispatch(user.getUserId(), comment);
-                }
+
+        User user = userService.getUser(loginInfo.getUserId());
+        Set<Course> courses =  user.getCourses();
+
+        List<String> importantComments = new ArrayList<>();
+        for(Course course : courses){
+            List<Comment> comments = commentService.getCommentByCourse(course);
+            List<String> commentTexts = new ArrayList<>();
+            for (Comment comment : comments) {
+                commentTexts.add(comment.getContent());
             }
+            // TF-IDF를 사용하여 댓글 벡터화
+            Map<String, Map<String, Double>> tfidfMatrix = commentService.calculateTFIDF(commentTexts);
+            // 댓글 간 유사도 계산
+            Map<String, Map<String, Double>> commentSimilarities = commentService.calculateCommentSimilarities(tfidfMatrix);
+            // 개선된 주요 댓글 추출
+            List<String> importantCommentsForCourse = commentService.extractImportantComments(commentSimilarities, 2);
+            importantComments.addAll(importantCommentsForCourse);
+//            // 사용자-댓글 행렬 구성
+//            Map<String, Map<String, Double>> userCommentMatrix = commentService.constructUserCommentMatrix(users, comments);
+//            // 사용자 간의 유사도 계산
+//            Map<String, Map<String, Double>> userSimilarities = commentService.calculateUserSimilarities(userCommentMatrix);
+//            // 개선된 주요 댓글 추출
+//            List<String> improvedImportantComments = commentService.extractImprovedImportantComments(userSimilarities, commentSimilarities, 2);
+
         }
 
+        model.addAttribute("importantComments", importantComments);
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("currentPage", currentPage);

@@ -3,6 +3,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic.html}">
 
+<head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
 <div layout:fragment="content">
   <form action="/static" method="get">
     <div class="row mt-3">
@@ -12,11 +24,45 @@
           <div class="card-header">
             강의 목록
           </div>
-          <div id="notifications">
-            <!-- Notifications will appear here -->
-          </div>
           <div class="card-body" >
             <h5 class="card-title">강의 목록</h5>
+
+            <div class="row">
+              <div class="col text-right">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                  알림 열기
+                </button>
+              </div>
+            </div>
+
+            <!-- The Modal -->
+            <div class="modal" id="myModal">
+              <div class="modal-dialog modal-dialog-top-right">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">댓글 추천 목록</h4>
+                    <button type="button" class="close"
+                            data-dismiss="modal">&times;
+                    </button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body" th:each="comment : ${importantComments}">
+                      <span th:text="${comment}"></span>
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger"
+                            data-dismiss="modal">닫기
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
 
             <table class="table">
               <thead>
@@ -46,13 +92,6 @@
                 <a href="/coursewriteForm" th:if="${loginInfo != null}">강의 개설</a>
                 <span th:if="${loginInfo == null}">강의 개설</span>
               </div>
-
-  <!--            <div>-->
-  <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
-  <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
-  <!--            </div>-->
-
-
             </table>
 
             <div class="float-end">
@@ -63,21 +102,6 @@
                     <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
                   </li>
                 </th:block>
-
-                <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
-                <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
-                <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
-                <!--                                </li>-->
-                <!--                            </th:block>-->
-
-                <!--                            <li class="page-item" th:if="${prev}">-->
-                <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
-                <!--                            </li>-->
-
-                <!--                            <li class="page-item" th:if="${next}">-->
-                <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
-                <!--                            </li>-->
-
 
               </ul>
             </div>
@@ -90,19 +114,17 @@
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const evtSource = new EventSource('/notify');
-
-    evtSource.onmessage = function (event) {
-      const newElement = document.createElement("p");
-      newElement.textContent = "New notification: " + event.data;
-      document.getElementById("notifications").appendChild(newElement);
-    };
-
-    evtSource.onerror = function (event){
-      console.error("EventSource failed:", event);
-    }
-  })
-
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   const evtSource = new EventSource('/notify');
+  //
+  //   evtSource.onmessage = function (event) {
+  //     const newElement = document.createElement("p");
+  //     newElement.textContent = "New notification: " + event.data;
+  //     document.getElementById("notifications").appendChild(newElement);
+  //   };
+  //
+  //   evtSource.onerror = function (event){
+  //     console.error("EventSource failed:", event);
+  //   }
+  // });
 </script>
