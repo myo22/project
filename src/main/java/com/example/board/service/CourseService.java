@@ -38,18 +38,17 @@ public class CourseService {
     public void joinCourse(int courseId, int userId) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Set<User> participants = course.getParticipants();
-//        if (userService.isParticipant(courseId, userId) || userService.isCourseOwner(courseId, userId)) {
-//            return;
-//        }
-        participants.add(user);
+
+        course.getParticipants().add(user);
+        user.getCourses().add(course);
+
         courseRepository.save(course);
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
-    public Set<Course> getUserCourses(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return user.getCourses();
+    public List<Course> getUserCourses(User user) {
+        return courseRepository.findByUser(user);
     }
 
     @Transactional(readOnly = true)

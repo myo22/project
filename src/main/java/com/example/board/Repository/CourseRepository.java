@@ -1,9 +1,6 @@
 package com.example.board.Repository;
 
-import com.example.board.domain.Assignment;
-import com.example.board.domain.Board;
-import com.example.board.domain.Course;
-import com.example.board.domain.Video;
+import com.example.board.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +15,8 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     // Course 엔티티를 조회할 때 fetch join을 사용하여 관련된 엔티티(User)를 함께 가져옵니다.
     @Query(value = "select c from Course c join fetch c.user")
     List<Course> getCourses();
+
+    List<Course> findByUser(User user);
 
     @Query(value = "select c from Course c where c.courseId = :courseId")
     Course getcourse(@Param("courseId") int courseId);

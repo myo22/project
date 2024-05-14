@@ -45,10 +45,17 @@ public class CourseController {
 
 
         User user = userService.getUser(loginInfo.getUserId());
-        Set<Course> courses =  user.getCourses();
-
+        List<Course> courses =  courseService.getUserCourses(user);
         List<String> importantComments = new ArrayList<>();
+
         for(Course course : courses){
+//            Set<User> participants = course.getParticipants();
+//            for(User participant : participants){
+//                List<Comment> comments = commentService.getCommentByUser(participant);
+//                for (Comment comment : comments) {
+//                    commentTexts.add(comment.getContent());
+//                }
+//            }
             List<Comment> comments = commentService.getCommentByCourse(course);
             List<String> commentTexts = new ArrayList<>();
             for (Comment comment : comments) {

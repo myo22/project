@@ -35,6 +35,7 @@ public class Course {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // 강의에 참여한 수강자들
     @ManyToMany
     @JoinTable(
             name = "participant",

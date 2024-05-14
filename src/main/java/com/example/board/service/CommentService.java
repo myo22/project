@@ -74,6 +74,11 @@ public class CommentService {
         return commentRepository.findByCourseId(course.getCourseId());
     }
 
+    @Transactional
+    public List<Comment> getCommentByUser(User user){
+        return commentRepository.findByUser(user);
+    }
+
 //    public List<Comment> analyzeComments(Assignment assignment) {
 //        List<Comment> comments = commentRepository.findByAssignment(assignment);
 //        return comments;
