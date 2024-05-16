@@ -30,7 +30,10 @@
             <div class="row">
               <div class="col text-right">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                  알림 열기
+                  메모리 기반 댓글 추천
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
+                  모델 기반 댓글 추천
                 </button>
               </div>
             </div>
@@ -42,14 +45,14 @@
 
                   <!-- Modal Header -->
                   <div class="modal-header">
-                    <h4 class="modal-title">댓글 추천 목록</h4>
+                    <h4 class="modal-title">메모리 기반 댓글 추천</h4>
                     <button type="button" class="close"
                             data-dismiss="modal">&times;
                     </button>
                   </div>
 
                   <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${importantComments}">
+                  <div class="modal-body" th:each="comment : ${recommendedComments}">
                       <span th:text="${comment}"></span>
                   </div>
 
@@ -60,6 +63,26 @@
                     </button>
                   </div>
 
+                </div>
+              </div>
+            </div>
+
+            <div class="modal" id="myModal2"> <!-- 다른 ID를 부여 -->
+              <div class="modal-dialog modal-dialog-top-right">
+                <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">모델 기반 댓글 추천</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body" th:each="comment : ${recommendedComments}">
+                    <span th:text="${comment}"></span>
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
+                  </div>
                 </div>
               </div>
             </div>

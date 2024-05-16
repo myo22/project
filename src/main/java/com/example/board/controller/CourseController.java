@@ -45,39 +45,10 @@ public class CourseController {
 
 
         User user = userService.getUser(loginInfo.getUserId());
-        List<Course> courses =  courseService.getUserCourses(user);
-        List<String> importantComments = new ArrayList<>();
+        List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
 
-        for(Course course : courses){
-//            Set<User> participants = course.getParticipants();
-//            for(User participant : participants){
-//                List<Comment> comments = commentService.getCommentByUser(participant);
-//                for (Comment comment : comments) {
-//                    commentTexts.add(comment.getContent());
-//                }
-//            }
-            List<Comment> comments = commentService.getCommentByCourse(course);
-            List<String> commentTexts = new ArrayList<>();
-            for (Comment comment : comments) {
-                commentTexts.add(comment.getContent());
-            }
-            // TF-IDF를 사용하여 댓글 벡터화
-            Map<String, Map<String, Double>> tfidfMatrix = commentService.calculateTFIDF(commentTexts);
-            // 댓글 간 유사도 계산
-            Map<String, Map<String, Double>> commentSimilarities = commentService.calculateCommentSimilarities(tfidfMatrix);
-            // 개선된 주요 댓글 추출
-            List<String> importantCommentsForCourse = commentService.extractImportantComments(commentSimilarities, 2);
-            importantComments.addAll(importantCommentsForCourse);
-//            // 사용자-댓글 행렬 구성
-//            Map<String, Map<String, Double>> userCommentMatrix = commentService.constructUserCommentMatrix(users, comments);
-//            // 사용자 간의 유사도 계산
-//            Map<String, Map<String, Double>> userSimilarities = commentService.calculateUserSimilarities(userCommentMatrix);
-//            // 개선된 주요 댓글 추출
-//            List<String> improvedImportantComments = commentService.extractImprovedImportantComments(userSimilarities, commentSimilarities, 2);
 
-        }
-
-        model.addAttribute("importantComments", importantComments);
+        model.addAttribute("recommendedComments", recommendedComments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);

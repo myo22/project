@@ -2,10 +2,9 @@ package com.example.board.service;
 
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
-import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.RequiredArgsConstructor;
-import kr.co.shineware.nlp.komoran.model.Token;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +18,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final AssignmentRepository assignmentRepository;
     private final VideoRepository videoRepository;
+    private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
@@ -114,6 +114,7 @@ public class CommentService {
 //                .collect(Collectors.toList());
 //    }
 
+
     // TF-IDF를 사용하여 댓글을 벡터화하는 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
         Map<String, Map<String, Double>> tfidfMatrix = new HashMap<>();
@@ -191,9 +192,12 @@ public class CommentService {
 
         for (String comment1 : tfidfMatrix.keySet()) {
             Map<String, Double> similarityMap = new HashMap<>();
+            Map<String, Double> vector1 = tfidfMatrix.get(comment1); // comment1에 대한 벡터 가져오기
+
             for (String comment2 : tfidfMatrix.keySet()) {
                 if (!comment1.equals(comment2)) {
-                    double similarity = calculateCosineSimilarity(tfidfMatrix.get(comment1), tfidfMatrix.get(comment2));
+                    Map<String, Double> vector2 = tfidfMatrix.get(comment2); // comment2에 대한 벡터 가져오기
+                    double similarity = calculateCosineSimilarity(vector1, vector2); // 유사도 계산
                     similarityMap.put(comment2, similarity);
                 }
             }
@@ -202,6 +206,22 @@ public class CommentService {
 
         return commentSimilarities;
     }
+//    public Map<String, Map<String, Double>> calculateCommentSimilarities(Map<String, Map<String, Double>> tfidfMatrix) {
+//        Map<String, Map<String, Double>> commentSimilarities = new HashMap<>();
+//
+//        for (String comment1 : tfidfMatrix.keySet()) {
+//            Map<String, Double> similarityMap = new HashMap<>();
+//            for (String comment2 : tfidfMatrix.keySet()) {
+//                if (!comment1.equals(comment2)) {
+//                    double similarity = calculateCosineSimilarity(tfidfMatrix.get(comment1), tfidfMatrix.get(comment2));
+//                    similarityMap.put(comment2, similarity);
+//                }
+//            }
+//            commentSimilarities.put(comment1, similarityMap);
+//        }
+//
+//        return commentSimilarities;
+//    }
 
     // 주요 댓글 추출 함수
     public List<String> extractImportantComments(Map<String, Map<String, Double>> commentSimilarities, int topN) {
@@ -223,65 +243,34 @@ public class CommentService {
         return importantComments;
     }
 
+    public List<String> recommendImportantCommentsForUser(User user, int topN) {
+        List<Course> courses =  courseRepository.findByUser(user);
+        List<String> recommendedComments = new ArrayList<>();
 
-//    // 사용자-댓글 행렬을 구성하는 함수
-//    public Map<String, Map<String, Double>> constructUserCommentMatrix(List<String> users, List<String> comments) {
-//        Map<String, Map<String, Double>> userCommentMatrix = new HashMap<>();
-//
-//        for (String user : users) {
-//            Map<String, Double> userCommentVector = new HashMap<>();
-//            for (String comment : comments) {
-//                // 사용자가 해당 댓글에 대한 관심을 표현한 정도를 나타내는 값(예: 좋아요 수 등)을 여기서는 랜덤하게 설정합니다.
-//                double interestLevel = Math.random();
-//                userCommentVector.put(comment, interestLevel);
-//            }
-//            userCommentMatrix.put(user, userCommentVector);
-//        }
-//
-//        return userCommentMatrix;
-//    }
-//
-//
-//    // 사용자 간의 유사도를 계산하는 함수
-//    public Map<String, Map<String, Double>> calculateUserSimilarities(Map<String, Map<String, Double>> userCommentMatrix) {
-//        Map<String, Map<String, Double>> userSimilarities = new HashMap<>();
-//
-//        for (String user1 : userCommentMatrix.keySet()) {
-//            Map<String, Double> similarityMap = new HashMap<>();
-//            for (String user2 : userCommentMatrix.keySet()) {
-//                if (!user1.equals(user2)) {
-//                    double similarity = calculateCosineSimilarity(userCommentMatrix.get(user1), userCommentMatrix.get(user2));
-//                    similarityMap.put(user2, similarity);
+        for (Course course : courses) {
+//            Set<User> participants = course.getParticipants();
+//            for(User participant : participants){
+//                List<Comment> comments = commentService.getCommentByUser(participant);
+//                for (Comment comment : comments) {
+//                    commentTexts.add(comment.getContent());
 //                }
 //            }
-//            userSimilarities.put(user1, similarityMap);
-//        }
-//
-//        return userSimilarities;
-//    }
-//
-//    public List<String> extractImprovedImportantComments(Map<String, Map<String, Double>> userSimilarities, Map<String, Map<String, Double>> commentSimilarities, int topN) {
-//        List<String> importantComments = new ArrayList<>();
-//
-//        for (String comment : commentSimilarities.keySet()) {
-//            Map<String, Double> similarityMap = commentSimilarities.get(comment);
-//            double score = 0.0;
-//            for (String user : userSimilarities.keySet()) {
-//                double userSimilarity = userSimilarities.get(user).entrySet().stream()
-//                        .mapToDouble(entry -> entry.getValue())
-//                        .sum();
-//                score += similarityMap.getOrDefault(user, 0.0) * userSimilarity;
-//            }
-//            importantComments.add(comment + " : " + score); // 여기서는 간단하게 점수를 더한 값을 사용합니다.
-//        }
-//
-//        // 점수에 따라 정렬하여 상위 N개의 주요 댓글을 추출합니다.
-//        importantComments.sort((c1, c2) -> Double.compare(Double.parseDouble(c2.split(":")[1].trim()), Double.parseDouble(c1.split(":")[1].trim())));
-//        importantComments = importantComments.subList(0, Math.min(topN, importantComments.size()));
-//
-//        return importantComments;
-//    }
+            List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+            List<String> commentTexts = new ArrayList<>();
+            for (Comment comment : comments) {
+                commentTexts.add(comment.getContent());
+            }
+            // TF-IDF를 사용하여 댓글 벡터화
+            Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(commentTexts);
+            // 댓글 간 유사도 계산
+            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilarities(tfidfMatrix);
+            // 개선된 주요 댓글 추출
+            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
+            recommendedComments.addAll(importantCommentsForCourse);
+        }
 
+        return recommendedComments;
+    }
 
 
 }
