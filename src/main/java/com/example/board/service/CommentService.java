@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import ch.qos.logback.core.subst.Tokenizer;
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
 import lombok.RequiredArgsConstructor;
@@ -10,14 +11,16 @@ import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 import org.tensorflow.Tensors;
 
-import javax.persistence.criteria.Path;
-import java.io.IOException;
+
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -281,12 +284,11 @@ public class CommentService {
     }
 
     // BERT 모델 로드
-    public BERTCommentRecommender() {
-        // TensorFlow 그래프 로드
-        try (Graph graph = new Graph()) {
-            byte[] graphDef = readAllBytesOrExit(Paths.get("path/to/bert_model.pb"));
+    public void loadBERTModel() {
+        try {
+            byte[] graphDef = Files.readAllBytes(Paths.get("path/to/bert_model/saved_model.pb"));
+            Graph graph = new Graph();
             graph.importGraphDef(graphDef);
-            // TensorFlow 세션 시작
             session = new Session(graph);
         } catch (IOException e) {
             e.printStackTrace();
@@ -296,69 +298,96 @@ public class CommentService {
     // BERT 모델을 사용하여 댓글을 임베딩하는 함수
     public List<double[]> embedComments(List<String> comments) {
         List<double[]> embeddings = new ArrayList<>();
-
         for (String comment : comments) {
-            // BERT 모델에 입력으로 들어갈 텐서 생성
-            Tensor<String> inputTensor = Tensors.create(new String[]{comment});
-            // BERT 모델 실행
-            List<Tensor<?>> outputs = session.runner()
-                    .feed("input_comment", inputTensor) // 모델의 입력 노드 이름에 맞게 수정
-                    .fetch("embedding_output") // 모델의 출력 노드 이름에 맞게 수정
-                    .run();
+            try (Tensor<String> inputTensor = Tensors.create(comment)) {
+                List<Tensor<?>> outputs = session.runner()
+                        .feed("serving_default_input_ids", inputTensor) // 모델의 입력 노드 이름에 맞게 수정
+                        .fetch("StatefulPartitionedCall:0") // 모델의 출력 노드 이름에 맞게 수정
+                        .run();
 
-            // 임베딩된 벡터 추출
-            float[][] embeddingValues = new float[outputs.size()][];
-            for (int i = 0; i < outputs.size(); i++) {
-                try (Tensor<?> outputTensor = outputs.get(i)) {
-                    FloatBuffer floatBuffer = FloatBuffer.allocate((int) outputTensor.shape()[1]);
-                    outputTensor.writeTo(floatBuffer);
-                    embeddingValues[i] = floatBuffer.array();
+                try (Tensor<?> outputTensor = outputs.get(0)) {
+                    long[] shape = outputTensor.shape();
+                    int numRows = (int) shape[0];
+                    int numCols = (int) shape[1];
+
+                    // 임베딩 값 추출
+                    float[][] embeddingValues = new float[numRows][numCols];
+                    outputTensor.copyTo(embeddingValues);
+
+                    // float[][] 배열을 double[] 배열로 변환
+                    double[] embedding = new double[numRows * numCols];
+                    for (int i = 0; i < numRows; i++) {
+                        for (int j = 0; j < numCols; j++) {
+                            embedding[i * numCols + j] = embeddingValues[i][j];
+                        }
+                    }
+
+                    embeddings.add(embedding);
                 }
             }
-
-            // float 배열을 double 배열로 변환하여 리스트에 추가
-            double[] embedding = new double[embeddingValues[0].length];
-            for (int i = 0; i < embeddingValues[0].length; i++) {
-                embedding[i] = embeddingValues[0][i];
-            }
-            embeddings.add(embedding);
         }
-
         return embeddings;
     }
 
-    // 두 벡터 간의 코사인 유사도 계산
+
+    // 코사인 유사도 계산 함수
     public double calculateSimilarity(double[] embedding1, double[] embedding2) {
-        // 코사인 유사도 계산 로직 작성
-        return 0.0; // 여기에 실제 계산 로직을 구현해야 함
+        double dotProduct = IntStream.range(0, embedding1.length)
+                .mapToDouble(i -> embedding1[i] * embedding2[i])
+                .sum();
+        double norm1 = Math.sqrt(IntStream.range(0, embedding1.length)
+                .mapToDouble(i -> embedding1[i] * embedding1[i])
+                .sum());
+        double norm2 = Math.sqrt(IntStream.range(0, embedding2.length)
+                .mapToDouble(i -> embedding2[i] * embedding2[i])
+                .sum());
+
+        return dotProduct / (norm1 * norm2);
     }
 
     // 중요한 댓글 추출 함수
     public List<String> extractImportantComments(List<String> comments, int topN) {
-        // 댓글을 임베딩
         List<double[]> embeddings = embedComments(comments);
 
-        // 임베딩된 댓글 간 유사성 계산
-        List<List<Double>> similarities = new ArrayList<>();
-        for (int i = 0; i < embeddings.size(); i++) {
-            List<Double> similarityRow = new ArrayList<>();
-            for (int j = 0; j < embeddings.size(); j++) {
-                double similarity = calculateSimilarity(embeddings.get(i), embeddings.get(j));
-                similarityRow.add(similarity);
+        Map<String, Double> commentScores = new HashMap<>();
+        for (int i = 0; i < comments.size(); i++) {
+            double score = 0.0;
+            for (int j = 0; j < comments.size(); j++) {
+                if (i != j) {
+                    score += calculateSimilarity(embeddings.get(i), embeddings.get(j));
+                }
             }
-            similarities.add(similarityRow);
+            commentScores.put(comments.get(i), score);
         }
 
-        // 중요한 댓글 추출 로직 작성 (예: 상위 N개의 유사성이 높은 댓글 추출)
+        List<Map.Entry<String, Double>> sortedComments = new ArrayList<>(commentScores.entrySet());
+        sortedComments.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
         List<String> importantComments = new ArrayList<>();
-        // 추출 로직 작성
+        for (int i = 0; i < Math.min(topN, sortedComments.size()); i++) {
+            importantComments.add(sortedComments.get(i).getKey());
+        }
+
         return importantComments;
     }
 
-    // 파일에서 그래프 정의를 읽는 함수
-    private static byte[] readAllBytesOrExit(Path path) throws IOException {
-        return Files.readAllBytes(path);
-    }
+    public List<String> extractImportantCommentsForUser(User user, int topN) {
+        List<Course> courses = courseRepository.findByUser(user);
+        List<String> recommendedComments = new ArrayList<>();
 
+        for (Course course : courses) {
+            List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+            List<String> commentTexts = new ArrayList<>();
+            for (Comment comment : comments) {
+                commentTexts.add(comment.getContent());
+            }
+
+            // 주요 댓글 추출
+            List<String> importantCommentsForCourse = extractImportantComments(commentTexts, topN);
+            recommendedComments.addAll(importantCommentsForCourse);
+        }
+
+        return recommendedComments;
+    }
 }
 

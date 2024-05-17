@@ -76,7 +76,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
                   <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${recommendedComments}">
+                  <div class="modal-body" th:each="comment : ${modelRecommendedComments}">
                     <span th:text="${comment}"></span>
                   </div>
                   <!-- Modal footer -->

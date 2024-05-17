@@ -47,8 +47,11 @@ public class CourseController {
         User user = userService.getUser(loginInfo.getUserId());
         List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
 
+        commentService.loadBERTModel();
+        List<String> modelRecommendedComments = commentService.extractImportantCommentsForUser(user, 3);
 
         model.addAttribute("recommendedComments", recommendedComments);
+        model.addAttribute("modelRecommendedComments", modelRecommendedComments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);

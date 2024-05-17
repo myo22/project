@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 // 트랜잭션 단위로 실행될 메소드를 선언하고 있는 클래스
-@Service // 스프링이 관래하는 Bean
+@Service // 스프링이 관리하는 Bean
 @RequiredArgsConstructor // lombok이 final 필드를 초기화하는 생성자를 자동으로 생성한다.
 public class UserService {
 
