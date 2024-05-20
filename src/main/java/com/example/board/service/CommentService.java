@@ -1,26 +1,15 @@
 package com.example.board.service;
 
-import ch.qos.logback.core.subst.Tokenizer;
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.tensorflow.Graph;
-import org.tensorflow.Session;
-import org.tensorflow.Tensor;
-import org.tensorflow.Tensors;
+import org.apache.commons.math3.linear.RealMatrix;
 
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.IOException;
 import java.util.*;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +21,6 @@ public class CommentService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    private Session session;
 
 //    @Transactional
 //    public Comment addCommentToAssignment(int assignmentId, String content, User user){
@@ -71,22 +59,22 @@ public class CommentService {
     }
 
     @Transactional
-    public List<Comment> getCommentsByAssignment(Assignment assignment){
+    public List<Comment> getCommentsByAssignment(Assignment assignment) {
 
         return commentRepository.findByAssignment(assignment);
     }
 
     @Transactional
-    public List<Comment> getCommentByVideo(Video video){
+    public List<Comment> getCommentByVideo(Video video) {
         return commentRepository.findByVideo(video);
     }
 
-    public List<Comment> getCommentByCourse(Course course){
+    public List<Comment> getCommentByCourse(Course course) {
         return commentRepository.findByCourseId(course.getCourseId());
     }
 
     @Transactional
-    public List<Comment> getCommentByUser(User user){
+    public List<Comment> getCommentByUser(User user) {
         return commentRepository.findByUser(user);
     }
 
@@ -255,7 +243,7 @@ public class CommentService {
     }
 
     public List<String> recommendImportantCommentsForUser(User user, int topN) {
-        List<Course> courses =  courseRepository.findByUser(user);
+        List<Course> courses = courseRepository.findByUser(user);
         List<String> recommendedComments = new ArrayList<>();
 
         for (Course course : courses) {
@@ -283,97 +271,80 @@ public class CommentService {
         return recommendedComments;
     }
 
-    // BERT 모델 로드
-    public void loadBERTModel() {
-        try {
-            byte[] graphDef = Files.readAllBytes(Paths.get("path/to/bert_model/saved_model.pb"));
-            Graph graph = new Graph();
-            graph.importGraphDef(graphDef);
-            session = new Session(graph);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    // BERT 모델을 사용하여 댓글을 임베딩하는 함수
-    public List<double[]> embedComments(List<String> comments) {
-        List<double[]> embeddings = new ArrayList<>();
+    private Map<String, Integer> wordToIndex; // 단어를 인덱스에 매핑하는 맵
+    private Map<String, Integer> wordCountMap; // 단어의 빈도를 저장하는 맵
+    private RealMatrix tfidfMatrix; // TF-IDF 행렬
+    private RealMatrix similarityMatrix; // 유사도 행렬
+
+    // 모델 학습
+    public void trainModel(List<String> comments) {
+        wordToIndex = new HashMap<>();
+        wordCountMap = new HashMap<>();
+        List<String> uniqueWords = new ArrayList<>();
+        int index = 0;
+
+        // 각 댓글의 단어 빈도수 계산
         for (String comment : comments) {
-            try (Tensor<String> inputTensor = Tensors.create(comment)) {
-                List<Tensor<?>> outputs = session.runner()
-                        .feed("serving_default_input_ids", inputTensor) // 모델의 입력 노드 이름에 맞게 수정
-                        .fetch("StatefulPartitionedCall:0") // 모델의 출력 노드 이름에 맞게 수정
-                        .run();
-
-                try (Tensor<?> outputTensor = outputs.get(0)) {
-                    long[] shape = outputTensor.shape();
-                    int numRows = (int) shape[0];
-                    int numCols = (int) shape[1];
-
-                    // 임베딩 값 추출
-                    float[][] embeddingValues = new float[numRows][numCols];
-                    outputTensor.copyTo(embeddingValues);
-
-                    // float[][] 배열을 double[] 배열로 변환
-                    double[] embedding = new double[numRows * numCols];
-                    for (int i = 0; i < numRows; i++) {
-                        for (int j = 0; j < numCols; j++) {
-                            embedding[i * numCols + j] = embeddingValues[i][j];
-                        }
-                    }
-
-                    embeddings.add(embedding);
+            String[] words = comment.split("\\s+");
+            for (String word : words) {
+                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+                if (!wordToIndex.containsKey(word)) {
+                    wordToIndex.put(word, index++);
+                    uniqueWords.add(word);
                 }
             }
         }
-        return embeddings;
-    }
 
+        int totalComments = comments.size();
+        int totalWords = uniqueWords.size();
 
-    // 코사인 유사도 계산 함수
-    public double calculateSimilarity(double[] embedding1, double[] embedding2) {
-        double dotProduct = IntStream.range(0, embedding1.length)
-                .mapToDouble(i -> embedding1[i] * embedding2[i])
-                .sum();
-        double norm1 = Math.sqrt(IntStream.range(0, embedding1.length)
-                .mapToDouble(i -> embedding1[i] * embedding1[i])
-                .sum());
-        double norm2 = Math.sqrt(IntStream.range(0, embedding2.length)
-                .mapToDouble(i -> embedding2[i] * embedding2[i])
-                .sum());
+        // TF-IDF 행렬 초기화
+        tfidfMatrix = new Array2DRowRealMatrix(totalComments, totalWords);
 
-        return dotProduct / (norm1 * norm2);
-    }
-
-    // 중요한 댓글 추출 함수
-    public List<String> extractImportantComments(List<String> comments, int topN) {
-        List<double[]> embeddings = embedComments(comments);
-
-        Map<String, Double> commentScores = new HashMap<>();
-        for (int i = 0; i < comments.size(); i++) {
-            double score = 0.0;
-            for (int j = 0; j < comments.size(); j++) {
-                if (i != j) {
-                    score += calculateSimilarity(embeddings.get(i), embeddings.get(j));
-                }
+        // TF-IDF 값 계산
+        for (int i = 0; i < totalComments; i++) {
+            String comment = comments.get(i);
+            String[] words = comment.split("\\s+");
+            for (String word : words) {
+                int wordIndex = wordToIndex.get(word);
+                double tf = (double) wordCountMap.get(word) / words.length;
+                double idf = Math.log((double) totalComments / (wordCountMap.get(word) + 1));
+                tfidfMatrix.setEntry(i, wordIndex, tf * idf);
             }
-            commentScores.put(comments.get(i), score);
         }
 
-        List<Map.Entry<String, Double>> sortedComments = new ArrayList<>(commentScores.entrySet());
-        sortedComments.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-
-        List<String> importantComments = new ArrayList<>();
-        for (int i = 0; i < Math.min(topN, sortedComments.size()); i++) {
-            importantComments.add(sortedComments.get(i).getKey());
-        }
-
-        return importantComments;
+        // 유사도 행렬 계산 (코사인 유사도)
+        similarityMatrix = tfidfMatrix.multiply(tfidfMatrix.transpose());
     }
 
-    public List<String> extractImportantCommentsForUser(User user, int topN) {
-        List<Course> courses = courseRepository.findByUser(user);
+    // 주어진 새로운 댓글의 중요도 예측
+    public double predictCommentImportance(String comment) {
+        String[] words = comment.split("\\s+");
+        double[] commentVector = new double[tfidfMatrix.getColumnDimension()];
+
+        for (String word : words) {
+            if (wordToIndex.containsKey(word)) {
+                int wordIndex = wordToIndex.get(word);
+                double tf = (double) Collections.frequency(Arrays.asList(words), word) / words.length;
+                double idf = Math.log((double) tfidfMatrix.getRowDimension() / (wordCountMap.getOrDefault(word, 0) + 1));
+                commentVector[wordIndex] = tf * idf;
+            }
+        }
+
+        RealMatrix commentMatrix = new Array2DRowRealMatrix(new double[][]{commentVector});
+        RealMatrix similarityVector = commentMatrix.multiply(tfidfMatrix.transpose());
+
+        double importance = similarityVector.getNorm() / (commentMatrix.getNorm() * tfidfMatrix.transpose().getNorm());
+
+        return importance;
+    }
+
+    // 주요 댓글 추천
+    public List<String> recommendImportantComments(User user, int topN) {
         List<String> recommendedComments = new ArrayList<>();
+        Map<String, Double> commentImportanceMap = new HashMap<>();
+        List<Course> courses = courseRepository.findByUser(user);
 
         for (Course course : courses) {
             List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
@@ -382,12 +353,22 @@ public class CommentService {
                 commentTexts.add(comment.getContent());
             }
 
-            // 주요 댓글 추출
-            List<String> importantCommentsForCourse = extractImportantComments(commentTexts, topN);
-            recommendedComments.addAll(importantCommentsForCourse);
+            trainModel(commentTexts);
+
+            for (String comment : commentTexts) {
+                double importance = predictCommentImportance(comment);
+                commentImportanceMap.put(comment, importance);
+            }
+
         }
+
+        // 중요도에 따라 정렬하여 상위 N개의 주요 댓글을 추출합니다.
+        commentImportanceMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(topN)
+                .forEach(entry -> recommendedComments.add(entry.getKey() + " : " + entry.getValue()));
 
         return recommendedComments;
     }
-}
 
+}
