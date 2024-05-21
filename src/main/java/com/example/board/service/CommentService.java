@@ -353,6 +353,10 @@ public class CommentService {
                 commentTexts.add(comment.getContent());
             }
 
+            if (commentTexts.isEmpty()) {
+                continue;
+            }
+
             trainModel(commentTexts);
 
             for (String comment : commentTexts) {

@@ -31,9 +31,6 @@ public class CourseController {
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
-        if (loginInfo == null){
-            return "redirect:/loginForm";
-        }
 
         long total = courseService.getTotalCount();
         List<Course> list = courseService.getCourses(page);
@@ -43,13 +40,17 @@ public class CourseController {
         }
         int currentPage = page;
 
+        if (loginInfo != null){
+            User user = userService.getUser(loginInfo.getUserId());
+            List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
+            List<String> modelRecommendedComments = commentService.recommendImportantComments(user, 3);
 
-        User user = userService.getUser(loginInfo.getUserId());
-        List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
-        List<String> modelRecommendedComments = commentService.recommendImportantComments(user, 3);
+            model.addAttribute("recommendedComments", recommendedComments);
+            model.addAttribute("modelRecommendedComments", modelRecommendedComments);
+        }
 
-        model.addAttribute("recommendedComments", recommendedComments);
-        model.addAttribute("modelRecommendedComments", modelRecommendedComments);
+
+
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
@@ -117,11 +118,17 @@ public class CourseController {
             return "redirect:/loginForm";
         }
 
-        List<String> roles = loginInfo.getRoles();
-        if (roles.contains("ROLE_ADMIN")) {
+        // 이것도 마찬가지로 교수면 다 지워지는게 아니라 해당 강의를 개설한 교수만 가능한거다.
+//        List<String> roles = loginInfo.getRoles();
+//        if (roles.contains("ROLE_ADMIN")) {
+//            courseService.deleteCourse(courseId);
+//        } else {
+//            courseService.deleteCourse(loginInfo.getUserId(), courseId);
+//        }
+
+        Course course = courseService.getCourse(courseId);
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
             courseService.deleteCourse(courseId);
-        } else {
-            courseService.deleteCourse(loginInfo.getUserId(), courseId);
         }
 
         return "redirect:/";
@@ -174,7 +181,7 @@ public class CourseController {
         User user = userService.getUser(loginInfo.getUserId());
         Set<User> participants = course.getParticipants();
         if(course.getUser().getUserId() == loginInfo.getUserId() || participants.contains(user)){
-            return "redirect:/";
+            return "redirect:/static";
         }
         // 사용자가 강좌에 참가하도록 Service에 요청합니다.
         courseService.joinCourse(courseId, loginInfo.getUserId());

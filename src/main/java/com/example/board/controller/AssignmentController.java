@@ -165,11 +165,15 @@ public class AssignmentController {
         if (loginInfo == null) {
             return "redirect:/loginForm";
         }
-        List<String> roles = loginInfo.getRoles();
-        if(roles.contains("ROLE_ADMIN")){
+        // 처음엔 이렇게 했는데 교수면 삭제가 되는게 아니라 해당 강의에 교수여야 삭제 가능해야하기 때문에 바꿔줘야한다.
+//        List<String> roles = loginInfo.getRoles();
+//        if(roles.contains("ROLE_ADMIN")){
+//            assignmentService.deleteAssignment(assignmentId);
+//        }
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        if(assignment.getUser().getUserId() == loginInfo.getUserId()){
             assignmentService.deleteAssignment(assignmentId);
         }
-        Assignment assignment = assignmentService.getAssignment(assignmentId);
         return "redirect:/assignmentList?currentCourseId=" + assignment.getCourse().getCourseId();
     }
 
