@@ -62,15 +62,10 @@ public class CourseService {
         return courseRepository.findByOrderByRegdateDesc(pageable).getContent();
     }
 
-    @Transactional
-    public Course getCourse(int courseId) {
-        return getCourse(courseId, true);
-    }
 
     @Transactional
-    public Course getCourse(int courseId, boolean updateViewCnt) {
-        Course course = courseRepository.findById(courseId).orElseThrow();
-        return course;
+    public Course getCourse(int courseId) {
+        return courseRepository.findById(courseId).orElseThrow();
     }
 
     @Transactional

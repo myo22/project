@@ -25,14 +25,14 @@
           <table class="table">
             <thead>
             <tr>
-              <th scope="col">번호</th>
+<!--              <th scope="col">번호</th>-->
               <th scope="col">제목</th>
               <th scope="col">작성자</th>
             </tr>
             </thead>
 
             <tr th:each="video : ${list}" th:if="${course.courseId == video.courseId}" >
-              <th scope="row">[[${video.videoId}]]</th>
+<!--              <th scope="row">[[${video.videoId}]]</th>-->
               <td>
                 <a th:href="@{/video(videoId=${video.videoId})}"> [[${video.title}]] </a>
               </td>

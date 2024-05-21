@@ -77,7 +77,11 @@ public class AssignmentService {
     @Transactional
     public AssignmentFileDto getAssignmentFile(int assignmentId){
         AssignmentFile assignmentFile = assignmentFileRepository.getAssignmentFile(assignmentId);
-        return toAssignmentDto(assignmentFile);
+        if (assignmentFile != null) {
+            return toAssignmentDto(assignmentFile);
+        } else {
+            return null; // 또는 적절한 기본값을 반환하거나 예외를 던질 수도 있습니다.
+        }
     }
 
     @Transactional

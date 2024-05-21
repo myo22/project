@@ -1,6 +1,5 @@
 package com.example.board.controller;
 
-import com.example.board.domain.Comment;
 import com.example.board.domain.Course;
 import com.example.board.domain.Grade;
 import com.example.board.domain.User;
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -143,7 +141,7 @@ public class CourseController {
             return "redirect:/loginForm";
         }
 
-        Course course = courseService.getCourse(courseId, false);
+        Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
         return "courseupdateform";
@@ -159,7 +157,7 @@ public class CourseController {
             return "redirect:/loginForm";
         }
 
-        Course course = courseService.getCourse(courseId, false);
+        Course course = courseService.getCourse(courseId);
         if (course.getUser().getUserId() != loginInfo.getUserId()) {
             return "redirect:/course?courseId=" + courseId;
         }
@@ -177,14 +175,14 @@ public class CourseController {
             return "redirect:/loginForm";
         }
 
-        Course course = courseService.getCourse(courseId, false);
+        Course course = courseService.getCourse(courseId);
         User user = userService.getUser(loginInfo.getUserId());
         Set<User> participants = course.getParticipants();
-        if(course.getUser().getUserId() == loginInfo.getUserId() || participants.contains(user)){
+        if(course.getUser().getUserId() == user.getUserId() || participants.contains(user)){
             return "redirect:/static";
         }
         // 사용자가 강좌에 참가하도록 Service에 요청합니다.
-        courseService.joinCourse(courseId, loginInfo.getUserId());
+        courseService.joinCourse(courseId, user.getUserId());
         for (User participant : participants) {
             System.out.println("Participant: " + participant.getName());
         }
