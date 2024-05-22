@@ -178,6 +178,7 @@ public class CourseController {
         Course course = courseService.getCourse(courseId);
         User user = userService.getUser(loginInfo.getUserId());
         Set<User> participants = course.getParticipants();
+
         if(course.getUser().getUserId() == user.getUserId() || participants.contains(user)){
             return "redirect:/static";
         }

@@ -43,7 +43,11 @@ public class GradeService {
         Grade existingGrade = gradeRepository.findByUserAndCourse(user, course);
 
         if (existingGrade == null){
-            throw new IllegalStateException("No existing grade record for the given user and course.");
+            return Grade.builder()
+                    .attendanceScore(0)
+                    .assignmentScore(0)
+                    .totalScore(0)
+                    .build();
         }
 
 
