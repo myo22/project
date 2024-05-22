@@ -2,6 +2,7 @@ package com.example.board.controller;
 
 import com.example.board.domain.Course;
 import com.example.board.domain.Grade;
+import com.example.board.domain.Role;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.*;
@@ -89,7 +90,12 @@ public class CourseController {
         }
         model.addAttribute("loginInfo", loginInfo);
 
-        return "coursewriteForm";
+        List<String> roles = loginInfo.getRoles();
+        if(roles.contains("ROLE_ADMIN")){
+            return "coursewriteForm";
+        }
+
+        return "redirect:/";
     }
 
     @PostMapping("/writeCourse")
@@ -166,8 +172,8 @@ public class CourseController {
         return "redirect:/course?courseId=" + courseId;
     }
 
-    @PostMapping ("/courses")
-    public String joinCourse(@RequestParam("courseId") int courseId,
+    @GetMapping ("/courses")
+    public String courses(@RequestParam("courseId") int courseId,
                              HttpSession httpSession) {
 
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
@@ -180,7 +186,7 @@ public class CourseController {
         Set<User> participants = course.getParticipants();
 
         if(course.getUser().getUserId() == user.getUserId() || participants.contains(user)){
-            return "redirect:/static";
+            return "redirect:/";
         }
         // 사용자가 강좌에 참가하도록 Service에 요청합니다.
         courseService.joinCourse(courseId, user.getUserId());

@@ -104,10 +104,9 @@
                 <td>[[${course.user.name}]]</td>
                 <td>[[${#temporals.format(course.regdate, 'yyyy-MM-dd')}]]</td>
                 <td>
-                  <form th:action="@{/courses}" method="post">
-                    <input type="hidden" name="courseId" th:value="${course.courseId}" />
-                    <button type="submit" class="btn btn-primary">참가신청</button>
-                  </form>
+                  <a th:href="@{/courses(courseId=${course.courseId})}" class="text-decoration-none">
+                    <button type="button" class="btn btn-primary">참가신청</button>
+                  </a>
                 </td>
               </tr>
 
