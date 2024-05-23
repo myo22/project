@@ -1,71 +1,49 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>회원가입폼</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--    <h1>회원가입폼</h1>-->
-<!--    &lt;!&ndash; http://localhost:8080/userReg  이 경로로 이름, 이메일, 패스워드 값이 전달된다.&ndash;&gt;-->
-<!--    <form action="/userReg" method="post">-->
-<!--        이름 : <input type="text" name="name" /><br />-->
-<!--        email : <input type="text" name="email" /><br />-->
-<!--        암호 : <input type="password" name="password"><br />-->
-<!--        <input type="submit" value="회원가입" />-->
-
-<!--    </form>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/basic.html}">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>회원가입 페이지</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>로그인 페이지</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
-
-<div layout:fragment="content">
-    <div class="row mt-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    회원가입
+<body class="align-middle" >
+<div class="container-fluid d-flex justify-content-center" style="height: 100vh">
+    <div class="card align-self-center">
+        <div class="card-header">
+            회원가입
+        </div>
+        <div class="card-body">
+            <form id="registerForm" action="/userReg" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">이름</span>
+                    <input type="text" name="name" class="form-control">
                 </div>
-                <div class="card-body">
-                    <form id="registerForm" action="/userReg" method="post">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">이름</span>
-                            <input type="text" name="name" class="form-control">
-                        </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">패스워드</span>
-                            <input type="password" name="password" class="form-control">
-                        </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">패스워드</span>
+                    <input type="password" name="password" class="form-control">
+                </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">이메일</span>
-                            <input type="email" name="email" class="form-control">
-                        </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">이메일</span>
+                    <input type="email" name="email" class="form-control">
+                </div>
 
-                        <div class="my-4">
-                            <div class="float-end">
-                                <button type="submit" class="btn btn-primary submitBtn">Submit</button>
-                                <button type="reset" class="btn btn-secondary">Reset</button>
-                            </div>
-                        </div>
-                    </form>
-                </div><!--end card body-->
-
-            </div><!--end card-->
-        </div><!-- end col-->
-    </div><!-- end row-->
-
-
+                <div class="my-4">
+                    <div class="float-end">
+                        <button type="submit" class="btn btn-primary submitBtn">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div><!--end card body-->
+   </div>
 </div>
+</body>
+</html>
