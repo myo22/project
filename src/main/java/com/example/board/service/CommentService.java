@@ -10,6 +10,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,6 +114,19 @@ public class CommentService {
 //                .collect(Collectors.toList());
 //    }
 
+    // 불용어 리스트
+    private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
+
+
+    // 텍스트 전처리 함수
+    public String preprocessText(String text) {
+        // 소문자 변환, 구두점 제거 등
+        String cleanedText = text.replaceAll("[^\\p{IsAlphabetic}\\s]", "").toLowerCase();
+        // 불용어 제거
+        return Arrays.stream(cleanedText.split("\\s+"))
+                .filter(word -> !STOP_WORDS.contains(word))
+                .collect(Collectors.joining(" "));
+    }
 
     // TF-IDF를 사용하여 댓글을 벡터화하는 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
@@ -122,7 +136,7 @@ public class CommentService {
         // 각 댓글의 단어 빈도수 계산
         Map<String, Integer> wordCountMap = new HashMap<>();
         for (String comment : comments) {
-            String[] words = comment.split("\\s+");
+            String[] words = preprocessText(comment).split("\\s+");
             for (String word : words) {
                 wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
             }
@@ -130,7 +144,7 @@ public class CommentService {
 
         // TF 계산
         for (String comment : comments) {
-            String[] words = comment.split("\\s+");
+            String[] words = preprocessText(comment).split("\\s+");
             Map<String, Double> tfMap = new HashMap<>();
             for (String word : words) {
                 double tf = (double) Collections.frequency(Arrays.asList(words), word) / words.length;
@@ -143,7 +157,7 @@ public class CommentService {
         Map<String, Double> idfMap = new HashMap<>();
         for (String word : wordCountMap.keySet()) {
             int wordCount = wordCountMap.get(word);
-            double idf = Math.log((double) totalComments / (wordCount + 1));
+            double idf = Math.log((totalComments + 1.0) / (wordCount + 1.0)) + 1.0; // 스무딩 적용
             idfMap.put(word, idf);
         }
 
