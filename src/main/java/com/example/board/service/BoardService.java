@@ -28,6 +28,7 @@ public class BoardService {
         board.setTitle(title);
         board.setContent(content);
         board.setRegdate(LocalDateTime.now());
+        board.setViewCnt(0);
         boardRepository.save(board);
     }
 

@@ -48,7 +48,7 @@
                         <tr th:each="board : ${list}"  >
                             <th scope="row">[[${board.boardId}]]</th>
                             <td>
-                                <a th:href="|@{/templates/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
+                                <a th:href="|@{/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
                             </td>
                             <td>[[${board.viewCnt}]]</td>
                             <td>[[${board.user.name}]]</td>
@@ -56,8 +56,7 @@
                         </tr>
 
                         <div>
-                            <a href="/writeForm" th:if="${loginInfo != null}">글쓰기</a>
-                            <span th:if="${loginInfo == null}">글쓰기</span>
+                            <a th:href="@{/writeForm(courseId=${course.courseId})}" th:if="${loginInfo != null}">글쓰기</a>
                         </div>
                     </table>
 

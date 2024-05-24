@@ -108,6 +108,9 @@ public class VideoController {
         }
         List<Comment> comments = commentService.getCommentByVideo(videoService.toVideo(video));
 
+        Course course = courseService.getCourse(video.getCourseId());
+
+        model.addAttribute("course", course);
         model.addAttribute("comments", comments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("video", video);
@@ -124,6 +127,11 @@ public class VideoController {
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
+
+        VideoDTO video = videoService.getVideo(videoId);
+        Course course = courseService.getCourse(video.getCourseId());
+
+        model.addAttribute("course", course);
         model.addAttribute("videoId", videoId);
         model.addAttribute("loginInfo", loginInfo);
 

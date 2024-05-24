@@ -1,8 +1,10 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Board;
+import com.example.board.domain.Course;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.BoardService;
+import com.example.board.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +21,14 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CourseService courseService;
 
     // 게시물 목록을 보여준다.
     // http://localhost:8080/ -----> "list"라는 이름의 템플릿을 사용(forward)하여 화면에 출력.
     // list를 리턴한다는 것은 classpath:/templates/list.html을 사용한다는 뜻이다. classpath:/경로나  .html(확장자)를 바꿔주고 싶다면 prefix랑 suffix를 바꿔주면 가능하다.
     @GetMapping("/list")
-    public String list(HttpSession httpSession, Model model,@RequestParam(name = "page", defaultValue = "0") int page){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
+    public String list(HttpSession httpSession, Model model,@RequestParam(name = "page", defaultValue = "0") int page,
+                       @RequestParam("currentCourseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
 
@@ -56,6 +60,10 @@ public class BoardController {
 //        for(Board board : list){
 //            System.out.println(board);
 //        }
+
+        Course course = courseService.getCourse(courseId);
+
+        model.addAttribute(course);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("currentPage", currentPage);
@@ -86,13 +94,18 @@ public class BoardController {
     // 수정한다.
 
     @GetMapping("/writeForm")
-    public String writeForm(HttpSession httpSession, Model model){
+    public String writeForm(HttpSession httpSession, Model model,
+                            @RequestParam("courseId") int courseId){
         // 로그인한 사용자만 글을 써야한다. 로그인을 하지 않았다면 리스트 보기로 자동 이동 시킨다.
         // 세션에서 로그인한 정보를 읽어들인다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
             return "redirect:/loginForm";
         }
+
+        Course course = courseService.getCourse(courseId);
+
+        model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
 
         return "writeForm";
@@ -117,7 +130,7 @@ public class BoardController {
 
         // 로그인 한 회원정보 + 제목, 내용을 저장한다.
 
-        return "redirect:/"; // 리스트 보기로 리다이렉트한다.
+        return "redirect:/list"; // 리스트 보기로 리다이렉트한다.
 
     }
 
@@ -145,7 +158,8 @@ public class BoardController {
     @GetMapping("/updateform")
     public String updateform(@RequestParam("boardId") int boardId,
                              Model model,
-                             HttpSession httpSession){
+                             HttpSession httpSession,
+                             @RequestParam("courseId") int courseId){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
             return "redirect:/loginForm";
@@ -153,6 +167,8 @@ public class BoardController {
 
         //boardId에 해당하는 정보를 읽어와서 updateform 템플릿에게 전달한다.
         Board board =boardService.getBoard(boardId, false);
+        Course course = courseService.getCourse(courseId);
+        model.addAttribute("course", course);
         model.addAttribute("board", board);
         model.addAttribute("loginInfo", loginInfo);
         return "updateform";

@@ -102,6 +102,7 @@ public class AssignmentController {
         List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
         List<Comment> comments = commentService.getCommentsByAssignment(assignment);
 
+        model.addAttribute("course", assignment.getCourse());
         model.addAttribute("comments", comments);
         model.addAttribute("participantAssignments", assignmentFiles);
         model.addAttribute("assignmentFile", assignmentFile);
@@ -133,6 +134,8 @@ public class AssignmentController {
             return "redirect:/loginForm";
         }
         Assignment assignment = assignmentService.getAssignment(assignmentId);
+
+        model.addAttribute("course", assignment.getCourse());
         model.addAttribute("assignment", assignment);
         model.addAttribute("loginInfo", loginInfo);
         return "assignmentUpdateForm";

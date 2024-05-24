@@ -2,7 +2,6 @@ package com.example.board.controller;
 
 import com.example.board.domain.Course;
 import com.example.board.domain.Grade;
-import com.example.board.domain.Role;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.*;
@@ -201,7 +200,7 @@ public class CourseController {
     public String participantList(Model model,
                                   HttpSession httpSession,
                                   @RequestParam("currentCourseId") int courseId){
-        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if (loginInfo == null) {
             return "redirect:/loginForm";
         }
