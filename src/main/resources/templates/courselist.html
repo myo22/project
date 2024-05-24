@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/basic.html}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <!-- Bootstrap CSS -->
@@ -12,34 +11,60 @@
 
   <!-- Bootstrap JS -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
+<body>
+<div class="container">
+  <div class="row navbar bg-light align-items-center">
+    <div class="col-6">
+      <a class="nav-link" href="/"><h4>LMSC</h4></a>
+    </div>
+    <div class="col-6">
+      <ul class="nav justify-content-end">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${loginInfo != null}" th:text="${loginInfo.name}"></a>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/mypage">마이페이지</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/logout">로그아웃</a>
+          </div>
+        </li>
+        <!-- 로그인/로그아웃 링크 -->
+        <li class="login-info_logout" th:if="${loginInfo == null}">
+          <a class="nav-link" href="/loginForm">로그인</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-<div layout:fragment="content">
+<div class="container mt-5">
   <form action="/" method="get">
     <div class="row mt-3">
       <div class="col">
 
         <div class="card">
           <div class="card-header">
-            강의 목록
+            나의 과목
+            <div class="float-right">
+              <!-- 모달 버튼 -->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                메모리 기반 댓글 추천
+              </button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
+                모델 기반 댓글 추천
+              </button>
+            </div>
           </div>
           <div class="card-body" >
-            <h5 class="card-title">강의 목록</h5>
 
-            <div class="row">
-              <div class="col text-right">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                  메모리 기반 댓글 추천
-                </button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
-                  모델 기반 댓글 추천
-                </button>
-              </div>
+            <div th:if="${loginInfo != null}">
+              <a href="/coursewriteForm">강의 개설</a>
             </div>
 
             <!-- The Modal -->
-            <div class="modal" id="myModal">
+            <div class="modal fade" id="myModal"> <!-- 모달 fade 클래스 추가 -->
               <div class="modal-dialog modal-dialog-top-right">
                 <div class="modal-content">
 
@@ -53,7 +78,7 @@
 
                   <!-- Modal body -->
                   <div class="modal-body" th:each="comment : ${recommendedComments}">
-                      <span th:text="${comment}"></span>
+                    <span th:text="${comment}"></span>
                   </div>
 
                   <!-- Modal footer -->
@@ -67,7 +92,7 @@
               </div>
             </div>
 
-            <div class="modal" id="myModal2"> <!-- 다른 ID를 부여 -->
+            <div class="modal fade" id="myModal2"> <!-- 다른 ID를 부여 -->
               <div class="modal-dialog modal-dialog-top-right">
                 <div class="modal-content">
                   <!-- Modal Header -->
@@ -88,13 +113,12 @@
             </div>
 
             <table class="table">
-              <thead>
               <tr>
                 <th scope="col">번호</th>
                 <th scope="col">제목</th>
                 <th scope="col">교수</th>
+                <th scope="col">작성일</th>
               </tr>
-              </thead>
 
               <tr th:each="course : ${list}"  >
                 <th scope="row">[[${course.courseId}]]</th>
@@ -109,12 +133,8 @@
                   </a>
                 </td>
               </tr>
-
-              <div>
-                <a href="/coursewriteForm" th:if="${loginInfo != null}">강의 개설</a>
-                <span th:if="${loginInfo == null}">강의 개설</span>
-              </div>
             </table>
+
 
             <div class="float-end">
               <ul class="pagination flex-wrap">
@@ -134,19 +154,4 @@
     </div><!-- end row-->
   </form>
 </div>
-
-<script layout:fragment="script" th:inline="javascript">
-  // document.addEventListener("DOMContentLoaded", function () {
-  //   const evtSource = new EventSource('/notify');
-  //
-  //   evtSource.onmessage = function (event) {
-  //     const newElement = document.createElement("p");
-  //     newElement.textContent = "New notification: " + event.data;
-  //     document.getElementById("notifications").appendChild(newElement);
-  //   };
-  //
-  //   evtSource.onerror = function (event){
-  //     console.error("EventSource failed:", event);
-  //   }
-  // });
-</script>
+</body>

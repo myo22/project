@@ -18,11 +18,38 @@
   <div class="border-end bg-white" id="sidebar-wrapper">
     <div class="sidebar-heading border-bottom bg-light">2024년  1학기</div>
     <div class="list-group list-group-flush">
-      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">강의자료실</a>
-      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/#">강의콘텐츠</a>
-      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">과제 및 평가</a>
-      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/#">사용자 및 그룹</a>
-      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/#!">토론</a>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('studyHubForm').submit()">
+        <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>강의자료실</span>
+        </form>
+      </div>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('videoForm').submit()">
+        <form id="videoForm" th:action="@{/videoList}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>강의콘텐츠</span>
+        </form>
+      </div>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('assignmentForm').submit()">
+        <form id="assignmentForm" th:action="@{/assignmentList}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>과제 및 평가</span>
+        </form>
+      </div>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('participantForm').submit()">
+        <form id="participantForm" th:action="@{/participantList}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>수강자 목록</span>
+        </form>
+      </div>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
+        <span>수강자 목록</span>
+      </div>
+      <a th:href="@{/list}" class="list-group-item list-group-item-action list-group-item-light p-3">토론</a>
     </div>
   </div>
 
@@ -40,9 +67,9 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${loginInfo != null}" th:text="${loginInfo.name}"></a>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/logout">로그아웃</a>
-                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/mypage">마이페이지</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">로그아웃</a>
               </div>
             </li>
             <!-- 로그인/로그아웃 링크 -->

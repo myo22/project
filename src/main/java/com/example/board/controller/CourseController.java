@@ -202,6 +202,10 @@ public class CourseController {
                                   HttpSession httpSession,
                                   @RequestParam("currentCourseId") int courseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
+        if (loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
         Course course = courseService.getCourse(courseId);
 
         Set<User> participants = course.getParticipants();
@@ -212,6 +216,10 @@ public class CourseController {
                 Grade grade = gradeService.calculateGrade(participant, course);
                 participantGrades.put(participant, grade);
             }
+        }
+
+        if(loginInfo != null && course.getUser() != null && loginInfo.getUserId() == course.getUser().getUserId()){
+            model.addAttribute("isAdmin", true);
         }
 
         model.addAttribute("course", course);
