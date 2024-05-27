@@ -76,7 +76,9 @@ public class BoardController {
     // /board?id=3
     // /board?id=3
     @GetMapping("/board")
-    public String board(@RequestParam("boardId") int boardId, Model model, HttpSession httpSession){
+    public String board(@RequestParam("boardId") int boardId,
+                        @RequestParam("courseId") int courseId,
+                        Model model, HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
 
@@ -85,7 +87,9 @@ public class BoardController {
         // id에 해당하는 게시물을 읽어온다.
         // id에 해당하는 게시물의 조회수도 1증가한다.
         Board board = boardService.getBoard(boardId);
+        Course course = courseService.getCourse(courseId);
 
+        model.addAttribute("course", course);
         model.addAttribute("board", board);
         return "board";
     }
@@ -168,6 +172,7 @@ public class BoardController {
         //boardId에 해당하는 정보를 읽어와서 updateform 템플릿에게 전달한다.
         Board board =boardService.getBoard(boardId, false);
         Course course = courseService.getCourse(courseId);
+
         model.addAttribute("course", course);
         model.addAttribute("board", board);
         model.addAttribute("loginInfo", loginInfo);

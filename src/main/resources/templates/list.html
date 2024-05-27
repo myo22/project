@@ -6,21 +6,21 @@
 <div layout:fragment="content">
 
     <div class="row mt-3">
-            <div class="col">
-<!--               <span class="login-info_user" th:if="${loginInfo != null}">-->
-<!--                   <span th:text="${loginInfo.getName()}"></span>-->
-<!--               </span>-->
-<!--                <span class="login-info_logout" th:if="${loginInfo == null}">-->
-<!--                    <a href="/loginForm">로그인</a>-->
-<!--                </span>-->
-<!--                <span class="login-info_logout" th:if="${loginInfo != null}">-->
-<!--                    <a href="/logout">로그아웃</a>-->
-<!--                </span>-->
-<!--                </span>-->
-<!--                <span class="login-info_join" th:if="${loginInfo == null}">-->
-<!--                    <a href="/userRegForm">회원가입</a> &lt;!&ndash; Get방식으로 요청 !&ndash;&gt;-->
-<!--                </span>-->
-            </div>
+        <div class="col">
+            <!--               <span class="login-info_user" th:if="${loginInfo != null}">-->
+            <!--                   <span th:text="${loginInfo.getName()}"></span>-->
+            <!--               </span>-->
+            <!--                <span class="login-info_logout" th:if="${loginInfo == null}">-->
+            <!--                    <a href="/loginForm">로그인</a>-->
+            <!--                </span>-->
+            <!--                <span class="login-info_logout" th:if="${loginInfo != null}">-->
+            <!--                    <a href="/logout">로그아웃</a>-->
+            <!--                </span>-->
+            <!--                </span>-->
+            <!--                <span class="login-info_join" th:if="${loginInfo == null}">-->
+            <!--                    <a href="/userRegForm">회원가입</a> &lt;!&ndash; Get방식으로 요청 !&ndash;&gt;-->
+            <!--                </span>-->
+        </div>
         </form>
     </div>
 
@@ -48,7 +48,7 @@
                         <tr th:each="board : ${list}"  >
                             <th scope="row">[[${board.boardId}]]</th>
                             <td>
-                                <a th:href="|@{/board/(boardId =${board.boardId})}|"> [[${board.title}]] </a>
+                                <a th:href="|@{/board/(boardId=${board.boardId})}&courseId=${course.courseId}|"> [[${board.title}]] </a>
                             </td>
                             <td>[[${board.viewCnt}]]</td>
                             <td>[[${board.user.name}]]</td>
@@ -69,19 +69,19 @@
                                 </li>
                             </th:block>
 
-<!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
-<!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
-<!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
-<!--                                </li>-->
-<!--                            </th:block>-->
+                            <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
+                            <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
+                            <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
+                            <!--                                </li>-->
+                            <!--                            </th:block>-->
 
-<!--                            <li class="page-item" th:if="${prev}">-->
-<!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
-<!--                            </li>-->
+                            <!--                            <li class="page-item" th:if="${prev}">-->
+                            <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
+                            <!--                            </li>-->
 
-<!--                            <li class="page-item" th:if="${next}">-->
-<!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
-<!--                            </li>-->
+                            <!--                            <li class="page-item" th:if="${next}">-->
+                            <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
+                            <!--                            </li>-->
 
 
                         </ul>
