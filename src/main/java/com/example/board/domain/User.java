@@ -64,6 +64,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Board> boards = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notice> notices = new HashSet<>();
+
     @Override
     public String toString() {
         return "User{" +
