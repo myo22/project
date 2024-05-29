@@ -26,6 +26,20 @@
   <div class="border-end bg-white" id="sidebar-wrapper">
     <div class="sidebar-heading border-bottom bg-light">2024년  1학기</div>
     <div class="list-group list-group-flush">
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('noticeForm').submit()">
+        <form id="noticeForm" th:action="@{/noticeList}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>공지</span>
+        </form>
+      </div>
+      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('courseForm').submit()">
+        <form id="courseForm" th:action="@{/coursePlan}" method="get">
+          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+          <span>수업계획서</span>
+        </form>
+      </div>
       <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('studyHubForm').submit()">
         <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
           <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
@@ -51,11 +65,11 @@
         <form id="participantForm" th:action="@{/participantList}" method="get">
           <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
           <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>수강자 목록</span>
+          <span>사용자 및 그룹</span>
         </form>
       </div>
       <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
-        <span>수강자 목록</span>
+        <span>사용자 및 그룹</span>
       </div>
       <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
         <form id="listForm" th:action="@{/list}" method="get">

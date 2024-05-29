@@ -2,6 +2,7 @@ package com.example.board.controller;
 
 import com.example.board.domain.Course;
 import com.example.board.domain.Grade;
+import com.example.board.domain.Notice;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.*;
@@ -24,7 +25,7 @@ public class CourseController {
     private final UserService userService;
     private final GradeService gradeService;
     private final CommentService commentService;
-    private final NotificationService notificationService;
+    private final NoticeService noticeService;
 
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
@@ -67,6 +68,8 @@ public class CourseController {
         model.addAttribute("loginInfo", loginInfo);
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
+        List<Notice> notices = noticeService.getNotices(course);
+        model.addAttribute("notices", notices);
 
         User user = userService.getUser(loginInfo.getUserId());
         Set<User> participants =  course.getParticipants();
@@ -76,6 +79,30 @@ public class CourseController {
         }else if(participants.contains(user)){
             model.addAttribute("isParticipant", true);
             return "course";
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/coursePlan")
+    public String coursePlan(@RequestParam("currentCourseId") int courseId, Model model, HttpSession httpSession) {
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+
+        model.addAttribute("loginInfo", loginInfo);
+        Course course = courseService.getCourse(courseId);
+        model.addAttribute("course", course);
+
+        User user = userService.getUser(loginInfo.getUserId());
+        Set<User> participants =  course.getParticipants();
+        if(loginInfo.getUserId() == course.getUser().getUserId()){
+            model.addAttribute("isAdmin", true);
+            return "coursePlan";
+        }else if(participants.contains(user)){
+            model.addAttribute("isParticipant", true);
+            return "coursePlan";
         }
 
         return "redirect:/";

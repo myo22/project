@@ -6,23 +6,13 @@
 <div layout:fragment="content">
 
     <div class="row mt-3">
-        <form action="/assignmentList" method="get">
-            <div class="col">
-
-            </div>
-        </form>
-    </div>
-
-    <div class="row mt-3">
         <div class="col">
 
             <div class="card">
                 <div class="card-header">
-                    과제 목록
+                    과제
                 </div>
                 <div class="card-body" >
-                    <h5 class="card-title"> 과제 목록</h5>
-
                     <table class="table">
                         <thead>
                         <tr>
@@ -41,11 +31,11 @@
                             <td>[[${assignment.user.name}]]</td>
                             <td>[[${#temporals.format(assignment.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>
-
                         <div>
                             <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">과제 개설</a>
                             <span th:if="${loginInfo == null}">과제 개설</span>
                         </div>
+                    </table>
                         <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">
                             <button type="button" class="btn btn-primary listBtn">이전</button>
                         </a>
@@ -54,9 +44,6 @@
                         <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
                         <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
                         <!--            </div>-->
-
-
-                    </table>
 
                     <div class="float-end">
                         <ul class="pagination flex-wrap">

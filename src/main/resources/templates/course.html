@@ -4,47 +4,26 @@
       layout:decorate="~{layout/basic.html}">
 
 <head>
-  <title>강의 상세보기</title>
+  <title>강의</title>
 </head>
 
 <div layout:fragment="content">
   <div class="row mt-3">
     <div class="col">
-      <div class="card">
-        <div class="card-header">
-          강의 상세보기
-        </div>
-        <div class="card-body">
-          <div class="input-group mb-3">
-            <span class="input-group-text">글쓴이</span>
-            <input type="text" class="form-control" th:value="${course.user.name}" readonly>
-          </div>
-          <div class="input-group mb-3">
-            <span class="input-group-text">제목</span>
-            <input type="text" class="form-control" th:value="${course.title}" readonly>
-          </div>
-
-          <div class="input-group mb-3">
-            <span class="input-group-text">내용</span>
-            <textarea class="form-control col-sm-5" rows="5" readonly>[[${course.content}]]</textarea>
-          </div>
-
-          <div class="input-group mb-3">
-            <span class="input-group-text">작성일</span>
-            <input type="text" class="form-control" th:value="${#temporals.format(course.regdate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
-          </div>
-
-          <div class="my-4">
-            <a th:href="@{/}" class="text-decoration-none">
-              <button type="button" class="btn btn-primary listBtn">목록</button>
-            </a>
-<!--            text-decoration-none 은 텍스트의 밑줄을 없애는 역할-->
-            <a th:href="@{/courseupdateform(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
-              <button type="button" id="updateButton" class="btn btn-primary">수정</button>
-            </a>
-          </div>
-        </div><!--end card body-->
-      </div><!--end card-->
+      <h5><strong>최근 공지사항</strong></h5>
+      <hr>
+      <div class="container-fluid">
+        <ui>
+          <li th:if="${notices.isEmpty()}">
+            <p>공지사항이 없습니다.</p>
+          </li>
+          <li th:each="notice : ${notices}">
+            <strong><h7 th:text="${notice.title}"></h7></strong>
+            <p th:text="${notice.content}"></p>
+            <hr>
+          </li>
+        </ui>
+      </div>
     </div><!-- end col-->
   </div><!-- end row-->
 </div>

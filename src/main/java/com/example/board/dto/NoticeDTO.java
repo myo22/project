@@ -1,9 +1,12 @@
 package com.example.board.dto;
 
 import com.example.board.domain.Notice;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,6 +15,7 @@ public class NoticeDTO {
     private int noticeId;
     private String title;
     private String content;
+    private LocalDateTime regdate;
     private int courseId;
     private int userId;
 
