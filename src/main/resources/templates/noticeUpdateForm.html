@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>공지 작성</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <div style="height: 40px;"></div>
+                </div>
+                <div class="card-body">
+                    <form action="/updateNotice" method="post">
+                        <input type="hidden" th:value="${notice.noticeId}" name="noticeId">
+                        <input type="hidden" th:value="${course.courseId}" name="courseId">
+
+                        <div class="input-group mb-3">
+                            <input type="text" name="title" class="form-control" th:value="${notice.title}">
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control" th:value="${notice.user.name}" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <textarea class="form-control col-sm-5" name="content" cols="50" rows="5" th:text="${notice.content}"></textarea>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-primary">수정</button>
+                                <button type="reset" class="btn btn-secondary">초기화</button>
+
+                                <a th:href="@{/deleteNotice(noticeId=${notice.noticeId}, courseId=${course.courseId})}" class="text-decoration-none">
+                                    <button type="button" class="btn btn-danger removeBtn">삭제</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div><!--end card body-->
+
+            </div><!--end card-->
+        </div><!-- end col-->
+    </div><!-- end row-->
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+</script>

@@ -39,4 +39,14 @@ public class NoticeService {
         return noticeRepository.findByCourse(course);
     }
 
+    @Transactional
+    public void updateNotice(String title, String content, Notice notice){
+        notice.setTitle(title);
+        notice.setContent(content);
+    }
+
+    @Transactional
+    public void deleteNotice(int noticeId){
+        noticeRepository.deleteById(noticeId);
+    }
 }

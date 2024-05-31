@@ -26,7 +26,7 @@
                             <td th:if="${file.courseId == course.courseId}" th:text="${file.origFilename}"></td> <!-- origFilename으로 변경 -->
                             <td th:if="${file.courseId == course.courseId}">
                                 <!-- 다운로드 링크 추가 -->
-                            <a th:href="@{'File/download/' + ${file.fileId}}" download th:text="'다운로드'"></a>
+                            <a class="text-decoration-none" th:href="@{'File/download/' + ${file.fileId}}" download th:text="'다운로드'"></a>
                             </td>
                         </tr>
                         </tbody>

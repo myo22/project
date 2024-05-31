@@ -24,7 +24,9 @@
                         <tbody>
                         <!-- 강의 자료 목록 표시 -->
                         <tr th:each="notice : ${notices}">
-                            <td th:text="${notice.title}"></td>
+                            <td>
+                                <a class="text-decoration-none" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">[[${notice.title}]]</a>
+                            </td>
                             <td th:text="${notice.content}"></td>
                             <td>[[${#temporals.format(notice.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>

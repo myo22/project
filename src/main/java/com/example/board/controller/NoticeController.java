@@ -80,4 +80,78 @@ public class NoticeController {
         noticeService.addNotice(title, content, course, user);
         return "redirect:/noticeList?currentCourseId=" + courseId;
     }
+
+    @GetMapping("/notice")
+    public String notice(@RequestParam("courseId") int courseId,
+                         @RequestParam("noticeId") int noticeId,
+                         HttpSession httpSession,
+                         Model model){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+        Course course = courseService.getCourse(courseId);
+        Notice notice = noticeService.getNotice(noticeId);
+
+        if(notice.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+
+        model.addAttribute("loginInfo", loginInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("notice", notice);
+
+        return "notice";
+    }
+
+    @GetMapping("/noticeUpdateForm")
+    public String noticeUpdateForm(@RequestParam("courseId") int courseId,
+                                   @RequestParam("noticeId") int noticeId,
+                                   HttpSession httpSession,
+                                   Model model){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+        Course course = courseService.getCourse(courseId);
+        Notice notice = noticeService.getNotice(noticeId);
+
+        model.addAttribute("longinInfo", loginInfo);
+        model.addAttribute("notice", notice);
+        model.addAttribute("course", course);
+        return "noticeUpdateForm";
+    }
+
+    @PostMapping("/updateNotice")
+    public String updateNotice(@RequestParam("noticeId") int noticeId,
+                               @RequestParam("title") String title,
+                               @RequestParam("content") String content,
+                               @RequestParam("courseId") int courseId,
+                               HttpSession httpSession){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+        Notice notice = noticeService.getNotice(noticeId);
+        noticeService.updateNotice(title, content, notice);
+        return "redirect:/notice/?noticeId=" + noticeId +"&courseId=" + courseId;
+
+    }
+
+    @GetMapping("/deleteNotice")
+    public String deleteNotice(@RequestParam("noticeId") int noticeId,
+                               @RequestParam("courseId") int courseId,
+                               HttpSession httpSession){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if(loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+        noticeService.deleteNotice(noticeId);
+
+        return "redirect:/noticeList?currentCourseId=" + courseId;
+    }
 }

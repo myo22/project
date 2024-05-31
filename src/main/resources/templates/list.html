@@ -27,7 +27,7 @@
                         <tr th:each="board : ${list}"  >
                             <th scope="row">[[${board.boardId}]]</th>
                             <td>
-                                <a th:href="|@{/board/(boardId=${board.boardId})}&courseId=${course.courseId}|"> [[${board.title}]] </a>
+                                <a class="text-decoration-none" th:href="|@{/board/(boardId=${board.boardId})}&courseId=${course.courseId}|"> [[${board.title}]] </a>
                             </td>
                             <td>[[${board.viewCnt}]]</td>
                             <td>[[${board.user.name}]]</td>

@@ -25,7 +25,7 @@
             <tr th:each="video : ${list}" th:if="${course.courseId == video.courseId}" >
 <!--              <th scope="row">[[${video.videoId}]]</th>-->
               <td>
-                  <a th:href="@{/video(videoId=${video.videoId})}"> [[${video.title}]] </a>
+                  <a class="text-decoration-none" th:href="@{/video(videoId=${video.videoId})}"> [[${video.title}]] </a>
               </td>
               <td>[[${video.getUserName()}]]</td>
             </tr>

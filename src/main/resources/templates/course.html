@@ -18,7 +18,9 @@
             <p>공지사항이 없습니다.</p>
           </li>
           <li th:each="notice : ${notices}">
-            <strong><h7 th:text="${notice.title}"></h7></strong>
+            <a class="text-decoration-none" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
+              <strong><h7 th:text="${notice.title}"></h7></strong>
+            </a>
             <p th:text="${notice.content}"></p>
             <hr>
           </li>
