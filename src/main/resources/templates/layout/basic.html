@@ -20,11 +20,22 @@
 <!--      cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */-->
 <!--    }-->
 <!--  </style>-->
+  <style>
+    .custom-link {
+      font-size: 18px; /* 원하는 글자 크기로 설정 */
+      color: black;   /* 검정색으로 설정 */
+      text-decoration: none; /* 링크의 밑줄 제거 */
+      margin-left: 20px;
+      margin-top: 2px;
+    }
+  </style>
 </head>
 <body>
 <div class="d-flex" id="wrapper">
   <div class="border-end bg-white" id="sidebar-wrapper">
-    <div class="sidebar-heading border-bottom bg-light">2024년  1학기</div>
+    <div class="sidebar-heading border-bottom bg-light">
+      <a th:href="@{/}" class="text-decoration-none">2024년 1학기</a>
+    </div>
     <div class="list-group list-group-flush">
       <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('noticeForm').submit()">
         <form id="noticeForm" th:action="@{/noticeList}" method="get">
@@ -86,8 +97,11 @@
       <div class="container-fluid">
         <!-- 사이드바 토글 버튼 -->
         <button id="sidebarToggle" class="btn p-0 border-0 bg-transparent">
-          <img src="/sidebar2.png" alt="Toggle Sidebar" class="img-fluid" style="max-width: 30px">
+          <img src="/sidebar3.png" alt="Toggle Sidebar" class="img-fluid" style="max-width: 20px">
         </button>
+        <a class="text-decoration-none" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}" th:class="custom-link"></a>
+        <a id="courseTitleLink" class="custom-link" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}"></a>
+
         <!-- 네비게이션 바 메뉴 -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto mt-2 mt-lg-0">

@@ -16,16 +16,16 @@
         </div>
         <div class="card-body">
           <div class="input-group mb-3">
-            <span class="input-group-text">글쓴이</span>
+            <span class="input-group-text">담당교수명</span>
             <input type="text" class="form-control" th:value="${course.user.name}" readonly>
           </div>
           <div class="input-group mb-3">
-            <span class="input-group-text">제목</span>
+            <span class="input-group-text">교과목명</span>
             <input type="text" class="form-control" th:value="${course.title}" readonly>
           </div>
 
           <div class="input-group mb-3">
-            <span class="input-group-text">내용</span>
+            <span class="input-group-text">수업 개요 및 목표</span>
             <textarea class="form-control col-sm-5" rows="5" readonly>[[${course.content}]]</textarea>
           </div>
 
@@ -35,13 +35,13 @@
           </div>
 
           <div class="my-4">
-            <a th:href="@{/}" class="text-decoration-none">
-              <button type="button" class="btn btn-primary listBtn">목록</button>
-            </a>
-            <!--            text-decoration-none 은 텍스트의 밑줄을 없애는 역할-->
-<!--            <a th:href="@{/courseupdateform(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">-->
-<!--              <button type="button" id="updateButton" class="btn btn-primary">수정</button>-->
+<!--            <a th:href="@{/}" class="text-decoration-none">-->
+<!--              <button type="button" class="btn btn-primary listBtn">목록</button>-->
 <!--            </a>-->
+                        text-decoration-none 은 텍스트의 밑줄을 없애는 역할
+            <a th:href="@{/courseupdateform(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
+              <button type="button" id="updateButton" class="btn btn-primary">수정</button>
+            </a>
           </div>
         </div><!--end card body-->
       </div><!--end card-->

@@ -56,9 +56,9 @@
 <!--                    </div>-->
 
                     <div class="my-4">
-                        <a th:href="@{/list}" class="text-decoration-none">
-                            <button type="button" class="btn btn-primary listBtn">목록</button>
-                        </a>
+<!--                        <a th:href="@{/list}" class="text-decoration-none">-->
+<!--                            <button type="button" class="btn btn-primary listBtn">목록</button>-->
+<!--                        </a>-->
                         <a th:href="@{/updateform(boardId=${board.boardId}, courseId=${course.courseId})}" class="text-decoration-none">
                             <input type="hidden" name="courseId" th:value="${course.courseId}">
                             <button type="button" class="btn btn-primary">수정</button>

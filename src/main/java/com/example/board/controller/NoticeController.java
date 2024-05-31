@@ -41,6 +41,7 @@ public class NoticeController {
             model.addAttribute("isAdmin", true);
         }
 
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("course", course);
         model.addAttribute("notices", notices);
 
