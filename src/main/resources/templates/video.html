@@ -33,15 +33,10 @@
         </div>
         <div class="card-body">
           <div class="input-group mb-3">
-            <span class="input-group-text">글쓴이</span>
-            <input type="text" class="form-control" th:value="${video.getUserName()}" readonly>
-          </div>
-          <div class="input-group mb-3">
-            <span class="input-group-text">제목</span>
             <input type="text" class="form-control" th:value="${video.title}" readonly>
           </div>
 
-          <video controls onended="submitWatchedVideo()">
+          <video controls onended="submitWatchedVideo()" style="max-width: 100%; height: auto">
             <source th:src="@{'/video/stream/' + ${video.videoId}}" type="video/mp4">
             Your browser does not support the video tag.
           </video>

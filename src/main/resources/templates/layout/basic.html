@@ -100,8 +100,9 @@
           <img src="/sidebar3.png" alt="Toggle Sidebar" class="img-fluid" style="max-width: 20px">
         </button>
         <a class="text-decoration-none" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}" th:class="custom-link"></a>
-        <a id="courseTitleLink" class="custom-link" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}"></a>
-
+        <div id="content">
+          <!-- 클릭 이벤트를 통해 업데이트되는 텍스트 -->
+        </div>
         <!-- 네비게이션 바 메뉴 -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
@@ -132,5 +133,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
 <script th:src="@{/js/scripts.js}"></script>
+
+<script>
+  function updateText(text) {
+    document.getElementById('content').innerText = ' > ' + text;
+  }
+</script>
+
 </body>
 </html>
