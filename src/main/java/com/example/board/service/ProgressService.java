@@ -51,43 +51,43 @@ public class ProgressService {
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         if(participant.isAssignmentSubmit() == false){
             progress.setTotalAssignments(progress.getTotalAssignments() - 1);
-            participant.setVideoWatched(true);
+            participant.setAssignmentSubmit(true);
             participantRepository.save(participant);
         }
         progressRepository.save(progress);
     }
 
     @Transactional
-    public void watchVideos(int courseId, int userId){
+    public void watchDiscussions(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isVideoWatched() == false){
-            progress.setTotalVideos(progress.getTotalVideos() - 1);
-            participant.setVideoWatched(true);
+        if(participant.isDiscussionWatched() == false){
+            progress.setTotalDiscussions(progress.getTotalDiscussions() - 1);
+            participant.setDiscussionWatched(true);
             participantRepository.save(participant);
         }
         progressRepository.save(progress);
     }
 
     @Transactional
-    public void watchVideos(int courseId, int userId){
+    public void watchNotices(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isVideoWatched() == false){
-            progress.setTotalVideos(progress.getTotalVideos() - 1);
-            participant.setVideoWatched(true);
+        if(participant.isNoticeWatched() == false){
+            progress.setTotalNotices(progress.getTotalNotices() - 1);
+            participant.setNoticeWatched(true);
             participantRepository.save(participant);
         }
         progressRepository.save(progress);
     }
 
     @Transactional
-    public void watchVideos(int courseId, int userId){
+    public void watchResources(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isVideoWatched() == false){
-            progress.setTotalVideos(progress.getTotalVideos() - 1);
-            participant.setVideoWatched(true);
+        if(participant.isResourceWatched() == false){
+            progress.setTotalResources(progress.getTotalResources() - 1);
+            participant.setResourceWatched(true);
             participantRepository.save(participant);
         }
         progressRepository.save(progress);
