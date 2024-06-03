@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class ProgressService {
@@ -31,6 +33,61 @@ public class ProgressService {
                 .user(user).build();
 
         progressRepository.save(progress);
+    }
+
+    @Transactional
+    public void incrementVideoCount(int courseId){
+        Set<Progress> progresses = progressRepository.findByCourseCourseId(courseId);
+        if(progresses.isEmpty()){
+            return;
+        }
+        for(Progress progress : progresses){
+            progress.setTotalVideos(progress.getTotalVideos() + 1);
+        }
+    }
+
+    @Transactional
+    public void incrementAssignmentCount(int courseId){
+        Set<Progress> progresses = progressRepository.findByCourseCourseId(courseId);
+        if(progresses.isEmpty()){
+            return;
+        }
+        for(Progress progress : progresses){
+            progress.setTotalAssignments(progress.getTotalAssignments() + 1);
+        }
+    }
+
+    @Transactional
+    public void incrementDiscussionCount(int courseId){
+        Set<Progress> progresses = progressRepository.findByCourseCourseId(courseId);
+        if(progresses.isEmpty()){
+            return;
+        }
+        for(Progress progress : progresses){
+            progress.setTotalDiscussions(progress.getTotalDiscussions() + 1);
+        }
+    }
+
+    @Transactional
+    public void incrementNoticeCount(int courseId){
+        Set<Progress> progresses = progressRepository.findByCourseCourseId(courseId);
+        if(progresses.isEmpty()){
+            return;
+        }
+        for(Progress progress : progresses){
+            progress.setTotalNotices(progress.getTotalNotices() + 1);
+        }
+    }
+
+    @Transactional
+    public void incrementResourceCount(int courseId){
+        Set<Progress> progresses = progressRepository.findByCourseCourseId(courseId);
+        if(progresses.isEmpty()){
+            return;
+        }
+        for(Progress progress : progresses){
+            progress.setTotalResources(progress.getTotalResources() + 1);
+        }
     }
 
     @Transactional

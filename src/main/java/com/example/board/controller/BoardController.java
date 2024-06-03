@@ -5,6 +5,7 @@ import com.example.board.domain.Course;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.BoardService;
 import com.example.board.service.CourseService;
+import com.example.board.service.ProgressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CourseService courseService;
+    private final ProgressService progressService;
 
     // 게시물 목록을 보여준다.
     // http://localhost:8080/ -----> "list"라는 이름의 템플릿을 사용(forward)하여 화면에 출력.
@@ -88,6 +90,7 @@ public class BoardController {
         // id에 해당하는 게시물의 조회수도 1증가한다.
         Board board = boardService.getBoard(boardId);
         Course course = courseService.getCourse(courseId);
+        progressService.watchDiscussions(courseId, loginInfo.getUserId());
 
         model.addAttribute("course", course);
         model.addAttribute("board", board);
@@ -119,6 +122,7 @@ public class BoardController {
     public String write(
             @RequestParam("title") String title,
             @RequestParam("content") String content,
+            @RequestParam("courseId") int courseId,
             HttpSession httpSession
     ){
         System.out.println("title : " + title);
@@ -131,6 +135,7 @@ public class BoardController {
             return "redirect:/loginForm";
         }
         boardService.addBoard(loginInfo.getUserId(), title, content);
+        progressService.incrementDiscussionCount(courseId);
 
         // 로그인 한 회원정보 + 제목, 내용을 저장한다.
 

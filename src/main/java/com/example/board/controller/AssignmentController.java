@@ -5,10 +5,7 @@ import com.example.board.domain.*;
 import com.example.board.dto.AssignmentFileDto;
 import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
-import com.example.board.service.AssignmentService;
-import com.example.board.service.CommentService;
-import com.example.board.service.CourseService;
-import com.example.board.service.UserService;
+import com.example.board.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -40,6 +37,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
     private final CourseService courseService;
     private final CommentService commentService;
+    private final ProgressService progressService;
 
     @GetMapping("/assignmentWriteForm")
     public String assignmentWriteForm(HttpSession httpSession,
@@ -68,6 +66,7 @@ public class AssignmentController {
             return "redirect:/loginForm";
         }
         assignmentService.addAssignment(courseId, loginInfo.getUserId(), maxScore,title, content);
+        progressService.incrementAssignmentCount(courseId);
         return "redirect:/assignmentList?currentCourseId=" + courseId;
     }
 
@@ -199,12 +198,14 @@ public class AssignmentController {
     @PostMapping("/assignmentFileWrite")
     public String assignmentFileWrite(@RequestParam("file")MultipartFile file,
                                   @RequestParam("assignmentId") int assignmentId,
-                                  @RequestParam("userId") int userId) {
+                                  @RequestParam("userId") int userId,
+                                      @RequestParam("courseId") int courseId) {
         try {
             assignmentService.saveFile(file, assignmentId, userId);
         }catch (IOException e){
             e.printStackTrace();
         }
+        progressService.submitAssignments(courseId, userId);
         return "redirect:/assignment?assignmentId=" + assignmentId;
     }
 

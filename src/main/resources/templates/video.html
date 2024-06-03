@@ -43,6 +43,7 @@
 
           <form id="watchedVideoForm" action="/watchVideo" method="POST" style="display: none;">
             <input type="hidden" name="videoId" th:value="${video.videoId}">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
           </form>
 
           <div class="my-4">

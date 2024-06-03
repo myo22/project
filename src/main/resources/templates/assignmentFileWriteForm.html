@@ -18,6 +18,7 @@
                     <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
                         <input type="hidden" name="userId" th:value="${assignment.user.getUserId()}">
+                        <input type="hidden" name="courseId" th:value="${assignment.course.courseId}">
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">글쓴이</span>

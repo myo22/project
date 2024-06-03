@@ -6,6 +6,7 @@ import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
 import com.example.board.service.NoticeService;
+import com.example.board.service.ProgressService;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     private final UserService userService;
+    private final ProgressService progressService;
 
     @GetMapping("/noticeList")
     public String noticeList(@RequestParam("currentCourseId") int courseId,
@@ -78,6 +80,8 @@ public class NoticeController {
         Course course = courseService.getCourse(courseId);
 
         noticeService.addNotice(title, content, course, user);
+        progressService.incrementNoticeCount(courseId);
+
         return "redirect:/noticeList?currentCourseId=" + courseId;
     }
 
@@ -93,6 +97,8 @@ public class NoticeController {
 
         Course course = courseService.getCourse(courseId);
         Notice notice = noticeService.getNotice(noticeId);
+
+        progressService.watchNotices(courseId, loginInfo.getUserId());
 
         if(notice.getUser().getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);

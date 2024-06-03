@@ -40,6 +40,7 @@ public class VideoController {
     private final AttendanceService attendanceService;
     private final GradeService gradeService;
     private final CommentService commentService;
+    private final ProgressService progressService;
 
     private static final String UPLOAD_DIR = "C:/uploads/";
     private static final int CHUNK_SIZE = 1024 * 1024; // 1MB
@@ -84,7 +85,8 @@ public class VideoController {
     @PostMapping("/videoWrite")
     public String videoWrite(@RequestParam("video") MultipartFile file,
                              @RequestParam("courseId") int courseId,
-                             @RequestParam("title") String title
+                             @RequestParam("title") String title,
+                             HttpSession httpSession
                              ){
         Course course = courseService.getCourse(courseId);
         try {
@@ -93,6 +95,7 @@ public class VideoController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        progressService.incrementVideoCount(courseId);
         return "redirect:/videoList?currentCourseId=" + courseId;
     }
 
@@ -179,13 +182,15 @@ public class VideoController {
 
     @PostMapping("/watchVideo")
     public String watchVideo(@RequestParam("videoId") int videoId,
-                                   HttpSession httpSession){
+                             @RequestParam("courseId") int courseId,
+                             HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
 
         attendanceService.recordAttendance(videoId, loginInfo.getUserId());
+        progressService.watchVideos(courseId, loginInfo.getUserId());
 
         return "redirect:/video?videoId=" + videoId;
     }

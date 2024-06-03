@@ -6,6 +6,7 @@ import com.example.board.dto.FileDto;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.CourseService;
 import com.example.board.service.FileService;
+import com.example.board.service.ProgressService;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -37,6 +38,7 @@ public class FileController {
     private final FileService fileService;
     private final CourseService courseService;
     private final UserService userService;
+    private final ProgressService progressService;
 
     private static final String VIDEO_DIRECTORY = "video";
 
@@ -63,6 +65,7 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        progressService.incrementResourceCount(courseId);
         return "redirect:/studyHubList?currentCourseId=" + courseId;
     }
 
