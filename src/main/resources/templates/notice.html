@@ -5,6 +5,7 @@
 
 <head>
     <title>수업계획서</title>
+
 </head>
 
 <div layout:fragment="content">
@@ -17,17 +18,18 @@
 
                 <div class="mt-0">
                     <input type="text" class="form-control border-0" th:value="${notice.title}" readonly style="font-size: 20px">
-                    <input type="text" class="form-control border-0" th:value="${notice.user.name}" readonly>
+                    <input type="text" class="form-control border-0" th:value="${notice.user.name}" readonly style="font-size: 10px; color: #0d6efd">
                     <textarea class="form-control col-sm-5 border-0" readonly>[[${notice.content}]]</textarea>
                 </div>
 
-                <a th:href="@{/noticeUpdateForm(noticeId=${notice.noticeId}, courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
-                    <button type="button" id="updateButton" class="btn btn-primary">수정</button>
-                </a>
             </div>
-            <div class="border p-3">
+            <div class="border p-3 mb-2">
 
             </div>
+
+            <a th:href="@{/noticeUpdateForm(noticeId=${notice.noticeId}, courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
+                <button type="button" id="updateButton" class="btn btn-primary">수정</button>
+            </a>
         </div><!-- end col-->
     </div><!-- end row-->
 </div>

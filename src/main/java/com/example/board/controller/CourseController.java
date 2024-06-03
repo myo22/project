@@ -26,6 +26,7 @@ public class CourseController {
     private final GradeService gradeService;
     private final CommentService commentService;
     private final NoticeService noticeService;
+    private final ProgressService progressService;
 
     @GetMapping("/")
     public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
@@ -216,6 +217,7 @@ public class CourseController {
         }
         // 사용자가 강좌에 참가하도록 Service에 요청합니다.
         courseService.joinCourse(courseId, user.getUserId());
+        progressService.AddProgress(courseId, user.getUserId());
         for (User participant : participants) {
             System.out.println("Participant: " + participant.getName());
         }

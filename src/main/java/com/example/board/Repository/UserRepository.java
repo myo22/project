@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 //    @Query("SELECT u FROM User u JOIN u.courses c WHERE c.courseId = :courseId")
 //    List<User> findByCourseId(@Param("courseId") int courseId);
 
-
+    User findByUserId(int userId);
 
     // Optional이라 값이없으면 Optional User가 나온다.
     Optional<User> findByEmail(String email);
