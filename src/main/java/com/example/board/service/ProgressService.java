@@ -112,7 +112,7 @@ public class ProgressService {
     public void watchVideos(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isVideoWatched() == false){
+        if(participant.getVideoWatched() == false){
             progress.setTotalVideos(progress.getTotalVideos() - 1);
             participant.setVideoWatched(true);
             participantRepository.save(participant);
@@ -124,7 +124,7 @@ public class ProgressService {
     public void submitAssignments(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isAssignmentSubmit() == false){
+        if(participant.getAssignmentSubmit() == false){
             progress.setTotalAssignments(progress.getTotalAssignments() - 1);
             participant.setAssignmentSubmit(true);
             participantRepository.save(participant);
@@ -136,7 +136,7 @@ public class ProgressService {
     public void watchDiscussions(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isDiscussionWatched() == false){
+        if(participant.getDiscussionWatched() == false){
             progress.setTotalDiscussions(progress.getTotalDiscussions() - 1);
             participant.setDiscussionWatched(true);
             participantRepository.save(participant);
@@ -148,7 +148,7 @@ public class ProgressService {
     public void watchNotices(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isNoticeWatched() == false){
+        if(participant.getNoticeWatched() == false){
             progress.setTotalNotices(progress.getTotalNotices() - 1);
             participant.setNoticeWatched(true);
             participantRepository.save(participant);
@@ -160,7 +160,7 @@ public class ProgressService {
     public void watchResources(int courseId, int userId){
         Progress progress = progressRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
         Participant participant = participantRepository.findByCourseCourseIdAndUserUserId(courseId, userId);
-        if(participant.isResourceWatched() == false){
+        if(participant.getResourceWatched() == false){
             progress.setTotalResources(progress.getTotalResources() - 1);
             participant.setResourceWatched(true);
             participantRepository.save(participant);

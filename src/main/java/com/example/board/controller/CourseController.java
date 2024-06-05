@@ -51,6 +51,11 @@ public class CourseController {
             model.addAttribute("courses",user.getCourses());
         }
 
+        List<String> roles = loginInfo.getRoles();
+        if(roles.contains("ROLE_ADMIN")){
+            model.addAttribute("professor", true);
+        }
+
         model.addAttribute("progresses", progresses);
         model.addAttribute("recommendedComments", recommendedComments);
         model.addAttribute("modelRecommendedComments", modelRecommendedComments);

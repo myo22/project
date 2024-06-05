@@ -163,7 +163,10 @@ public class VideoController {
     }
 
     @GetMapping("/video/stream/{videoId}")
-    public ResponseEntity<Resource> streamVideo(@PathVariable int videoId) {
+    public ResponseEntity<Resource> streamVideo(@PathVariable int videoId,
+                                                HttpSession httpSession) {
+
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
 
         VideoDTO video = videoService.getVideo(videoId);
         // 동영상 파일의 경로를 생성합니다. (실제로는 파일의 경로가 여기에 와야 합니다)
@@ -173,6 +176,7 @@ public class VideoController {
 
         // FileSystemResource를 사용하여 동영상 파일을 로드합니다.
         Resource videoResource = new FileSystemResource(videoFilePath);
+        progressService.watchVideos(video.getCourseId(), loginInfo.getUserId());
 
         // 동영상을 스트리밍하기 위해 ResponseEntity를 사용합니다.
         return ResponseEntity.ok()
@@ -182,7 +186,6 @@ public class VideoController {
 
     @PostMapping("/watchVideo")
     public String watchVideo(@RequestParam("videoId") int videoId,
-                             @RequestParam("courseId") int courseId,
                              HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if(loginInfo == null){
@@ -190,7 +193,6 @@ public class VideoController {
         }
 
         attendanceService.recordAttendance(videoId, loginInfo.getUserId());
-        progressService.watchVideos(courseId, loginInfo.getUserId());
 
         return "redirect:/video?videoId=" + videoId;
     }

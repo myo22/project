@@ -17,18 +17,18 @@ public class Participant {
     private Integer participantId;
 
     @Column(name = "video_watched", nullable = false)
-    private boolean VideoWatched = false;
+    private Boolean VideoWatched = false;
     @Column(name = "Assignment_submit", nullable = false)
-    private boolean AssignmentSubmit = false;
+    private Boolean AssignmentSubmit = false;
 
     @Column(name = "discussion_watched", nullable = false)
-    private boolean discussionWatched = false;
+    private Boolean discussionWatched = false;
 
     @Column(name = "notice_watched", nullable = false)
-    private boolean noticeWatched = false;
+    private Boolean noticeWatched = false;
 
     @Column(name = "resource_watched", nullable = false)
-    private boolean resourceWatched = false;
+    private Boolean resourceWatched = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
