@@ -96,10 +96,16 @@ public class FileController {
     }
 
     @GetMapping("/File/download/{fileId}")
-    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") int fileId) throws IOException {
+    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") int fileId,
+                                                 HttpSession httpSession) throws IOException {
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
+
+        progressService.watchResources(fileDto.getCourseId(), loginInfo.getUserId());
+
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getOrigFilename() + "\"")

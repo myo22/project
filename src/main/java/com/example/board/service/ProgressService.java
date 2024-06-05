@@ -1,9 +1,6 @@
 package com.example.board.service;
 
-import com.example.board.Repository.CourseRepository;
-import com.example.board.Repository.ParticipantRepository;
-import com.example.board.Repository.ProgressRepository;
-import com.example.board.Repository.UserRepository;
+import com.example.board.Repository.*;
 import com.example.board.domain.Course;
 import com.example.board.domain.Participant;
 import com.example.board.domain.Progress;
@@ -22,17 +19,38 @@ public class ProgressService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
+    private final VideoRepository videoRepository;
+    private final NoticeRepository noticeRepository;
+    private final AssignmentRepository assignmentRepository;
+    private final BoardRepository boardRepository;
+    private final FileRepository fileRepository;
 
     @Transactional
     public void AddProgress(int courseId, int userId){
         Course course = courseRepository.getcourse(courseId);
         User user = userRepository.findByUserId(userId);
 
+        int countVideos = videoRepository.countByCourseCourseId(courseId);
+        int countAssignments = assignmentRepository.countByCourseCourseId(courseId);
+        int countDiscussions = boardRepository.countByCourseCourseId(courseId);
+        int countNotices = noticeRepository.countByCourseCourseId(courseId);
+        int countResources = fileRepository.countByCourseCourseId(courseId);
+
         Progress progress = Progress.builder()
+                .totalVideos(countVideos)
+                .totalAssignments(countAssignments)
+                .totalDiscussions(countDiscussions)
+                .totalNotices(countNotices)
+                .totalResources(countResources)
                 .course(course)
                 .user(user).build();
 
         progressRepository.save(progress);
+    }
+
+    @Transactional
+    public Set<Progress> getProgresses(int userId){
+        return progressRepository.findByUserUserId(userId);
     }
 
     @Transactional

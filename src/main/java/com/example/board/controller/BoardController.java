@@ -134,7 +134,7 @@ public class BoardController {
         if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
             return "redirect:/loginForm";
         }
-        boardService.addBoard(loginInfo.getUserId(), title, content);
+        boardService.addBoard(loginInfo.getUserId(), courseId ,title, content);
         progressService.incrementDiscussionCount(courseId);
 
         // 로그인 한 회원정보 + 제목, 내용을 저장한다.

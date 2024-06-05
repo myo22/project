@@ -114,22 +114,38 @@
 
             <table class="table">
               <tr>
-                <th scope="col">번호</th>
-                <th scope="col">제목</th>
+                <th scope="col">과목</th>
                 <th scope="col">교수</th>
-                <th scope="col">작성일</th>
-                <th scope="col">참가</th>
-              </tr>
+                <th scope="col">동영상</th>
+                <th scope="col">과제</th>
+                <th scope="col">토론</th>
+                <th scope="col">공지</th>
+                <th scope="col">강의자료실</th>
 
-              <tr th:each="course : ${list}"  >
-                <th scope="row">[[${course.courseId}]]</th>
+              </tr>
+              <tr th:each="progress : ${progresses}"  >
                 <td>
-                  <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
+                  <a th:href="|@{/course/(courseId =${progress.course.courseId})}|"> [[${progress.course.title}]] </a>
                 </td>
-                <td>[[${course.user.name}]]</td>
-                <td>[[${#temporals.format(course.regdate, 'yyyy-MM-dd')}]]</td>
+                <td th:text="${progress.user.name}"></td>
                 <td>
-                  <a th:href="@{/courses(courseId=${course.courseId})}" class="text-decoration-none">
+                  <a th:href="|@{/videoList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalVideos()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/assignmentList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalAssignments()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/list/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalDiscussions()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/studyHubList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalResources()}"></a>
+                </td>
+
+                <td>
+                  <a th:if="${!courses.contains(progress.course)}" th:href="@{/courses(courseId=${progress.course.courseId})}" class="text-decoration-none">
                     <button type="button" class="btn btn-primary">참가신청</button>
                   </a>
                 </td>
@@ -156,3 +172,8 @@
   </form>
 </div>
 </body>
+<script>
+  function submitForm() {
+    document.getElementById("myForm").submit();
+  }
+</script>

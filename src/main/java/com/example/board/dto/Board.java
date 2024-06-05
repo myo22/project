@@ -15,6 +15,7 @@ public class Board {
     private String title;
     private String content;
     private String name; // 추가해줘야한다. Join 했기 때문에
+    private int courseId;
     private int userId;
     private LocalDateTime regdate;
     private int viewCnt;

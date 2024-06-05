@@ -30,4 +30,11 @@ public class Participant {
     @Column(name = "resource_watched", nullable = false)
     private boolean resourceWatched = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -1,9 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.domain.Course;
-import com.example.board.domain.Grade;
-import com.example.board.domain.Notice;
-import com.example.board.domain.User;
+import com.example.board.domain.*;
 import com.example.board.dto.LoginInfo;
 import com.example.board.service.*;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +26,11 @@ public class CourseController {
     private final ProgressService progressService;
 
     @GetMapping("/")
-    public String Courselist(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
+    public String courseList(HttpSession httpSession, Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if (loginInfo == null){
+            return "redirect:loginForm";
+        }
 
         long total = courseService.getTotalCount();
         List<Course> list = courseService.getCourses(page);
@@ -40,17 +40,20 @@ public class CourseController {
         }
         int currentPage = page;
 
-        if (loginInfo != null){
-            User user = userService.getUser(loginInfo.getUserId());
-            List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
-            List<String> modelRecommendedComments = commentService.recommendImportantComments(user, 3);
+        User user = userService.getUser(loginInfo.getUserId());
+        List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
+        List<String> modelRecommendedComments = commentService.recommendImportantComments(user, 3);
 
-            model.addAttribute("recommendedComments", recommendedComments);
-            model.addAttribute("modelRecommendedComments", modelRecommendedComments);
+        Set<Progress> progresses = progressService.getProgresses(user.getUserId());
+        Set<Course> courses = user.getCourses();
+
+        if(courses != null){
+            model.addAttribute("courses",user.getCourses());
         }
 
-
-
+        model.addAttribute("progresses", progresses);
+        model.addAttribute("recommendedComments", recommendedComments);
+        model.addAttribute("modelRecommendedComments", modelRecommendedComments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);

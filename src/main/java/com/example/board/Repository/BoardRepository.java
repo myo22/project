@@ -18,6 +18,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer> { // 게�
     @Query(value = "select b from Board b join fetch b.user") // 성능을 향상시키기 위해 fetch조인을 제공한다. -> 1 + N 문제 해결.
     List<Board> getBoards();
 
+    int countByCourseCourseId(int courseId);
+
 //    // 일반 조인, Board가 가진 속성이 아니고 별도의 엔티티를 이용해서 조인한 것. -> 1 + N 문제는 해결되지 않음.
 //    @Query(value = "select b from Board b join fetch User u on b.user.userId = u.userId")
 //    List<Board> getBoards();

@@ -15,4 +15,6 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     Long getAssignmentCount();
 
     Page<Assignment> findByOrderByRegdateDesc(Pageable pageable);
+
+    int countByCourseCourseId(int courseId);
 }

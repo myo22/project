@@ -1,8 +1,10 @@
 package com.example.board.service;
 
 import com.example.board.Repository.BoardRepository;
+import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.domain.Board;
+import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +21,15 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Transactional
-    public void addBoard(int userId, String title, String content) {
+    public void addBoard(int userId, int courseId, String title, String content) {
         User user = userRepository.findById(userId).orElseThrow();
+        Course course = courseRepository.getcourse(courseId);
         Board board = new Board();
         board.setUser(user);
+        board.setCourse(course);
         board.setTitle(title);
         board.setContent(content);
         board.setRegdate(LocalDateTime.now());

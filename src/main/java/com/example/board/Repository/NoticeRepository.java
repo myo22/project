@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, Integer> {
     List<Notice> findByCourse(Course course);
+
+    int countByCourseCourseId(int courseId);
 }

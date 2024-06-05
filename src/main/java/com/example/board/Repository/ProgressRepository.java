@@ -11,4 +11,6 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer> {
     Progress findByCourseCourseIdAndUserUserId(int courseId, int userId);
 
     Set<Progress> findByCourseCourseId(int courseId);
+
+    Set<Progress> findByUserUserId(int userId);
 }
