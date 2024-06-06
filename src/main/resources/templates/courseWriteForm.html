@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/basic.html}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title>강의 개설</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<div layout:fragment="content">
+<div class="container">
     <div class="row mt-3">
         <div class="col">
             <div class="card">
@@ -18,8 +25,6 @@
                     <form action="/writeCourse" method="post">
 
                         <div class="input-group mb-3">
-                            <span th:text="${loginInfo.name}"></span>
-
                             <div class="input-group mb-3">
                                 <span class="input-group-text">제목</span>
                                 <input type="text" name="title" class="form-control" placeholder="Title">
@@ -45,6 +50,5 @@
     </div><!-- end row-->
 </div>
 
-
-<script layout:fragment="script" th:inline="javascript">
+<script>
 </script>

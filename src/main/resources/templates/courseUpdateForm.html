@@ -40,7 +40,7 @@
           <form action="/updateCourse" method="post" id="f1">
             <div class="input-group mb-3">
               <span class="input-group-text">번호</span>
-              <input type="hidden" name="boardId" th:value="${course.courseId}" />
+              <input type="hidden" name="courseId" th:value="${course.courseId}" />
               <input type="text" class="form-control" th:value="${course.courseId}" name="bno" readonly>
             </div>
             <div class="input-group mb-3">

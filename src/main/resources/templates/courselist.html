@@ -75,8 +75,66 @@
           <div class="card-body">
 
             <div th:if="${professor}">
-              <a href="/coursewriteForm">강의 개설</a>
+              <a href="/courseWriteForm">강의 개설</a>
+
+              <table class="table">
+                <tr>
+                  <th scope="col">과목</th>
+                  <th scope="col">교수</th>
+                  <th scope="col">사용자 및 그룹</th>
+                </tr>
+                <tr th:each="course : ${courseList}"  >
+                  <td>
+                    <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
+                  </td>
+                  <td th:text="${course.user.name}"></td>
+                  <td>
+                    <a th:href="|@{/participantList/(currentCourseId =${course.courseId})}|" onclick="submitForm()" th:text="${course.getParticipants().size()}"></a>
+                  </td>
+                </tr>
+              </table>
+
             </div>
+
+            <table class="table" th:if="${student}">
+              <tr>
+                <th scope="col">과목</th>
+                <th scope="col">교수</th>
+                <th scope="col">동영상</th>
+                <th scope="col">과제</th>
+                <th scope="col">토론</th>
+                <th scope="col">공지</th>
+                <th scope="col">강의자료실</th>
+
+              </tr>
+              <tr th:each="progress : ${progresses}"  >
+                <td>
+                  <a th:href="|@{/course/(courseId =${progress.course.courseId})}|"> [[${progress.course.title}]] </a>
+                </td>
+                <td th:text="${progress.course.user.name}"></td>
+                <td>
+                  <a th:href="|@{/videoList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalVideos()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/assignmentList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalAssignments()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/list/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalDiscussions()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
+                </td>
+                <td>
+                  <a th:href="|@{/studyHubList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalResources()}"></a>
+                </td>
+
+                <td>
+                  <a th:if="${!courses.contains(progress.course)}" th:href="@{/courses(courseId=${progress.course.courseId})}" class="text-decoration-none">
+                    <button type="button" class="btn btn-primary">참가신청</button>
+                  </a>
+                </td>
+              </tr>
+            </table>
 
             <!-- The Modal -->
             <div class="modal fade" id="myModal"> <!-- 모달 fade 클래스 추가 -->
@@ -166,46 +224,6 @@
                 </div>
               </div>
             </div>
-
-            <table class="table">
-              <tr>
-                <th scope="col">과목</th>
-                <th scope="col">교수</th>
-                <th scope="col">동영상</th>
-                <th scope="col">과제</th>
-                <th scope="col">토론</th>
-                <th scope="col">공지</th>
-                <th scope="col">강의자료실</th>
-
-              </tr>
-              <tr th:each="progress : ${progresses}"  >
-                <td>
-                  <a th:href="|@{/course/(courseId =${progress.course.courseId})}|"> [[${progress.course.title}]] </a>
-                </td>
-                <td th:text="${progress.user.name}"></td>
-                <td>
-                  <a th:href="|@{/videoList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalVideos()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/assignmentList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalAssignments()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/list/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalDiscussions()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/studyHubList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalResources()}"></a>
-                </td>
-
-                <td>
-                  <a th:if="${!courses.contains(progress.course)}" th:href="@{/courses(courseId=${progress.course.courseId})}" class="text-decoration-none">
-                    <button type="button" class="btn btn-primary">참가신청</button>
-                  </a>
-                </td>
-              </tr>
-            </table>
 
 
             <div class="float-end">

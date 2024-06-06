@@ -55,7 +55,11 @@ public class CourseController {
 
         List<String> roles = loginInfo.getRoles();
         if(roles.contains("ROLE_ADMIN")){
+            List<Course> courseList = courseService.getUserCourses(user);
             model.addAttribute("professor", true);
+            model.addAttribute("courseList", courseList);
+        }else{
+            model.addAttribute("student", true);
         }
 
         model.addAttribute("progresses", progresses);
@@ -121,7 +125,7 @@ public class CourseController {
         return "redirect:/";
     }
 
-    @GetMapping("/coursewriteForm")
+    @GetMapping("/courseWriteForm")
     public String coursewriteForm(HttpSession httpSession, Model model) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if (loginInfo == null) {
@@ -131,7 +135,7 @@ public class CourseController {
 
         List<String> roles = loginInfo.getRoles();
         if(roles.contains("ROLE_ADMIN")){
-            return "coursewriteForm";
+            return "courseWriteForm";
         }
 
         return "redirect:/";
@@ -177,8 +181,8 @@ public class CourseController {
         return "redirect:/";
     }
 
-    @GetMapping("/courseupdateform")
-    public String courseupdateform(@RequestParam("courseId") int courseId,
+    @GetMapping("/courseUpdateForm")
+    public String courseUpdateForm(@RequestParam("courseId") int courseId,
                              Model model,
                              HttpSession httpSession) {
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
@@ -189,7 +193,7 @@ public class CourseController {
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
-        return "courseupdateform";
+        return "courseUpdateForm";
     }
 
     @PostMapping("/updateCourse")
