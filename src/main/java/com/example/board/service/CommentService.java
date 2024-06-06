@@ -389,4 +389,148 @@ public class CommentService {
         return recommendedComments;
     }
 
+    // 피어슨 상관계수
+    public double calculatePearsonCorrelation(Map<String, Double> vector1, Map<String, Double> vector2) {
+        double sum1 = 0.0;
+        double sum2 = 0.0;
+        double sum1Sq = 0.0;
+        double sum2Sq = 0.0;
+        double pSum = 0.0;
+        int n = 0;
+
+        Set<String> commonKeys = new HashSet<>(vector1.keySet());
+        commonKeys.retainAll(vector2.keySet());
+
+        if (commonKeys.size() == 0) {
+            return 0.0; // 공통된 단어가 없는 경우 0 반환
+        }
+
+        for (String key : commonKeys) {
+            double val1 = vector1.get(key);
+            double val2 = vector2.get(key);
+
+            sum1 += val1;
+            sum2 += val2;
+            sum1Sq += Math.pow(val1, 2);
+            sum2Sq += Math.pow(val2, 2);
+            pSum += val1 * val2;
+            n++;
+        }
+
+        double num = pSum - (sum1 * sum2 / n);
+        double den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) * (sum2Sq - Math.pow(sum2, 2) / n));
+
+        if (den == 0) {
+            return 0.0;
+        }
+
+        return num / den;
+    }
+
+    // 댓글 간의 유사도를 계산하는 함수
+    public Map<String, Map<String, Double>> calculateCommentSimilaritiesUsingPearson(Map<String, Map<String, Double>> tfidfMatrix) {
+        Map<String, Map<String, Double>> commentSimilarities = new HashMap<>();
+
+        for (String comment1 : tfidfMatrix.keySet()) {
+            Map<String, Double> similarityMap = new HashMap<>();
+            Map<String, Double> vector1 = tfidfMatrix.get(comment1); // comment1에 대한 벡터 가져오기
+
+            for (String comment2 : tfidfMatrix.keySet()) {
+                if (!comment1.equals(comment2)) {
+                    Map<String, Double> vector2 = tfidfMatrix.get(comment2); // comment2에 대한 벡터 가져오기
+                    double similarity = calculatePearsonCorrelation(vector1, vector2); // 피어슨 상관계수 계산
+                    similarityMap.put(comment2, similarity);
+                }
+            }
+            commentSimilarities.put(comment1, similarityMap);
+        }
+
+        return commentSimilarities;
+    }
+
+    // 주요 댓글 추천
+    public List<String> recommendPearsonCommentsForUser(User user, int topN) {
+        List<Course> courses = courseRepository.findByUser(user);
+        List<String> recommendedComments = new ArrayList<>();
+
+        for (Course course : courses) {
+            List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+            List<String> commentTexts = new ArrayList<>();
+            for (Comment comment : comments) {
+                commentTexts.add(comment.getContent());
+            }
+            // TF-IDF를 사용하여 댓글 벡터화
+            Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(commentTexts);
+            // 댓글 간 유사도 계산 (피어슨 상관계수 사용)
+            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingPearson(tfidfMatrix);
+            // 개선된 주요 댓글 추출
+            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
+            recommendedComments.addAll(importantCommentsForCourse);
+        }
+
+        return recommendedComments;
+    }
+
+    // 자카드 유사도
+    public double calculateJaccardSimilarity(Set<String> set1, Set<String> set2) {
+        Set<String> intersection = new HashSet<>(set1);
+        intersection.retainAll(set2);
+
+        Set<String> union = new HashSet<>(set1);
+        union.addAll(set2);
+
+        if (union.size() == 0) {
+            return 0.0; // 두 집합이 공통된 원소가 없는 경우
+        }
+
+        return (double) intersection.size() / union.size();
+    }
+
+
+    // 댓글 간의 유사도를 계산하는 함수
+    public Map<String, Map<String, Double>> calculateCommentSimilaritiesUsingJaccard(List<String> comments) {
+        Map<String, Map<String, Double>> commentSimilarities = new HashMap<>();
+
+        for (String comment1 : comments) {
+            Map<String, Double> similarityMap = new HashMap<>();
+            Set<String> words1 = new HashSet<>(Arrays.asList(comment1.split("\\s+")));
+
+            for (String comment2 : comments) {
+                if (!comment1.equals(comment2)) {
+                    Set<String> words2 = new HashSet<>(Arrays.asList(comment2.split("\\s+")));
+                    double similarity = calculateJaccardSimilarity(words1, words2); // 자카드 유사도 계산
+                    similarityMap.put(comment2, similarity);
+                }
+            }
+            commentSimilarities.put(comment1, similarityMap);
+        }
+
+        return commentSimilarities;
+    }
+
+
+    // 주요 댓글 추천
+    public List<String> recommendImportantCommentsForUserUsingJaccard(User user, int topN) {
+        List<Course> courses = courseRepository.findByUser(user);
+        List<String> recommendedComments = new ArrayList<>();
+
+        for (Course course : courses) {
+            List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+            List<String> commentTexts = new ArrayList<>();
+            for (Comment comment : comments) {
+                commentTexts.add(comment.getContent());
+            }
+            // 댓글 간 유사도 계산 (자카드 유사도 사용)
+            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingJaccard(commentTexts);
+            // 개선된 주요 댓글 추출
+            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
+            recommendedComments.addAll(importantCommentsForCourse);
+        }
+
+        return recommendedComments;
+    }
+
+
+
+
 }
