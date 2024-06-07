@@ -124,8 +124,8 @@
                 <td>
                   <a th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
                 </td>
-                <td>
-                  <form th:action="@{/studyHubList}" method="get">
+                <td onclick="document.getElementById('studyHubForm').submit()">
+                  <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
                     <input type="hidden" name="currentCourseId" th:value="${progress.course.courseId}" />
                     <button type="submit" class="btn-link" style="padding: 0; border: none; background: none;">
                       <span th:text="${progress.getTotalResources()}"></span>
