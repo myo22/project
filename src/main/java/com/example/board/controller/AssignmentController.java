@@ -182,15 +182,17 @@ public class AssignmentController {
     @GetMapping("/assignmentFileWriteForm")
     public String assignmentFileWriteForm(HttpSession httpSession,
                                       Model model,
-                                      @RequestParam("assignmentId") int assignmentId){
+                                      @RequestParam("assignmentId") int assignmentId,
+                                          @RequestParam("courseId") int courseId){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
+        Course course = courseService.getCourse(courseId);
         model.addAttribute("loginInfo", loginInfo);
         Assignment assignment = assignmentService.getAssignment(assignmentId);
         model.addAttribute("assignment", assignment);
-
+        model.addAttribute("course", course);
 
         return "assignmentFileWriteForm";
     }

@@ -71,6 +71,7 @@
 
                         <form th:action="@{/assignmentFileWriteForm}" method="get" th:if="${isParticipant}">
                             <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
+                            <input type="hidden" name="courseId" th:value="${course.courseId}">
                             <button type="submit" class="btn btn-primary">과제 제출 시작</button>
                         </form>
 
