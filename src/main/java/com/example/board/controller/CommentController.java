@@ -62,6 +62,9 @@ public class CommentController {
             case "video":
                 commentService.addComment(contentId, comment, user, contentType);
                 return "redirect:/video?videoId=" + contentId;
+            case "notice":
+                commentService.addComment(contentId, comment, user, contentType);
+                return "redirect:/notice?noticeId=" + contentId;
             default:
                 throw new IllegalArgumentException("Unsupported content type: " + contentType);
         }

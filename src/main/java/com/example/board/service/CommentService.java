@@ -20,7 +20,7 @@ public class CommentService {
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
-    private final NotificationService notificationService;
+    private final NoticeRepository noticeRepository;
 
 
 //    @Transactional
@@ -50,10 +50,13 @@ public class CommentService {
         switch (contentType) {
             case "assignment":
                 Assignment assignment = assignmentRepository.findById(contentId).orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
-                return commentRepository.save(new Comment(content, user, assignment, null));
+                return commentRepository.save(new Comment(content, user, assignment, null, null));
             case "video":
                 Video video = videoRepository.findById(contentId).orElseThrow(() -> new IllegalArgumentException("Video not found"));
-                return commentRepository.save(new Comment(content, user, null, video));
+                return commentRepository.save(new Comment(content, user, null, video, null));
+            case "notice":
+                Notice notice = noticeRepository.findById(contentId).orElseThrow(() -> new IllegalArgumentException("Notice not found"));
+                return commentRepository.save(new Comment(content, user, null, null, notice));
             default:
                 throw new IllegalArgumentException("Unsupported content type: " + contentType);
         }

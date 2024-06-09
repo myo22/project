@@ -41,12 +41,17 @@ public class Comment {
     @JoinColumn(name = "assignment_id", nullable = true)
     private Assignment assignment;
 
+    @ManyToOne
+    @JoinColumn(name = "notice_id", nullable = true)
+    private Notice notice;
+
     @Builder
-    public Comment(String content, User user, Assignment  assignment,  Video video){
+    public Comment(String content, User user, Assignment  assignment,  Video video, Notice notice){
         this.content = content;
         this.user = user;
         this.assignment = assignment;
         this.video = video;
+        this.notice = notice;
     }
 
 

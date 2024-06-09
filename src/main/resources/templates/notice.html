@@ -5,7 +5,26 @@
 
 <head>
     <title>수업계획서</title>
+    <style>
+        .comment-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        #commentText {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        #submitComment {
+            padding: 1px 1px; /* 버튼 크기 조정 */
+        }
 
+    </style>
 </head>
 
 <div layout:fragment="content">
@@ -24,6 +43,14 @@
 
             </div>
             <div class="border p-3 mb-2">
+                <form class="comment-container" action="/submitComment" method="post">
+                    <input type="hidden" name="contentId" th:value="${notice.noticeId}">
+                    <input type="hidden" name="contentType" value="notice">
+                    <textarea id="commentText" name="comment" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea><br>
+                    <div class="button-container">
+                        <button type="submit" id="submitComment">답변 게시</button>
+                    </div>
+                </form>
 
             </div>
 
