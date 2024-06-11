@@ -12,21 +12,27 @@
     <div class="col">
       <h5><strong>최근 공지사항</strong></h5>
       <hr>
-        <ul>
-          <li th:if="${notices.isEmpty()}">
-            <p>공지사항이 없습니다.</p>
-          </li>
-          <li th:each="notice : ${notices}">
-            <a class="text-decoration-none" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
-              <strong><h7 th:text="${notice.title}"></h7></strong>
-            </a>
+      <div th:if="${notices.isEmpty()}">
+        <p>공지사항이 없습니다.</p>
+      </div>
+      <div th:each="notice : ${notices}">
+        <div class="ms-4">
+          <a class="text-decoration-none text-black" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
+            <strong><h7 th:text="${notice.title}"></h7></strong>
+          </a>
+          <div class="d-flex justify-content-between">
             <p th:text="${notice.content}" style="margin-bottom: 5px"></p>
-            <a class="text-decoration-none" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
+            <div class="text-end">게시일시:</div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <a class="text-decoration-none text-light-brown" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
               <span th:text="'댓글 작성...'"></span>
             </a>
-            <hr>
-          </li>
-        </ul>
+            <div class="text-end">[[${#temporals.format(notice.regdate, 'yyyy년 MM월 dd일 HH:mm')}]]</div>
+          </div>
+        </div>
+        <hr>
+      </div>
     </div><!-- end col-->
   </div><!-- end row-->
 </div>

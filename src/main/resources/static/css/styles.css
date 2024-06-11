@@ -8068,6 +8068,10 @@ textarea.form-control-lg {
   color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-light-brown {
+  color: peru;
+}
+
 .text-dark {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
