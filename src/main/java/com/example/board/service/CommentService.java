@@ -63,15 +63,18 @@ public class CommentService {
     }
 
     @Transactional
-    public List<Comment> getCommentsByAssignment(Assignment assignment) {
+    public Set<Comment> getCommentsByAssignment(int assignmentId) {
 
-        return commentRepository.findByAssignment(assignment);
+        return commentRepository.findByAssignmentAssignmentId(assignmentId);
     }
 
     @Transactional
-    public List<Comment> getCommentByVideo(Video video) {
-        return commentRepository.findByVideo(video);
+    public Set<Comment> getCommentByVideo(int videoId) {
+        return commentRepository.findByVideoVideoId(videoId);
     }
+
+    @Transactional
+    public Set<Comment> getCommentByNotice(int noticeId) {return commentRepository.findByNoticeNoticeId(noticeId);}
 
     public List<Comment> getCommentByCourse(Course course) {
         return commentRepository.findByCourseId(course.getCourseId());

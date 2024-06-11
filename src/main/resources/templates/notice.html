@@ -48,16 +48,34 @@
                     <input type="hidden" name="contentType" value="notice">
                     <textarea id="commentText" name="comment" rows="6" cols="50" placeholder="댓글을 입력하세요"></textarea><br>
                     <div class="button-container">
-                        <button type="submit" id="submitComment" class="btn btn-outline-primary">답변 게시</button>
+                        <button type="submit" id="submitComment" class="btn btn-primary">답변 게시</button>
                     </div>
                 </form>
 
             </div>
 
-            <a th:href="@{/noticeUpdateForm(noticeId=${notice.noticeId}, courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
-                <button type="button" id="updateButton" class="btn btn-primary">수정</button>
-            </a>
         </div><!-- end col-->
+
+        <div th:each="comment : ${comments}" class="col">
+            <div class="border p-3">
+
+                <div class="mt-0">
+                    <input type="text" class="form-control border-0" th:value="${comment.user.name}" readonly style="font-size: 10px; color: #0d6efd">
+                    <input type="text" class="form-control border-0" th:text="${#temporals.format(comment.createdAt, 'yyyy년 MM월 dd일')}" readonly style="font-size: 10px; color: #0d6efd">
+                    <textarea class="form-control col-sm-5 border-0" readonly th:text="${comment.content}"></textarea>
+                </div>
+
+            </div>
+            <div class="border p-3 mb-2">
+
+            </div>
+
+        </div>
+
+        <a th:href="@{/noticeUpdateForm(noticeId=${notice.noticeId}, courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
+            <button type="button" id="updateButton" class="btn btn-primary">수정</button>
+        </a>
+
     </div><!-- end row-->
 </div>
 

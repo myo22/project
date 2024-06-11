@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.io.*;
+import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class VideoController {
         if(video.getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }
-        List<Comment> comments = commentService.getCommentByVideo(videoService.toVideo(video));
+        Set<Comment> comments = commentService.getCommentByVideo(videoId);
 
         Course course = courseService.getCourse(video.getCourseId());
 

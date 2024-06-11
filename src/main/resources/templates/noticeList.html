@@ -10,7 +10,7 @@
             <hr>
             <div th:each="notice : ${notices}">
                 <div class="ms-4">
-                    <a class="text-decoration-none text-black" th:href="@{/notice/(noticeId=${notice.noticeId}, courseId=${course.courseId})}">
+                    <a class="text-decoration-none text-black" th:href="@{/notice/(noticeId=${notice.noticeId})}">
                         <strong><h7 th:text="${notice.title}"></h7></strong>
                     </a>
                     <div class="d-flex justify-content-between">

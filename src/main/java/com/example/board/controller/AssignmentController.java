@@ -99,7 +99,7 @@ public class AssignmentController {
 //                .filter(e -> e.getAssignment().getAssignmentId() == assignmentId)
 //                .collect(Collectors.toList());
         List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
-        List<Comment> comments = commentService.getCommentsByAssignment(assignment);
+        Set<Comment> comments = commentService.getCommentsByAssignment(assignmentId);
 
         model.addAttribute("course", assignment.getCourse());
         model.addAttribute("comments", comments);

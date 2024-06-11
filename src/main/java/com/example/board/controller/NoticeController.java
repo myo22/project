@@ -1,13 +1,11 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Comment;
 import com.example.board.domain.Course;
 import com.example.board.domain.Notice;
 import com.example.board.domain.User;
 import com.example.board.dto.LoginInfo;
-import com.example.board.service.CourseService;
-import com.example.board.service.NoticeService;
-import com.example.board.service.ProgressService;
-import com.example.board.service.UserService;
+import com.example.board.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,9 +23,9 @@ public class NoticeController {
 
     private final CourseService courseService;
     private final NoticeService noticeService;
-
     private final UserService userService;
     private final ProgressService progressService;
+    private final CommentService commentService;
 
     @GetMapping("/noticeList")
     public String noticeList(@RequestParam("currentCourseId") int courseId,
@@ -86,8 +85,7 @@ public class NoticeController {
     }
 
     @GetMapping("/notice")
-    public String notice(@RequestParam("courseId") int courseId,
-                         @RequestParam("noticeId") int noticeId,
+    public String notice(@RequestParam("noticeId") int noticeId,
                          HttpSession httpSession,
                          Model model){
         LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
@@ -95,15 +93,18 @@ public class NoticeController {
             return "redirect:/loginForm";
         }
 
-        Course course = courseService.getCourse(courseId);
         Notice notice = noticeService.getNotice(noticeId);
+        Course course = courseService.getCourse(notice.getCourse().getCourseId());
 
-        progressService.watchNotices(courseId, loginInfo.getUserId());
+        progressService.watchNotices(course.getCourseId(), loginInfo.getUserId());
 
         if(notice.getUser().getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }
 
+        Set<Comment> comments = commentService.getCommentByNotice(noticeId);
+
+        model.addAttribute("comments", comments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("course", course);
         model.addAttribute("notice", notice);
@@ -143,7 +144,7 @@ public class NoticeController {
 
         Notice notice = noticeService.getNotice(noticeId);
         noticeService.updateNotice(title, content, notice);
-        return "redirect:/notice/?noticeId=" + noticeId +"&courseId=" + courseId;
+        return "redirect:/notice?noticeId=" + noticeId +"&courseId=" + courseId;
 
     }
 
