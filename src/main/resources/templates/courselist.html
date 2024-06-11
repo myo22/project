@@ -45,12 +45,11 @@
       <div class="col">
 
         <div class="card">
-
           <div class="card-header d-flex justify-content-between align-items-center">
-            <span>나의 과목</span>
+            <span>나의 과목 <span style="color: #6a77ce" th:text="${courseCount}"></span></span>
             <div class="dropdown">
               <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${professor}">
-                댓글 추천
+                알림
               </button>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal">
@@ -79,17 +78,17 @@
 
               <table class="table">
                 <tr>
-                  <th scope="col">과목</th>
-                  <th scope="col">교수</th>
-                  <th scope="col">사용자 및 그룹</th>
+                  <th style="color: #777780" scope="col">과목</th>
+                  <th style="color: #777780" scope="col">교수</th>
+                  <th style="color: #777780" scope="col">사용자 및 그룹</th>
                 </tr>
                 <tr th:each="course : ${courseList}"  >
                   <td>
-                    <a th:href="|@{/course/(courseId =${course.courseId})}|"> [[${course.title}]] </a>
+                    <a th:href="|@{/course/(courseId =${course.courseId})}|" style="color: #1a1e21"> [[${course.title}]] </a>
                   </td>
-                  <td th:text="${course.user.name}"></td>
+                  <td style="color: #7d807d;" th:text="${course.user.name}"></td>
                   <td>
-                    <a th:href="|@{/participantList/(currentCourseId =${course.courseId})}|" onclick="submitForm()" th:text="${course.getParticipants().size()}"></a>
+                    <a th:style="${course.getParticipants().size() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}"  th:href="|@{/participantList/(currentCourseId =${course.courseId})}|" onclick="submitForm()" th:text="${course.getParticipants().size()}"></a>
                   </td>
                 </tr>
               </table>
@@ -98,37 +97,39 @@
 
             <table class="table" th:if="${student}">
               <tr>
-                <th scope="col">과목</th>
-                <th scope="col">교수</th>
-                <th scope="col">동영상</th>
-                <th scope="col">과제</th>
-                <th scope="col">토론</th>
-                <th scope="col">공지</th>
-                <th scope="col">강의자료실</th>
+                <th style="color: #777780" scope="col">과목</th>
+                <th style="color: #777780"  scope="col">교수</th>
+                <th style="color: #777780"  scope="col">동영상</th>
+                <th style="color: #777780"  scope="col">과제</th>
+                <th style="color: #777780"  scope="col">토론</th>
+                <th style="color: #777780"  scope="col">공지</th>
+                <th style="color: #777780"  scope="col">강의자료실</th>
 
               </tr>
               <tr th:each="progress : ${progresses}"  >
                 <td>
-                  <a th:href="|@{/course/(courseId =${progress.course.courseId})}|"> [[${progress.course.title}]] </a>
+                  <a th:href="|@{/course/(courseId =${progress.course.courseId})}|" style="color: #1a1e21">
+                    <strong><span th:text="${progress.course.title}"></span></strong>
+                  </a>
                 </td>
-                <td th:text="${progress.course.user.name}"></td>
+                <td style="color: #7d807d;" th:text="${progress.course.user.name}"></td>
                 <td>
-                  <a th:href="|@{/videoList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalVideos()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/assignmentList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalAssignments()}"></a>
-                </td>
-                <td>
-                  <a th:href="|@{/list/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalDiscussions()}"></a>
+                    <a th:style="${progress.getTotalVideos() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}" th:href="|@{/videoList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalVideos()}"></a>
                 </td>
                 <td>
-                  <a th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
+                  <a th:style="${progress.getTotalAssignments() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}" th:href="|@{/assignmentList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalAssignments()}"></a>
+                </td>
+                <td>
+                  <a th:style="${progress.getTotalDiscussions() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}" th:href="|@{/list/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalDiscussions()}"></a>
+                </td>
+                <td>
+                  <a th:style="${progress.getTotalNotices() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}" th:href="|@{/noticeList/(currentCourseId =${progress.course.courseId})}|" onclick="submitForm()" th:text="${progress.getTotalNotices()}"></a>
                 </td>
                 <td onclick="document.getElementById('studyHubForm').submit()">
                   <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
                     <input type="hidden" name="currentCourseId" th:value="${progress.course.courseId}" />
                     <button type="submit" class="btn-link" style="padding: 0; border: none; background: none;">
-                      <span th:text="${progress.getTotalResources()}"></span>
+                      <span th:style="${progress.getTotalResources() <= 0 ? 'color: #c8c4c4;' : 'color: #6a67ce'}" th:text="${progress.getTotalResources()}"></span>
                     </button>
                   </form>
                 </td>

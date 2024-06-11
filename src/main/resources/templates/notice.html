@@ -46,9 +46,9 @@
                 <form class="comment-container" action="/submitComment" method="post">
                     <input type="hidden" name="contentId" th:value="${notice.noticeId}">
                     <input type="hidden" name="contentType" value="notice">
-                    <textarea id="commentText" name="comment" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea><br>
+                    <textarea id="commentText" name="comment" rows="6" cols="50" placeholder="댓글을 입력하세요"></textarea><br>
                     <div class="button-container">
-                        <button type="submit" id="submitComment">답변 게시</button>
+                        <button type="submit" id="submitComment" class="btn btn-outline-primary">답변 게시</button>
                     </div>
                 </form>
 

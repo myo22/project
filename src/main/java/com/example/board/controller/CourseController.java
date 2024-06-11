@@ -58,8 +58,10 @@ public class CourseController {
             List<Course> courseList = courseService.getUserCourses(user);
             model.addAttribute("professor", true);
             model.addAttribute("courseList", courseList);
+            model.addAttribute("courseCount", courseList.size());
         }else{
             model.addAttribute("student", true);
+            model.addAttribute("courseCount", progresses.size());
         }
 
         model.addAttribute("progresses", progresses);
