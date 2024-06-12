@@ -21,132 +21,121 @@
 
 <head>
     <title>과제 상세보기</title>
+    <style>
+        .comment-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        #commentText {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        #submitComment {
+            padding: 5px 4px; /* 버튼 크기 조정 */
+        }
+
+    </style>
 </head>
 
 <div layout:fragment="content">
     <div class="row mt-3">
         <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    과제 상세보기
-                </div>
-                <div class="card-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">담당교수</span>
-                        <input type="text" class="form-control" th:value="${assignment.user.name}" readonly>
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">제목</span>
-                        <input type="text" class="form-control" th:value="${assignment.title}" readonly>
-                    </div>
+            <div class="d-flex justify-content-between">
+                <strong><h6 style="font-size: 28px; margin-left: 18px" th:text="${assignment.title}">수업계획서</h6></strong>
+            </div>
+            <hr>
+            <div class="ms-4">
+                <div class="d-flex align-items-center">
+                    <strong><span style="margin-right: 10px">교수</span></strong>
+                    <span th:text="${assignment.user.name}"></span>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">점수</span>
-                        <input type="number" class="form-control" th:value="${assignment.maxScore}" readonly>
-                    </div>
+                    <strong><span style="margin-left: 40px; margin-right: 10px">점수</span></strong>
+                    <span th:text="${assignment.maxScore}"></span>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">내용</span>
-                        <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
-                    </div>
+                    <strong><span style="margin-left: 40px; margin-right: 10px">작성일</span></strong>
+                    <span th:text="${#temporals.format(assignment.regdate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">작성일</span>
-                        <input type="text" class="form-control" th:value="${#temporals.format(assignment.regdate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
-                    </div>
-
-                    <div class="input-group mb-3" th:if="${isParticipant}">
-                        <span class="input-group-text">파일</span>
+                    <strong><span style="margin-left: 40px; margin-right: 10px">제출물</span></strong>
+                    <div class="text-end" th:if="${isParticipant}">
                         <a th:if="${assignmentFile != null}" th:href="@{${'/Assignment/download/' + assignmentFile.assignmentFileId}}" download> 내가 제출한 파일 : [[${assignmentFile.origFilename}]]</a>
                         <span th:if="${assignmentFile == null}">파일이 없습니다.</span>
                     </div>
+                </div>
+            </div>
+            <hr>
 
-                    <div class="my-4">
-<!--                        <a th:href="@{/assignmentList(currentCourseId=${assignment.course.courseId})}" class="text-decoration-none">-->
-<!--                            <button type="button" class="btn btn-primary listBtn">목록</button>-->
-<!--                        </a>-->
-                        <a th:href="@{/assignmentUpdateForm(assignmentId=${assignment.assignmentId})}" class="text-decoration-none" th:if="${isAdmin}">
-                            <button type="button" class="btn btn-primary">수정</button>
-                        </a>
+            <div>
+                <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
+            </div>
 
-                        <form th:action="@{/assignmentFileWriteForm}" method="get" th:if="${isParticipant}">
-                            <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
-                            <input type="hidden" name="courseId" th:value="${course.courseId}">
-                            <button type="submit" class="btn btn-primary">과제 제출 시작</button>
-                        </form>
+            <div class="my-4 text-center">
+                <a th:href="@{/assignmentUpdateForm(assignmentId=${assignment.assignmentId})}" class="text-decoration-none" th:if="${isAdmin}">
+                    <button type="button" class="btn btn-primary">수정</button>
+                </a>
 
+                <form th:action="@{/assignmentFileWriteForm}" method="get" th:if="${isParticipant}">
+                    <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
+                    <input type="hidden" name="courseId" th:value="${course.courseId}">
+                    <button type="submit" class="btn btn-primary">과제 제출 시작</button>
+                </form>
+
+            </div>
+
+            <div class="border p-3 mb-2">
+                <form class="comment-container" action="/submitComment" method="post">
+                    <input type="hidden" name="contentId" th:value="${assignment.assignmentId}">
+                    <input type="hidden" name="contentType" value="assignment">
+                    <textarea id="commentText" name="comment" rows="6" cols="50" placeholder="댓글을 입력하세요"></textarea>
+                    <div class="button-container">
+                        <button type="submit" id="submitComment" class="btn btn-primary">작성</button>
+                    </div>
+                </form>
+            </div>
+
+            <ul th:each="comment : ${comments}" class="col">
+                <div class="border p-3">
+
+                    <div class="mt-0">
+                        <input type="text" class="form-control border-0" th:value="${comment.user.name}" readonly style="font-size: 15px; color: #0d6efd">
+                        <input type="text" class="form-control border-0" th:value="${#temporals.format(comment.createdAt, 'yyyy년 MM월 dd일')}" readonly style="font-size: 11px">
+                        <textarea class="form-control col-sm-5 border-0" readonly th:text="${comment.content}"></textarea>
                     </div>
 
-<!--                    <style>-->
-<!--                        input[type="text"], button {-->
-<!--                            height: 50px;  /* 높이 조정 */-->
-<!--                            width: 1000px;-->
-<!--                            font-size: 16px;-->
-<!--                            padding: 5px 10px;-->
-<!--                        }-->
-<!--                        button {-->
-<!--                            height: 50px;-->
-<!--                            width: 100px;-->
-<!--                            font-size: 16px;-->
-<!--                            margin-left: 0px;-->
-<!--                            cursor: pointer;-->
-<!--                        }-->
-<!--                    </style>-->
+                </div>
+                <div class="border p-3 mb-2">
 
-                    <form action="/submitComment" method="post">
-                        <input type="hidden" name="contentId" th:value="${assignment.assignmentId}">
-                        <input type="hidden" name="contentType" value="assignment">
-                        <input type="text" name="comment" placeholder="댓글을 입력하세요" required>
-                        <button type="submit">작성</button>
+                </div>
 
-                        <table class="table">
-                            <tr>
-                                <th scope="col">이름</th>
-                                <th scope="col">내용</th>
-                                <th scope="col">작성일</th>
-                            </tr>
+            </ul>
 
-                            <tr th:each="comment : ${comments}">
-                                <td th:text="${comment.user.name}"></td>
-                                <td th:text="${comment.content}"></td>
-                                <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd')}"></td>
-                            </tr>
+            <table class="table">
+                <tr th:if="${isAdmin}">
+                    <th scope="col">이름</th>
+                    <th scope="col">파일</th>
+                    <th scope="col">점수</th>
+                </tr>
+                <tr th:each="file : ${participantAssignments}" th:if="${isAdmin}">
+                    <td th:text="${file.user.name}"></td>
+                    <td>
+                        <a th:href="@{'/Assignment/download' + ${file.assignmentFileId}}" download th:text="${file.origFilename}"></a>
+                    </td>
+                    <td>
+                        <form th:action="@{/submitScore}" method="post">
+                            <input type="hidden" name="currentCourseId" th:value="${assignment.course.courseId}">
+                            <input type="hidden" name="assignmentId" th:value="${file.assignment.assignmentId}">
+                            <input type="number" name="score" th:value="${file.score}">
+                            <button type="submit" class="btn btn-primary">저장</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
 
-                        </table>
-                    </form>
-
-
-                    <table class="table">
-                        <tr th:if="${isAdmin}">
-                            <th scope="col">이름</th>
-                            <th scope="col">파일</th>
-                            <th scope="col">점수</th>
-                        </tr>
-                        <tr th:each="file : ${participantAssignments}" th:if="${isAdmin}">
-                            <td th:text="${file.user.name}"></td>
-                            <td>
-                                <a th:href="@{'/Assignment/download' + ${file.assignmentFileId}}" download th:text="${file.origFilename}"></a>
-                            </td>
-                            <td>
-                                <form th:action="@{/submitScore}" method="post">
-                                    <input type="hidden" name="currentCourseId" th:value="${assignment.course.courseId}">
-                                    <input type="hidden" name="assignmentId" th:value="${file.assignment.assignmentId}">
-                                    <input type="number" name="score" th:value="${file.score}">
-                                    <button type="submit" class="btn btn-primary">저장</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </table>
-
-
-
-
-
-                </div><!--end card body-->
-
-
-
-            </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
 </div>
