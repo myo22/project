@@ -34,9 +34,6 @@
                             <td>[[${#temporals.format(board.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>
 
-                        <div>
-                            <a th:href="@{/writeForm(courseId=${course.courseId})}" th:if="${loginInfo != null}">글쓰기</a>
-                        </div>
                     </table>
 
                     <div class="float-end">
@@ -62,12 +59,16 @@
                             <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
                             <!--                            </li>-->
 
-
                         </ul>
                     </div>
 
                 </div><!--end card body-->
             </div><!--end card-->
+            <div class="ms-4 text-center">
+                <a th:href="@{/writeForm(courseId=${course.courseId})}" class="text-decoration-none" th:if="${loginInfo != null}">
+                    <button type="button" class="btn btn-primary">글쓰기</button>
+                </a>
+            </div>
         </div><!-- end col-->
     </div><!-- end row-->
 </div>

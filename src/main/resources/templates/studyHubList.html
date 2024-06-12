@@ -9,8 +9,7 @@
         <div class="col">
 
             <div class="card">
-                <div class="card-header">
-                    강의 자료
+                <div class="border p-3 bg-light">
                 </div>
                 <div class="card-body" >
                     <table class="table">
@@ -32,20 +31,14 @@
                         </tbody>
                     </table>
 
-                    <!-- 로그인이 되어 있는 경우에만 강의 자료 업로드 버튼 표시 -->
-                    <div>
-                        <a th:href="@{/studyHubWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}"   class="text-decoration-none">
-                            <button type="button" class="btn btn-primary listBtn">업로드</button>
-                        </a>
-                    </div>
-
-<!--                    <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">-->
-<!--                        <button type="button" class="btn btn-primary listBtn">이전</button>-->
-<!--                    </a>-->
-
 
                 </div><!--end card body-->
             </div><!--end card-->
+            <div class="ms-4 text-center">
+                <a th:href="@{/studyHubWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}"   class="text-decoration-none">
+                    <button type="button" class="btn btn-primary listBtn">업로드</button>
+                </a>
+            </div>
         </div><!-- end col-->
     </div><!-- end row-->
 </div>

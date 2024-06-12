@@ -8,72 +8,37 @@
     <div class="row mt-3">
         <div class="col">
 
-            <div class="card">
-                <div class="card-header">
-                    과제
-                </div>
-                <div class="card-body" >
-                    <table class="table">
-                        <thead>
-                        <tr>
-<!--                            <th scope="col">번호</th>-->
-                            <th scope="col">제목</th>
-                            <th scope="col">작성자</th>
-                            <th scope="col">작성일</th>
-                        </tr>
-                        </thead>
-
-                        <tr th:each="assignment : ${list}" th:if="${course.courseId == assignment.course.courseId}" >
-<!--                            <th scope="row">[[${assignment.assignmentId}]]</th>-->
-                            <td>
-                                <a class="text-decoration-none" th:href="|@{/assignment(assignmentId=${assignment.assignmentId})}|"> [[${assignment.title}]] </a>
-                            </td>
-                            <td>[[${assignment.user.name}]]</td>
-                            <td>[[${#temporals.format(assignment.regdate, 'yyyy-MM-dd')}]]</td>
-                        </tr>
-                        <div>
-                            <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}">과제 개설</a>
-                            <span th:if="${loginInfo == null}">과제 개설</span>
-                        </div>
-                    </table>
-<!--                        <a th:href="|@{/course/(courseId =${course.courseId})}|" class="text-decoration-none">-->
-<!--                            <button type="button" class="btn btn-primary listBtn">이전</button>-->
-<!--                        </a>-->
-
-                        <!--            <div>-->
-                        <!--              <a th:if="${loginInfo != null}" th:href="@{/studyhub}">강의자료실</a>-->
-                        <!--              <span th:if="${loginInfo == null}">강의자료실</span>-->
-                        <!--            </div>-->
-
-                    <div class="float-end">
-                        <ul class="pagination flex-wrap">
-
-                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
-                                <li th:class="${page == i}?'page-item active':'page-item'" >
-                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
-                                </li>
-                            </th:block>
-
-                            <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
-                            <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
-                            <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
-                            <!--                                </li>-->
-                            <!--                            </th:block>-->
-
-                            <!--                            <li class="page-item" th:if="${prev}">-->
-                            <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
-                            <!--                            </li>-->
-
-                            <!--                            <li class="page-item" th:if="${next}">-->
-                            <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
-                            <!--                            </li>-->
-
-
-                        </ul>
+            <div class="border p-3 bg-light">
+                <strong><div style="margin-right: 10px">과제</div></strong>
+            </div>
+            <div th:each="assignment : ${list}" th:if="${course.courseId == assignment.course.courseId}">
+                <div class="border p-3 d-flex align-items-center justify-content-between">
+                    <div class="mt-0">
+                        <a class="text-decoration-none border-0" th:href="|@{/assignment(assignmentId=${assignment.assignmentId})}|">
+                            <strong><span th:text="${assignment.title}" style="font-size: 15px; color: #1a1e21"></span></strong>
+                        </a>
+                        <input type="text" class="form-control border-0" th:value="${'-/' + assignment.maxScore + '점'}" readonly style="font-size: 12px; color: #777780">
                     </div>
+                </div>
+            </div>
 
-                </div><!--end card body-->
-            </div><!--end card-->
+<!--                    <div class="float-end">-->
+<!--                        <ul class="pagination flex-wrap">-->
+
+<!--                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">-->
+<!--                                <li th:class="${page == i}?'page-item active':'page-item'" >-->
+<!--                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>-->
+<!--                                </li>-->
+<!--                            </th:block>-->
+
+<!--                        </ul>-->
+<!--                    </div>-->
+
+            <div class="ms-4 text-center">
+                <a th:href="@{/assignmentWriteForm(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
+                    <button type="button" class="btn btn-primary">과제 개설</button>
+                </a>
+            </div>
         </div><!-- end col-->
     </div><!-- end row-->
 </div>

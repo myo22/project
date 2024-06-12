@@ -5,46 +5,63 @@
 
 <head>
   <title>수업계획서</title>
+  <style>
+    .input-group-text {
+      min-width: 160px; /* 필드명 텍스트의 최소 너비를 설정하여 일관성을 유지 */
+    }
+    .form-control {
+      height: 45px; /* 모든 입력 필드와 텍스트 영역의 높이를 동일하게 설정 */
+    }
+    .form-control[readonly] {
+      background-color: #ffffff; /* 읽기 전용 필드의 배경색을 변경 */
+    }
+    .textarea-fixed {
+      height: auto; /* 텍스트 영역의 높이를 자동으로 조정 */
+      min-height: 45px; /* 텍스트 영역의 최소 높이를 입력 필드와 일치시키기 */
+    }
+    .card {
+      border: none; /* 카드의 둘레선을 제거 */
+    }
+    .card-body {
+      padding: 1.25rem; /* 카드 본문의 여백을 조정 */
+    }
+  </style>
 </head>
 
 <div layout:fragment="content">
   <div class="row mt-3">
     <div class="col">
+      <strong><h6 style="font-size: 28px; margin-left: 18px">수업계획서</h6></strong>
       <div class="card">
-        <div class="card-header">
-          수업계획서
-        </div>
         <div class="card-body">
-          <div class="input-group mb-3">
-            <span class="input-group-text">담당교수명</span>
-            <input type="text" class="form-control" th:value="${course.user.name}" readonly>
-          </div>
-          <div class="input-group mb-3">
+          <div class="input-group">
             <span class="input-group-text">교과목명</span>
             <input type="text" class="form-control" th:value="${course.title}" readonly>
           </div>
-
-          <div class="input-group mb-3">
+          <div class="input-group">
+            <span class="input-group-text">담당교수명</span>
+            <input type="text" class="form-control" th:value="${course.user.name}" readonly>
+          </div>
+          <div class="input-group">
             <span class="input-group-text">수업 개요 및 목표</span>
-            <textarea class="form-control col-sm-5" rows="5" readonly>[[${course.content}]]</textarea>
+            <textarea class="form-control textarea-fixed" rows="5" readonly>[[${course.content}]]</textarea>
           </div>
 
-          <div class="input-group mb-3">
+          <div class="input-group">
             <span class="input-group-text">작성일</span>
             <input type="text" class="form-control" th:value="${#temporals.format(course.regdate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
           </div>
 
-          <div class="my-4">
-<!--            <a th:href="@{/}" class="text-decoration-none">-->
-<!--              <button type="button" class="btn btn-primary listBtn">목록</button>-->
-<!--            </a>-->
-<!--                        text-decoration-none 은 텍스트의 밑줄을 없애는 역할-->
-            <a th:href="@{/courseUpdateForm(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
-              <button type="button" id="updateButton" class="btn btn-primary">수정</button>
-            </a>
-          </div>
         </div><!--end card body-->
       </div><!--end card-->
+
+      <div class="my-4 text-center">
+        <!--                        text-decoration-none 은 텍스트의 밑줄을 없애는 역할-->
+        <a th:href="@{/courseUpdateForm(courseId=${course.courseId})}" class="text-decoration-none" th:if="${isAdmin}">
+          <button type="button" id="updateButton" class="btn btn-primary">수정</button>
+        </a>
+      </div>
+
     </div><!-- end col-->
   </div><!-- end row-->
 </div>
