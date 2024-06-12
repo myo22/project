@@ -10,6 +10,7 @@
 
             <div class="card">
                 <div class="border p-3 bg-light">
+                    <strong><div style="margin-right: 10px">강의자료실</div></strong>
                 </div>
                 <div class="card-body" >
                     <table class="table">
@@ -34,7 +35,7 @@
 
                 </div><!--end card body-->
             </div><!--end card-->
-            <div class="ms-4 text-center">
+            <div class="mt-4 text-center">
                 <a th:href="@{/studyHubWriteForm(courseId=${course.courseId})}" th:if="${isAdmin}"   class="text-decoration-none">
                     <button type="button" class="btn btn-primary listBtn">업로드</button>
                 </a>
