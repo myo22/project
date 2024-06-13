@@ -16,6 +16,10 @@ public interface AssignmentFileRepository extends JpaRepository<AssignmentFile, 
     @Query(value = "select af from AssignmentFile af where  af.assignment.assignmentId = :assignmentId")
     AssignmentFile getAssignmentFile(@Param("assignmentId") int assignmentId);
 
+    void deleteByAssignmentAssignmentId(int assignmentId);
+
+    AssignmentFile findByAssignmentAssignmentId(int assignmentId);
+
     // 이거는 Spring Data JPA가 제공하는 메서드 네이밍 규칙을 활용한 것이다.
     List<AssignmentFile> findByAssignment_AssignmentId(int assignmentId);
     List<AssignmentFile> findByUser(User user);

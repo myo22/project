@@ -112,6 +112,11 @@ public class AssignmentService {
         Assignment assignment = assignmentRepository.findById(assignmentId).orElseThrow(() -> new IllegalArgumentException("user not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
+        AssignmentFile existingFile =  assignmentFileRepository.findByAssignmentAssignmentId(assignmentId);
+
+        if(existingFile != null){
+            assignmentFileRepository.deleteByAssignmentAssignmentId(assignmentId);
+        }
 
         // 파일 정보 저장
         String originalFilename = file.getOriginalFilename();
