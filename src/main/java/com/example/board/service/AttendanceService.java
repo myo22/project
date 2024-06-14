@@ -25,6 +25,12 @@ public class AttendanceService {
     public void recordAttendance(int videoId, int userId){
         User user = userRepository.findById(userId).orElseThrow();
         Video video = videoRepository.findById(videoId).orElseThrow();
+
+        Attendance attendanceExist = attendanceRepository.findByVideoVideoIdAndUserUserId(videoId, userId);
+        if(attendanceExist != null){
+            return;
+        }
+
         Attendance attendance = Attendance.builder()
                 .video(video)
                 .user(user)

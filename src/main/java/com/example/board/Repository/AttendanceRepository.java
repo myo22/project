@@ -10,4 +10,6 @@ import java.util.List;
 public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
 
     List<Attendance> findByUser(User user);
+
+    Attendance findByVideoVideoIdAndUserUserId(int videoId, int userId);
 }

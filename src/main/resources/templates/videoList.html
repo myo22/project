@@ -17,7 +17,10 @@
                     <a class="text-decoration-none border-0" th:href="@{/video(videoId=${video.videoId})}">
                         <strong><span th:text="${video.title}" style="font-size: 15px; color: #1a1e21"></span></strong>
                     </a>
-                    <input type="text" class="form-control border-0" th:value="${video.userName}" readonly style="font-size: 12px; color: #777780">
+                    <div class="d-flex justify-content-between">
+                        <input type="text" class="form-control border-0" th:value="${video.userName}" readonly style="font-size: 12px; color: #777780">
+                        <div class="text-end" th:text="${video.attendanceStatus == '출석완료'} ? '출석완료' : '결석'"></div>
+                    </div>
                 </div>
             </div>
         </div>

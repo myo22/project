@@ -55,12 +55,14 @@ public class VideoController {
         if(loginInfo == null){
             return "redirect:/longinForm";
         }
-        List<VideoDTO> list = videoService.getAllVideos();
+        List<VideoDTO> list = videoService.getAllVideos(loginInfo.getUserId());
         Course course = courseService.getCourse(courseId);
 
         if(course.getUser().getUserId() == loginInfo.getUserId()){
             model.addAttribute("isAdmin", true);
         }
+
+
 
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
@@ -178,6 +180,7 @@ public class VideoController {
         // FileSystemResource를 사용하여 동영상 파일을 로드합니다.
         Resource videoResource = new FileSystemResource(videoFilePath);
         progressService.watchVideos(video.getCourseId(), loginInfo.getUserId());
+        attendanceService.recordAttendance(videoId, loginInfo.getUserId());
 
         // 동영상을 스트리밍하기 위해 ResponseEntity를 사용합니다.
         return ResponseEntity.ok()
@@ -193,7 +196,6 @@ public class VideoController {
             return "redirect:/loginForm";
         }
 
-        attendanceService.recordAttendance(videoId, loginInfo.getUserId());
 
         return "redirect:/video?videoId=" + videoId;
     }

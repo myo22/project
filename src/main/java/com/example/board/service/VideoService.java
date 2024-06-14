@@ -1,8 +1,10 @@
 package com.example.board.service;
 
+import com.example.board.Repository.AttendanceRepository;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.Repository.VideoRepository;
+import com.example.board.domain.Attendance;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.domain.Video;
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,7 @@ public class VideoService {
     private final VideoRepository videoRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
-
+    private final AttendanceRepository attendanceRepository;
 
     @Transactional
     public VideoDTO getVideo(int videoId){
@@ -34,11 +37,32 @@ public class VideoService {
 
     // Video를 VideoDTO로 바꾸는 메소드가 아닌 DTO생성자를 이용해서 매핑해보는 방법을 써봤다.
     @Transactional
-    public List<VideoDTO> getAllVideos() {
+    public List<VideoDTO> getAllVideos(int userId) {
         List<Video> videos = videoRepository.findAll();
-        return videos.stream()
-                .map(VideoDTO::new)
-                .collect(Collectors.toList());
+        List<VideoDTO> videoDTOS = new ArrayList<>();
+
+        for(Video video : videos){
+            VideoDTO videoDTO = new VideoDTO();
+            videoDTO.setVideoId(video.getVideoId());
+            videoDTO.setVideoName(videoDTO.getVideoName());
+            videoDTO.setVideoUrl(video.getVideoUrl());
+            videoDTO.setTitle(video.getTitle());
+            videoDTO.setCourseId(video.getCourse().getCourseId());
+            videoDTO.setUserId(video.getUser().getUserId());
+            videoDTO.setUserName(video.getUser().getName());
+
+            Attendance attendance = attendanceRepository.findByVideoVideoIdAndUserUserId(video.getVideoId(), userId);
+
+            if(attendance != null){
+                videoDTO.setAttendanceStatus(attendance.getAttendanceStatus());
+            } else {
+                videoDTO.setAttendanceStatus("결석");
+            }
+
+            videoDTOS.add(videoDTO);
+        }
+        return videoDTOS;
+
     }
 
     @Transactional

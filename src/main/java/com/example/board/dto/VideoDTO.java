@@ -13,6 +13,7 @@ public class VideoDTO {
     private String videoUrl;
     private String title;
     private Integer courseId;
+    private String attendanceStatus;
     private Integer userId;
     private String userName;
 
