@@ -12,6 +12,16 @@
   <!-- Bootstrap JS -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .custom-button {
+      background-color: #6a67ce; /* 원하는 배경 색상 */
+      color: white; /* 텍스트 색상 */
+    }
+
+    .custom-button:hover {
+      background-color: #5a57af; /* 마우스 오버 시 배경 색상 */
+    }
+  </style>
 
 </head>
 <body>
@@ -74,7 +84,6 @@
           <div class="card-body">
 
             <div th:if="${professor}">
-              <a href="/courseWriteForm">강의 개설</a>
 
               <table class="table">
                 <tr>
@@ -248,6 +257,13 @@
 
           </div><!--end card body-->
         </div><!--end card-->
+
+        <div class="mt-3 text-center" th:if="${professor}">
+          <a class="text-decoration-none" href="/courseWriteForm">
+            <button class="btn custom-button" th:text="'강의 개설'"></button>
+          </a>
+        </div>
+
       </div><!-- end col-->
     </div><!-- end row-->
   </form>
