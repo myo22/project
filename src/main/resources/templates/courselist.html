@@ -259,8 +259,8 @@
         </div><!--end card-->
 
         <div class="mt-3 text-center" th:if="${professor}">
-          <a class="text-decoration-none" href="/courseWriteForm">
-            <button class="btn custom-button" th:text="'강의 개설'"></button>
+          <a class="text-decoration-none" th:href="@{/courseWriteForm}">
+            <button type="button" class="btn custom-button" th:text="'강의 개설'"></button>
           </a>
         </div>
 
