@@ -3,6 +3,15 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic.html}">
 
+<head>
+    <style>
+        .custom-btn{
+            padding: 0.25rem 0.5rem;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
 <div layout:fragment="content">
 
   <div class="row mt-3">
@@ -12,16 +21,17 @@
             <strong><div style="margin-right: 10px">동영상</div></strong>
         </div>
         <div th:each="video : ${list}" th:if="${course.courseId == video.courseId}">
-            <div class="border p-3 d-flex align-items-center justify-content-between">
-                <div class="mt-0">
+            <div class="border p-3">
+                <div class="d-flex justify-content-between align-items-center">
                     <a class="text-decoration-none border-0" th:href="@{/video(videoId=${video.videoId})}">
                         <strong><span th:text="${video.title}" style="font-size: 15px; color: #1a1e21"></span></strong>
                     </a>
-                    <div class="d-flex justify-content-between">
-                        <input type="text" class="form-control border-0" th:value="${video.userName}" readonly style="font-size: 12px; color: #777780">
-                        <div class="text-end" th:text="${video.attendanceStatus == '출석완료'} ? '출석완료' : '결석'"></div>
+                    <div class="text-end">
+                        <button class="btn custom-btn" th:classappend="${video.attendanceStatus == '출석완료'} ? 'btn-primary' : 'btn-secondary'"
+                            th:text="${video.attendanceStatus == '출석완료'} ? '출석' : '결석'"></button>
                     </div>
                 </div>
+                <input type="text" class="form-control border-0" th:value="${video.userName}" readonly style="font-size: 12px; color: #777780">
             </div>
         </div>
         </div><!--end card body-->

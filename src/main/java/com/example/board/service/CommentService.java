@@ -390,7 +390,7 @@ public class CommentService {
         commentImportanceMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(topN)
-                .forEach(entry -> recommendedComments.add(entry.getKey() + " : " + entry.getValue()));
+                .forEach(entry -> recommendedComments.add(entry.getKey()));
 
         return recommendedComments;
     }
