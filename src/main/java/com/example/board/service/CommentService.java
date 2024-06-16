@@ -306,6 +306,7 @@ public class CommentService {
 
         // 각 댓글의 단어 빈도수 계산
         for (String comment : comments) {
+            comment = preprocessText(comment); // 전처리 적용
             String[] words = comment.split("\\s+");
             for (String word : words) {
                 wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
@@ -329,10 +330,11 @@ public class CommentService {
             for (String word : words) {
                 int wordIndex = wordToIndex.get(word);
                 double tf = (double) wordCountMap.get(word) / words.length;
-                double idf = Math.log((double) totalComments / (wordCountMap.get(word) + 1));
+                double idf = Math.log((double) (totalComments + 1) / (wordCountMap.get(word) + 1)) + 1;
                 tfidfMatrix.setEntry(i, wordIndex, tf * idf);
             }
         }
+
 
         // 유사도 행렬 계산 (코사인 유사도)
         similarityMatrix = tfidfMatrix.multiply(tfidfMatrix.transpose());
@@ -340,6 +342,7 @@ public class CommentService {
 
     // 주어진 새로운 댓글의 중요도 예측
     public double predictCommentImportance(String comment) {
+        comment = preprocessText(comment); // 전처리 적용
         String[] words = comment.split("\\s+");
         double[] commentVector = new double[tfidfMatrix.getColumnDimension()];
 
