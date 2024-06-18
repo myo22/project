@@ -326,9 +326,14 @@ public class CommentService {
         // TF-IDF 값 계산
         for (int i = 0; i < totalComments; i++) {
             String comment = comments.get(i);
+            comment = preprocessText(comment); // 전처리 적용
             String[] words = comment.split("\\s+");
             for (String word : words) {
-                int wordIndex = wordToIndex.get(word);
+                Integer wordIndex = wordToIndex.get(word);
+                if (wordIndex == null) {
+                    System.err.println("단어 인덱스를 찾을 수 없습니다: " + word);
+                    continue; // 또는 예외를 던지거나 적절히 처리합니다.
+                }
                 double tf = (double) wordCountMap.get(word) / words.length;
                 double idf = Math.log((double) (totalComments + 1) / (wordCountMap.get(word) + 1)) + 1;
                 tfidfMatrix.setEntry(i, wordIndex, tf * idf);

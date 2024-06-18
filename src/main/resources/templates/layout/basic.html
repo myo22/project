@@ -1,153 +1,148 @@
-<!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+  <!DOCTYPE html>
+  <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <title>myo22</title>
-  <!-- Favicon-->
-  <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
-  <!-- Core theme CSS (includes Bootstrap)-->
-  <link th:href="@{/css/styles.css}" rel="stylesheet" />
-<!--  <style>-->
-<!--    #sidebarToggle {-->
-<!--      border: none; /*기본 테투리 제거*/-->
-<!--      padding: 0;  /*기본 여백 제거*/-->
-<!--      background: none; /* 기본 배경 제거 */-->
-<!--      cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */-->
-<!--    }-->
-<!--  </style>-->
-  <style>
-    .custom-link {
-      font-size: 18px; /* 원하는 글자 크기로 설정 */
-      color: black;   /* 검정색으로 설정 */
-      text-decoration: none; /* 링크의 밑줄 제거 */
-      margin-left: 20px;
-      margin-top: 2px;
-    }
-  </style>
-</head>
-<body>
-<div class="d-flex" id="wrapper">
-  <div class="border-end bg-white" id="sidebar-wrapper">
-    <div class="sidebar-heading border-bottom bg-light">
-      <a th:href="@{/}" class="text-decoration-none">2024년 1학기</a>
-    </div>
-    <div class="list-group list-group-flush">
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('noticeForm').submit()">
-        <form id="noticeForm" th:action="@{/noticeList}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>공지</span>
-        </form>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>myo22</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <!--  <style>-->
+  <!--    #sidebarToggle {-->
+  <!--      border: none; /*기본 테투리 제거*/-->
+  <!--      padding: 0;  /*기본 여백 제거*/-->
+  <!--      background: none; /* 기본 배경 제거 */-->
+  <!--      cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */-->
+  <!--    }-->
+  <!--  </style>-->
+    <style>
+      .custom-link {
+        font-size: 18px; /* 원하는 글자 크기로 설정 */
+        color: black;   /* 검정색으로 설정 */
+        text-decoration: none; /* 링크의 밑줄 제거 */
+        margin-left: 20px;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="d-flex" id="wrapper">
+    <div class="border-end bg-white" id="sidebar-wrapper">
+      <div class="sidebar-heading border-bottom bg-light">
+        <a th:href="@{/}" class="text-decoration-none">2024년 1학기</a>
       </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('courseForm').submit()">
-        <form id="courseForm" th:action="@{/coursePlan}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>수업계획서</span>
-        </form>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3">
-        <span>출결/학습 현황</span>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('studyHubForm').submit()">
-        <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>강의자료실</span>
-        </form>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('videoForm').submit()">
-        <form id="videoForm" th:action="@{/videoList}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>강의콘텐츠</span>
-        </form>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('assignmentForm').submit()">
-        <form id="assignmentForm" th:action="@{/assignmentList}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>과제 및 평가</span>
-        </form>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3">
-        <span>시험 및 설문</span>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3">
-        <span>성적</span>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
-        <form id="listForm" th:action="@{/list}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
-          <span>토론</span>
-        </form>
-      </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('participantForm').submit()">
-        <form id="participantForm" th:action="@{/participantList}" method="get">
-          <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
-          <button type="submit" class="btn btn-primary" style="display:none;"></button>
+      <div class="list-group list-group-flush">
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('noticeForm').submit()">
+          <form id="noticeForm" th:action="@{/noticeList}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>공지</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('courseForm').submit()">
+          <form id="courseForm" th:action="@{/coursePlan}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>수업계획서</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3">
+          <span>출결/학습 현황</span>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('studyHubForm').submit()">
+          <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>강의자료실</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('videoForm').submit()">
+          <form id="videoForm" th:action="@{/videoList}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>강의콘텐츠</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('assignmentForm').submit()">
+          <form id="assignmentForm" th:action="@{/assignmentList}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>과제 및 평가</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3">
+          <span>시험 및 설문</span>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3">
+          <span>성적</span>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
+          <form id="listForm" th:action="@{/list}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>토론</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('participantForm').submit()">
+          <form id="participantForm" th:action="@{/participantList}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>사용자 및 그룹</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
           <span>사용자 및 그룹</span>
-        </form>
+        </div>
       </div>
-      <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
-        <span>사용자 및 그룹</span>
+    </div>
+
+    <div id="page-content-wrapper">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+          <!-- 사이드바 토글 버튼 -->
+          <button id="sidebarToggle" class="btn p-0 border-0 bg-transparent">
+            <img src="/sidebar3.png" alt="Toggle Sidebar" class="img-fluid" style="max-width: 20px">
+          </button>
+          <a class="text-decoration-none" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}" th:class="custom-link"></a>
+          <div id="content">
+            <!-- 클릭 이벤트를 통해 업데이트되는 텍스트 -->
+          </div>
+          <!-- 네비게이션 바 메뉴 -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+              <!-- 로그인 정보 및 메뉴 -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${loginInfo != null}" th:text="${loginInfo.name}"></a>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/mypage">마이페이지</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/logout">로그아웃</a>
+                </div>
+              </li>
+              <!-- 로그인/로그아웃 링크 -->
+              <li class="login-info_logout" th:if="${loginInfo == null}">
+                <a class="nav-link" href="/loginForm">로그인</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- Page content -->
+      <div class="container-fluid" layout:fragment="content">
+
       </div>
     </div>
   </div>
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Core theme JS-->
+  <script th:src="@{/js/scripts.js}"></script>
+  <div layout:fragment="script"></div>
 
-  <div id="page-content-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-      <div class="container-fluid">
-        <!-- 사이드바 토글 버튼 -->
-        <button id="sidebarToggle" class="btn p-0 border-0 bg-transparent">
-          <img src="/sidebar3.png" alt="Toggle Sidebar" class="img-fluid" style="max-width: 20px">
-        </button>
-        <a class="text-decoration-none" th:href="@{/course(courseId=${course.courseId})}" th:text="${course.title}" th:class="custom-link"></a>
-        <div id="content">
-          <!-- 클릭 이벤트를 통해 업데이트되는 텍스트 -->
-        </div>
-        <!-- 네비게이션 바 메뉴 -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-            <!-- 로그인 정보 및 메뉴 -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${loginInfo != null}" th:text="${loginInfo.name}"></a>
-              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/mypage">마이페이지</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">로그아웃</a>
-              </div>
-            </li>
-            <!-- 로그인/로그아웃 링크 -->
-            <li class="login-info_logout" th:if="${loginInfo == null}">
-              <a class="nav-link" href="/loginForm">로그인</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <!-- Page content -->
-    <div class="container-fluid" layout:fragment="content">
-
-    </div>
-  </div>
-</div>
-<!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
-<script th:src="@{/js/scripts.js}"></script>
-
-<script>
-  function updateText(text) {
-    document.getElementById('content').innerText = ' > ' + text;
-  }
-</script>
-
-</body>
-</html>
+  </body>
+  </html>

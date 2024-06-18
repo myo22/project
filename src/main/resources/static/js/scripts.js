@@ -23,4 +23,9 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+
 });
+
+function updateText(text) {
+    document.getElementById('content').innerText = ' > ' + text;
+};

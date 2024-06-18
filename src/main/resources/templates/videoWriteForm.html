@@ -5,6 +5,21 @@
 
 <head>
     <title>동영상</title>
+
+    <style>
+        #dropZone {
+            border: 2px dashed #ccc;
+            padding: 40px; /* padding을 늘려서 내부 여백을 더 넓게 설정합니다 */
+            text-align: center;
+            margin-bottom: 30px; /* margin-bottom을 늘려서 드롭존과 하단 요소 간의 간격을 조정합니다 */
+            width: 30%; /* 전체 너비를 사용하도록 설정합니다 */
+            height: 150px; /* 원하는 높이를 설정합니다 */
+            display: flex; /* 내부 아이템을 가운데 정렬하기 위해 flexbox를 사용합니다 */
+            justify-content: center; /* 수평 가운데 정렬합니다 */
+            align-items: center; /* 수직 가운데 정렬합니다 */
+        }
+    </style>
+
 </head>
 
 <div layout:fragment="content">
@@ -17,18 +32,21 @@
                 <div class="card-body">
                     <form id="uploadForm" action="/videoWrite" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">글쓴이</span>
-                            <input type="text" class="form-control" th:value="${loginInfo.name}" readonly>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">제목</span>
-                            <input type="text" name="title" class="form-control" placeholder="동영상 제목">
-                        </div>
 
                         <div class="input-group mb-3">
-                            <label for="video">동영상 선택:</label>
-                            <input type="file" id="video" name="video" accept="video/mp4,video/x-m4v,video/*" required><br><br>
+                            <div class="input-group mb-3">
+                                <label for="title" class="me-3">제목: </label>
+                                <input type="text" id="title" name="title" placeholder="동영상 제목">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <label for="video" class="me-3">동영상 선택:</label>
+                                <input type="file" id="video" name="video" accept="video/mp4,video/x-m4v,video/*" required><br><br>
+                            </div>
+
+                            <div id="dropZone" style="border: 2px dashed #ccc; padding: 20px; text-align: center;">
+                                여기에 파일을 드랍하세요
+                            </div>
                         </div>
 
                         <div class="my-4">
@@ -39,81 +57,39 @@
                         </div>
                     </form>
                 </div><!--end card body-->
-
             </div><!--end card-->
+
         </div><!-- end col-->
     </div><!-- end row-->
 </div>
 
 
 <script layout:fragment="script" th:inline="javascript">
-    // document.getElementById('uploadButton').addEventListener('click', uploadFile);
-    //
-    // const chunkSize = 1024 * 1024; // 1MB
-    // let file;
-    // let startByte = 0;
-    //
-    // function uploadFile() {
-    //     file = document.getElementById('video').files[0];
-    //     startByte = 0;
-    //     uploadNextChunk();
-    // }
-    //
-    // function uploadNextChunk() {
-    //     const chunk = file.slice(startByte, startByte + chunkSize);
-    //     startByte += chunkSize;
-    //
-    //     const formData = new FormData();
-    //     formData.append('file', chunk);
-    //
-    //     const xhr = new XMLHttpRequest();
-    //     xhr.open('POST', '/uploadChunk');
-    //     xhr.onload = function () {
-    //         if (startByte < file.size) {
-    //             uploadNextChunk();
-    //         } else {
-    //             // 파일 전송이 완료되면 /completeUpload 엔드포인트를 호출하여 파일 결합 요청을 보냅니다.
-    //             completeUpload(file.name);
-    //         }
-    //     };
-    //     xhr.onerror = function () {
-    //         alert('파일 업로드 중 오류가 발생했습니다.');
-    //     };
-    //     xhr.upload.onprogress = function (event) {
-    //         const percentComplete = (startByte / file.size) * 100;
-    //         document.querySelector('.progress-bar').style.width = percentComplete + '%';
-    //         document.querySelector('.progress-bar').innerText = percentComplete.toFixed(2) + '%';
-    //     };
-    //     xhr.send(formData);
-    // }
-    //
-    // function completeUpload(fileName) {
-    //     const formData = new FormData();
-    //     formData.append('originalFileName', fileName);
-    //
-    //     const xhr = new XMLHttpRequest();
-    //     xhr.open('POST', '/completeUpload');
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             // 파일 업로드가 완료되면 /videoWrite 엔드포인트로의 요청을 보냅니다.
-    //             sendVideoWriteRequest();
-    //             alert('파일 업로드가 완료되었습니다.');
-    //         } else {
-    //             alert('파일 업로드 중 오류가 발생했습니다.');
-    //         }
-    //     };
-    //     xhr.onerror = function () {
-    //         alert('파일 업로드 중 오류가 발생했습니다.');
-    //     };
-    //     xhr.setRequestHeader("Content-Type", "application/json"); // 요청 헤더 설정
-    //     xhr.send(JSON.stringify({ originalFileName: fileName })); // JSON 형태로 데이터 전송
-    // }
-    //
-    // function sendVideoWriteRequest() {
-    //     // 파일 업로드가 완료된 후에 /videoWrite 엔드포인트로의 요청을 보냅니다.
-    //     const uploadForm = document.getElementById('uploadForm');
-    //     uploadForm.action = '/videoWrite';
-    //     uploadForm.method = 'POST';
-    //     uploadForm.submit();
-    // }
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropZone = document.getElementById('dropZone');
+        var videoInput = document.getElementById('video');
+
+        dropZone.ondragover = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = 'green';
+        };
+
+        dropZone.ondragleave = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+        };
+
+        dropZone.ondrop = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+
+            var files = e.dataTransfer.files;
+            videoInput.files = files;
+
+            // 선택된 파일 이름을 알림으로 표시
+            for (var i = 0; i < files.length; i++) {
+                alert(files[i].name);
+            }
+        };
+    });
 </script>

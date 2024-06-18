@@ -19,7 +19,6 @@ public class GradeService {
 
     private final AssignmentService assignmentService;
     private final AttendanceService attendanceService;
-    private final CourseRepository courseRepository;
 
     @Transactional
     public void saveGrade(Grade grade){
