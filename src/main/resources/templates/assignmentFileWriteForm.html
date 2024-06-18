@@ -5,66 +5,114 @@
 
 <head>
     <title>과제</title>
+
+    <style>
+        #dropZone {
+            border: 2px dashed #ccc;
+            padding: 40px; /* padding을 늘려서 내부 여백을 더 넓게 설정합니다 */
+            text-align: center;
+            margin-bottom: 30px; /* margin-bottom을 늘려서 드롭존과 하단 요소 간의 간격을 조정합니다 */
+            width: 30%; /* 전체 너비를 사용하도록 설정합니다 */
+            height: 150px; /* 원하는 높이를 설정합니다 */
+            display: flex; /* 내부 아이템을 가운데 정렬하기 위해 flexbox를 사용합니다 */
+            justify-content: center; /* 수평 가운데 정렬합니다 */
+            align-items: center; /* 수직 가운데 정렬합니다 */
+        }
+    </style>
+
 </head>
 
 <div layout:fragment="content">
     <div class="row mt-3">
         <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    과제 파일 제출
+            <div class="d-flex justify-content-between">
+                <strong><h6 style="font-size: 28px; margin-left: 18px" th:text="${assignment.title}">수업계획서</h6></strong>
+            </div>
+            <hr>
+            <div class="ms-4">
+                <div class="d-flex align-items-center">
+                    <strong><span style="margin-right: 10px">교수</span></strong>
+                    <span th:text="${assignment.user.name}"></span>
+
+                    <strong><span style="margin-left: 40px; margin-right: 10px">점수</span></strong>
+                    <span th:text="${assignment.maxScore}"></span>
+
+                    <strong><span style="margin-left: 40px; margin-right: 10px">작성일</span></strong>
+                    <span th:text="${#temporals.format(assignment.regdate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+
+                    <div class="d-flex align-items-center" th:if="${isParticipant}">
+                        <strong><span style="margin-left: 40px; margin-right: 10px">제출물</span></strong>
+                        <div class="text-end">
+                            <a th:if="${assignmentFile != null}" th:href="@{${'/Assignment/download/' + assignment}}" download> 내가 제출한 파일 : [[${assignmentFile.origFilename}]]</a>
+                            <span th:if="${assignmentFile == null}">파일이 없습니다.</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
-                        <input type="hidden" name="userId" th:value="${assignment.user.getUserId()}">
-                        <input type="hidden" name="courseId" th:value="${assignment.course.courseId}">
+            </div>
+            <hr>
 
+            <div>
+                <textarea class="form-control col-sm-5" rows="5" readonly style="border: none">[[${assignment.content}]]</textarea>
+            </div>
+
+            <div class="border p-2 mb-2">
+                <form action="/assignmentFileWrite" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="assignmentId" th:value="${assignment.assignmentId}" />
+                    <input type="hidden" name="userId" th:value="${loginInfo.userId}">
+                    <input type="hidden" name="courseId" th:value="${assignment.course.courseId}">
+
+                    <div class="input-group mb-3">
                         <div class="input-group mb-3">
-                            <span class="input-group-text">글쓴이</span>
-                            <input type="text" class="form-control" th:value="${assignment.user.name}" readonly>
+                            <label for="file" class="me-3">파일 선택:</label >
+                            <input type="file" id="file" name="file" accept=".pdf, .doc, .docx, .txt">  <!-- 허용할 파일 형식에 대한 제한을 설정할 수 있음 -->
                         </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">제목</span>
-                            <input type="text" class="form-control" th:value="${assignment.title}" readonly>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">점수</span>
-                            <input type="number" class="form-control" th:value="${assignment.maxScore}" readonly>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">내용</span>
-                            <textarea class="form-control col-sm-5" rows="5" readonly>[[${assignment.content}]]</textarea>
+                        <div id="dropZone">
+                            여기에 파일을 드랍하세요
                         </div>
 
                         <div class="input-group mb-3">
-                            <div class="input-group mb-3">
-                                <label for="file">파일 선택:</label >
-                                <input type="file" id="file" name="file" accept=".pdf, .doc, .docx, .txt">  <!-- 허용할 파일 형식에 대한 제한을 설정할 수 있음 -->
-                            </div>
+                            <label for="desc" class="me-3">파일 설명:</label>
+                            <input type="text" id="desc" name="desc">
 
-                            <div class="input-group mb-3">
-                                <label for="desc">파일 설명:</label>
-                                <input type="text" id="desc" name="desc">
-                            </div>
+                            <button type="submit" class="btn btn-primary">업로드</button>
                         </div>
+                    </div>
 
-                        <div class="my-4">
-                            <div class="float-end">
-                                <button type="submit" class="btn btn-primary">업로드</button>
-                            </div>
-                        </div>
-                    </form>
-                </div><!--end card body-->
+                </form>
+            </div>
 
-            </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
 </div>
 
 
 <script layout:fragment="script" th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropZone = document.getElementById('dropZone');
+        var fileInput = document.getElementById('file');
+
+        dropZone.ondragover = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = 'green';
+        };
+
+        dropZone.ondragleave = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+        };
+
+        dropZone.ondrop = function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+
+            var files = e.dataTransfer.files;
+            fileInput.files = files;
+
+            // 선택된 파일 이름을 알림으로 표시
+            for (var i = 0; i < files.length; i++) {
+                alert(files[i].name);
+            }
+        };
+    });
 </script>

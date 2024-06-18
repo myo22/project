@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 // 트랜잭션 단위로 실행될 메소드를 선언하고 있는 클래스
 @Service // 스프링이 관리하는 Bean
@@ -71,6 +68,15 @@ public class UserService {
             list.add(role.getName());
         }
         return list;
+    }
+
+    @Transactional
+    public List<User> getSortedParticipantsByCourseId(int courseId){
+        Course course = courseRepository.getcourse(courseId);
+        Set<User> participants = course.getParticipants();
+        List<User> sortedParticipants = new ArrayList<>(participants);
+        sortedParticipants.sort(Comparator.comparing(User::getName));
+        return sortedParticipants;
     }
 
 //    @Transactional

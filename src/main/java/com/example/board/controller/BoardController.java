@@ -65,6 +65,10 @@ public class BoardController {
 
         Course course = courseService.getCourse(courseId);
 
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
+
         model.addAttribute(course);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);

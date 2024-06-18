@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -136,8 +133,11 @@ public class UserController {
         }
 
         Course course = courseService.getCourse(courseId);
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
 
-        Set<User> participants = course.getParticipants();
+        List<User> participants = userService.getSortedParticipantsByCourseId(courseId);
 
         model.addAttribute("course", course);
         model.addAttribute("participants", participants);

@@ -13,7 +13,7 @@
           <thead>
           <tr>
             <th scope="col">학번</th>
-            <th scope="col">작성자</th>
+            <th scope="col">이름</th>
             <th scope="col">과제점수</th>
             <th scope="col">출석점수</th>
             <th scope="col">총합점수</th>
@@ -22,7 +22,7 @@
           </thead>
 
           <tr th:each="participant : ${participants}">
-            <th scope="row">[[${participant.key.email}]]</th>
+            <td th:text="${#strings.substring(participant.key.email, 0, 3)} + '###' + ${#strings.substring(participant.key.email, participant.key.email.length() - 2)}"></td>
             <td th:text="${participant.key.name}"></td>
             <td th:text="${participant.value.assignmentScore}"></td>
             <td th:text="${participant.value.attendanceScore}"></td>
@@ -39,7 +39,6 @@
         <!--                        </a>-->
         <button type="submit" class="btn btn-primary">저장</button>
       </form>
-
 
     </div><!-- end col-->
   </div><!-- end row-->

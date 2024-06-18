@@ -110,6 +110,22 @@ public class AssignmentController {
         return "assignment";
     }
 
+    @GetMapping("/assignmentGrade")
+    public String assignmentGrade(Model model,
+                                  HttpSession httpSession,
+                                  @RequestParam("assignmentId") int assignmentId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        Assignment assignment = assignmentService.getAssignment(assignmentId);
+        List<AssignmentFile> assignmentFiles = assignmentService.getAssignmentFiles(assignmentId);
+
+        model.addAttribute("course", assignment.getCourse());
+        model.addAttribute("participantAssignments", assignmentFiles);
+        model.addAttribute("loginInfo", loginInfo);
+        model.addAttribute("assignment", assignment);
+
+        return "assignmentGrade";
+    }
+
     @PostMapping("/submitScore")
     public String submitScore(@RequestParam("currentCourseId") int currentCourseId,
                               @RequestParam("score") int score,
@@ -188,9 +204,19 @@ public class AssignmentController {
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
+
         Course course = courseService.getCourse(courseId);
-        model.addAttribute("loginInfo", loginInfo);
+        AssignmentFileDto assignmentFile = assignmentService.getAssignmentFile(assignmentId);
         Assignment assignment = assignmentService.getAssignment(assignmentId);
+
+        if(assignment.getCourse().getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }else{
+            model.addAttribute("isParticipant", true);
+        }
+
+        model.addAttribute("assignmentFile", assignmentFile);
+        model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("assignment", assignment);
         model.addAttribute("course", course);
 
