@@ -1,10 +1,7 @@
 package com.example.board.controller;
 
-import com.example.board.domain.Attendance;
 import com.example.board.domain.Comment;
 import com.example.board.domain.Course;
-import com.example.board.domain.Video;
-import com.example.board.dto.CommentDTO;
 import com.example.board.dto.LoginInfo;
 import com.example.board.dto.VideoDTO;
 import com.example.board.service.*;
@@ -12,24 +9,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.io.*;
 import java.util.Set;
-import java.util.UUID;
 import java.util.List;
 
 @Controller
@@ -39,7 +28,7 @@ public class VideoController {
     private final VideoService videoService;
     private final CourseService courseService;
     private final AttendanceService attendanceService;
-    private final GradeService gradeService;
+    private final GradeController gradeService;
     private final CommentService commentService;
     private final ProgressService progressService;
 

@@ -1,7 +1,11 @@
 package com.example.board.controller;
 
+import com.example.board.domain.Course;
+import com.example.board.domain.Grade;
 import com.example.board.dto.LoginInfo;
 import com.example.board.domain.User;
+import com.example.board.service.CourseService;
+import com.example.board.service.GradeService;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Controller
@@ -20,6 +27,9 @@ public class UserController {
 
     private final UserService userService;
 
+    private final CourseService courseService;
+
+    private final GradeService gradeService;
 
 
     // http://localhost:/8080/userRegForm
@@ -114,6 +124,25 @@ public class UserController {
         // 세션에서 회원정보를 삭제한다.
         httpSession.removeAttribute("loginInfo");
         return "redirect:/";
+    }
+
+    @GetMapping("/participantList")
+    public String participantList(Model model,
+                                  HttpSession httpSession,
+                                  @RequestParam("currentCourseId") int courseId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("loginInfo");
+        if (loginInfo == null) {
+            return "redirect:/loginForm";
+        }
+
+        Course course = courseService.getCourse(courseId);
+
+        Set<User> participants = course.getParticipants();
+
+        model.addAttribute("course", course);
+        model.addAttribute("participants", participants);
+        model.addAttribute("loginInfo", loginInfo);
+        return "participantList";
     }
 
 

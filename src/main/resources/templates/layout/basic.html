@@ -78,7 +78,14 @@
         <div class="list-group-item list-group-item-action list-group-item-light p-3">
           <span>시험 및 설문</span>
         </div>
-        <div class="list-group-item list-group-item-action list-group-item-light p-3">
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('gradeForm').submit()">
+          <form id="gradeForm" th:action="@{/gradeForm}" method="get">
+            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <span>성적</span>
+          </form>
+        </div>
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
           <span>성적</span>
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
@@ -88,15 +95,12 @@
             <span>토론</span>
           </form>
         </div>
-        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('participantForm').submit()">
+        <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('participantForm').submit()">
           <form id="participantForm" th:action="@{/participantList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
             <button type="submit" class="btn btn-primary" style="display:none;"></button>
             <span>사용자 및 그룹</span>
           </form>
-        </div>
-        <div class="list-group-item list-group-item-action list-group-item-light p-3" th:unless="${isAdmin}">
-          <span>사용자 및 그룹</span>
         </div>
       </div>
     </div>
