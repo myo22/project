@@ -245,48 +245,48 @@ public class CommentService {
     // 주요 댓글 추출 함수
     public List<String> extractImportantComments(Map<String, Map<String, Double>> commentSimilarities, int topN) {
         List<String> importantComments = new ArrayList<>();
+        Map<String, Double> commentScores = new HashMap<>();
 
         for (String comment : commentSimilarities.keySet()) {
             Map<String, Double> similarityMap = commentSimilarities.get(comment);
             double score = 0.0;
-            for (String otherComment : similarityMap.keySet()) {
-                score += similarityMap.get(otherComment);
+            for (Double similarity : similarityMap.values()) {
+                score += similarity;
             }
-            importantComments.add(comment + " : " + score); // 여기서는 간단하게 점수를 더한 값을 사용합니다.
+            commentScores.put(comment, score); // 댓글과 점수를 맵에 저장합니다.
         }
 
         // 점수에 따라 정렬하여 상위 N개의 주요 댓글을 추출합니다.
-        importantComments.sort((c1, c2) -> Double.compare(Double.parseDouble(c2.split(":")[1].trim()), Double.parseDouble(c1.split(":")[1].trim())));
-        importantComments = importantComments.subList(0, Math.min(topN, importantComments.size()));
+        importantComments = commentScores.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
+                .limit(topN)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         return importantComments;
     }
 
-    public List<String> recommendImportantCommentsForUser(User user, int topN) {
+
+    public List<String> recommendCosineComments(User user, int topN) {
         List<Course> courses = courseRepository.findByUser(user);
         List<String> recommendedComments = new ArrayList<>();
 
+        List<String> allCommentTexts = new ArrayList<>();
+
         for (Course course : courses) {
-//            Set<User> participants = course.getParticipants();
-//            for(User participant : participants){
-//                List<Comment> comments = commentService.getCommentByUser(participant);
-//                for (Comment comment : comments) {
-//                    commentTexts.add(comment.getContent());
-//                }
-//            }
             List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
             List<String> commentTexts = new ArrayList<>();
             for (Comment comment : comments) {
                 commentTexts.add(comment.getContent());
             }
-            // TF-IDF를 사용하여 댓글 벡터화
-            Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(commentTexts);
-            // 댓글 간 유사도 계산
-            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilarities(tfidfMatrix);
-            // 개선된 주요 댓글 추출
-            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
-            recommendedComments.addAll(importantCommentsForCourse);
+            allCommentTexts.addAll(commentTexts);
         }
+        // TF-IDF를 사용하여 댓글 벡터화
+        Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(allCommentTexts);
+        // 댓글 간 유사도 계산
+        Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilarities(tfidfMatrix);
+        // 개선된 주요 댓글 추출
+        recommendedComments = extractImportantComments(commentSimilarities, topN);
 
         return recommendedComments;
     }
@@ -369,8 +369,43 @@ public class CommentService {
     }
 
     // 주요 댓글 추천
-    public List<String> recommendImportantComments(User user, int topN) {
-        List<String> recommendedComments = new ArrayList<>();
+//    public List<String> recommendModelComments(User user, int topN) {
+//        List<String> recommendedComments = new ArrayList<>();
+//        Map<String, Double> commentImportanceMap = new HashMap<>();
+//        List<Course> courses = courseRepository.findByUser(user);
+//
+//        for (Course course : courses) {
+//            List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
+//            List<String> commentTexts = new ArrayList<>();
+//            for (Comment comment : comments) {
+//                commentTexts.add(comment.getContent());
+//            }
+//
+//            if (commentTexts.isEmpty()) {
+//                continue;
+//            }
+//
+//            trainModel(commentTexts);
+//
+//            for (String comment : commentTexts) {
+//                double importance = predictCommentImportance(comment);
+//                commentImportanceMap.put(comment, importance);
+//            }
+//
+//        }
+//
+//        // 중요도에 따라 정렬하여 상위 N개의 주요 댓글을 추출합니다.
+//        commentImportanceMap.entrySet().stream()
+//                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+//                .limit(topN)
+//                .forEach(entry -> recommendedComments.add(entry.getKey()));
+//
+//        return recommendedComments;
+//    }
+
+    // 주요 댓글 추천
+    public Map<String, List<String>> recommendModelComments(User user, int topN) {
+        Map<String, List<String>> recommendedComments = new HashMap<>();
         Map<String, Double> commentImportanceMap = new HashMap<>();
         List<Course> courses = courseRepository.findByUser(user);
 
@@ -391,16 +426,35 @@ public class CommentService {
                 double importance = predictCommentImportance(comment);
                 commentImportanceMap.put(comment, importance);
             }
-
         }
 
-        // 중요도에 따라 정렬하여 상위 N개의 주요 댓글을 추출합니다.
-        commentImportanceMap.entrySet().stream()
+        // 중요도에 따라 정렬하여 댓글을 대, 중, 소로 나누고 상위 N개의 주요 댓글을 추출합니다.
+        List<Map.Entry<String, Double>> sortedEntries = commentImportanceMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(topN)
-                .forEach(entry -> recommendedComments.add(entry.getKey()));
+                .collect(Collectors.toList());
+
+        int totalComments = sortedEntries.size();
+        int chunkSize = totalComments / 3;
+
+        // 대 구간
+        List<Map.Entry<String, Double>> highImportanceComments = sortedEntries.subList(0, chunkSize);
+        // 중 구간
+        List<Map.Entry<String, Double>> mediumImportanceComments = sortedEntries.subList(chunkSize, 2 * chunkSize);
+        // 소 구간
+        List<Map.Entry<String, Double>> lowImportanceComments = sortedEntries.subList(2 * chunkSize, totalComments);
+
+        recommendedComments.put("highImportance", getTopNComments(highImportanceComments, topN));
+        recommendedComments.put("mediumImportance", getTopNComments(mediumImportanceComments, topN));
+        recommendedComments.put("lowImportance", getTopNComments(lowImportanceComments, topN));
 
         return recommendedComments;
+    }
+
+    private List<String> getTopNComments(List<Map.Entry<String, Double>> comments, int topN) {
+        return comments.stream()
+                .limit(topN)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     // 피어슨 상관계수
@@ -463,9 +517,11 @@ public class CommentService {
     }
 
     // 주요 댓글 추천
-    public List<String> recommendPearsonCommentsForUser(User user, int topN) {
+    public List<String> recommendPearsonComments(User user, int topN) {
         List<Course> courses = courseRepository.findByUser(user);
         List<String> recommendedComments = new ArrayList<>();
+
+        List<String> allCommentTexts = new ArrayList<>();
 
         for (Course course : courses) {
             List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
@@ -473,14 +529,14 @@ public class CommentService {
             for (Comment comment : comments) {
                 commentTexts.add(comment.getContent());
             }
-            // TF-IDF를 사용하여 댓글 벡터화
-            Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(commentTexts);
-            // 댓글 간 유사도 계산 (피어슨 상관계수 사용)
-            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingPearson(tfidfMatrix);
-            // 개선된 주요 댓글 추출
-            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
-            recommendedComments.addAll(importantCommentsForCourse);
+            allCommentTexts.addAll(commentTexts);
         }
+        // TF-IDF를 사용하여 댓글 벡터화
+        Map<String, Map<String, Double>> tfidfMatrix = calculateTFIDF(allCommentTexts);
+        // 댓글 간 유사도 계산 (피어슨 상관계수 사용)
+        Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingPearson(tfidfMatrix);
+        // 개선된 주요 댓글 추출
+        recommendedComments = extractImportantComments(commentSimilarities, topN);
 
         return recommendedComments;
     }
@@ -524,9 +580,11 @@ public class CommentService {
 
 
     // 주요 댓글 추천
-    public List<String> recommendImportantCommentsForUserUsingJaccard(User user, int topN) {
+    public List<String> recommendJaccardForUser(User user, int topN) {
         List<Course> courses = courseRepository.findByUser(user);
         List<String> recommendedComments = new ArrayList<>();
+
+        List<String> allCommentTexts = new ArrayList<>();
 
         for (Course course : courses) {
             List<Comment> comments = commentRepository.findByCourseId(course.getCourseId());
@@ -534,12 +592,12 @@ public class CommentService {
             for (Comment comment : comments) {
                 commentTexts.add(comment.getContent());
             }
-            // 댓글 간 유사도 계산 (자카드 유사도 사용)
-            Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingJaccard(commentTexts);
-            // 개선된 주요 댓글 추출
-            List<String> importantCommentsForCourse = extractImportantComments(commentSimilarities, topN);
-            recommendedComments.addAll(importantCommentsForCourse);
+            allCommentTexts.addAll(commentTexts);
         }
+        // 댓글 간 유사도 계산 (자카드 유사도 사용)
+        Map<String, Map<String, Double>> commentSimilarities = calculateCommentSimilaritiesUsingJaccard(allCommentTexts);
+        // 개선된 주요 댓글 추출
+        recommendedComments = extractImportantComments(commentSimilarities, topN);
 
         return recommendedComments;
     }

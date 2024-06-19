@@ -59,23 +59,23 @@
             <span>나의 과목 <span style="color: #6a77ce" th:text="${courseCount}"></span></span>
             <div class="dropdown">
               <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${professor}" style="color: #1aafd0">
-                메시지
+                댓글 추천
               </button>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal">-->
-<!--                  코사인 유사도 기반 댓글 추천-->
-<!--                </a>-->
-<!--                <div class="dropdown-divider"></div>-->
-<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal2">-->
-<!--                  자카드 유사도 기반 댓글 추천-->
-<!--                </a>-->
-<!--                <div class="dropdown-divider"></div>-->
-<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal3">-->
-<!--                  피어슨 상관계수 기반 댓글 추천-->
-<!--                </a>-->
-<!--                <div class="dropdown-divider"></div>-->
+                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal">
+                  코사인 유사도 기반 댓글 추천
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal2">
+                  자카드 유사도 기반 댓글 추천
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal3">
+                  피어슨 상관계수 기반 댓글 추천
+                </a>
+                <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal4">
-                  최근 댓글 알림
+                  모델 기반 댓글 추천
                 </a>
               </div>
             </div>
@@ -167,7 +167,7 @@
                   </div>
 
                   <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${recommendedComments}">
+                  <div class="modal-body" th:each="comment : ${recommendedCosineComments}">
                     <span th:text="${comment}"></span>
                   </div>
 
@@ -223,16 +223,41 @@
             </div>
 
             <div class="modal fade" id="myModal4"> <!-- 다른 ID를 부여 -->
-              <div class="modal-dialog modal-dialog-top-right">
+              <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg 클래스를 사용하여 크기 조정 -->
                 <div class="modal-content">
                   <!-- Modal Header -->
                   <div class="modal-header">
-                    <h4 class="modal-title">댓글 추천</h4>
+                    <h4 class="modal-title">모델 기반 댓글 추천</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
                   <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${modelRecommendedComments}">
-                    <span th:text="${comment}"></span>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="text-center border rounded p-3">
+                          <h6 class="mb-3">대</h6>
+                          <div th:each="comment : ${recommendedModelComments['highImportance']}" class="mb-3">
+                            <span th:text="${comment}"></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="text-center border rounded p-3">
+                          <h6 class="mb-3">중</h6>
+                          <div th:each="comment : ${recommendedModelComments['mediumImportance']}" class="mb-3">
+                            <span th:text="${comment}"></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="text-center border rounded p-3">
+                          <h6 class="mb-3">소</h6>
+                          <div th:each="comment : ${recommendedModelComments['lowImportance']}" class="mb-3">
+                            <span th:text="${comment}"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <!-- Modal footer -->
                   <div class="modal-footer">
@@ -241,6 +266,8 @@
                 </div>
               </div>
             </div>
+
+
 
 
             <div class="float-end">

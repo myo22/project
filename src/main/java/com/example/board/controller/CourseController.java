@@ -40,10 +40,14 @@ public class CourseController {
         int currentPage = page;
 
         User user = userService.getUser(loginInfo.getUserId());
-        List<String> recommendedComments = commentService.recommendImportantCommentsForUser(user, 3);
-        List<String> modelRecommendedComments = commentService.recommendImportantComments(user, 3);
-        List<String> recommendPearsonComments = commentService.recommendPearsonCommentsForUser(user, 3);
-        List<String> recommendJaccardComments = commentService.recommendImportantCommentsForUserUsingJaccard(user, 3);
+
+        // 메모리 기반 댓글 추천
+        List<String> recommendedCosineComments = commentService.recommendCosineComments(user, 3);
+        List<String> recommendPearsonComments = commentService.recommendPearsonComments(user, 3);
+        List<String> recommendJaccardComments = commentService.recommendJaccardForUser(user, 3);
+
+        // 모델 기반 댓글 추천
+        Map<String, List<String>> recommendedModelComments = commentService.recommendModelComments(user, 3);
 
         Set<Progress> progresses = progressService.getProgresses(user.getUserId());
         Set<Course> courses = user.getCourses();
@@ -64,10 +68,10 @@ public class CourseController {
         }
 
         model.addAttribute("progresses", progresses);
+        model.addAttribute("recommendedCosineComments", recommendedCosineComments);
         model.addAttribute("recommendPearsonComments", recommendPearsonComments);
-        model.addAttribute("recommendedComments", recommendedComments);
         model.addAttribute("recommendJaccardComments", recommendJaccardComments);
-        model.addAttribute("modelRecommendedComments", modelRecommendedComments);
+        model.addAttribute("recommendedModelComments", recommendedModelComments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
