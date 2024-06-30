@@ -65,7 +65,7 @@ public class CommentService {
     @Transactional
     public Set<Comment> getCommentsByAssignment(int assignmentId) {
 
-        return commentRepository.findByAssignmentAssignmentId(assignmentId);
+        return commentRepository.findByAssignmentAssignmentIdOrderByCreatedAtDesc(assignmentId);
     }
 
     @Transactional

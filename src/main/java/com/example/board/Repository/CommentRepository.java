@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    Set<Comment> findByAssignmentAssignmentId(int assignmentId);
+    Set<Comment> findByAssignmentAssignmentIdOrderByCreatedAtDesc(int assignmentId);
 
     Set<Comment> findByVideoVideoId(int videoId);
 
