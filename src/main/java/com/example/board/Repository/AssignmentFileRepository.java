@@ -7,6 +7,7 @@ import com.example.board.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.expression.spel.ast.Assign;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface AssignmentFileRepository extends JpaRepository<AssignmentFile, 
     void deleteByAssignmentAssignmentId(int assignmentId);
 
     AssignmentFile findByAssignmentAssignmentId(int assignmentId);
+
+    AssignmentFile findByUserUserId(int userId);
 
     // 이거는 Spring Data JPA가 제공하는 메서드 네이밍 규칙을 활용한 것이다.
     List<AssignmentFile> findByAssignment_AssignmentId(int assignmentId);

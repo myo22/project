@@ -75,6 +75,16 @@ public class AssignmentService {
     }
 
     @Transactional
+    public AssignmentFileDto getUserAssignmentFile(int userId){
+        AssignmentFile assignmentFile = assignmentFileRepository.findByUserUserId(userId);
+        if(assignmentFile != null){
+            return toAssignmentDto(assignmentFile);
+        }else{
+            return null;
+        }
+    }
+
+    @Transactional
     public AssignmentFileDto getAssignmentFile(int assignmentId){
         AssignmentFile assignmentFile = assignmentFileRepository.getAssignmentFile(assignmentId);
         if (assignmentFile != null) {

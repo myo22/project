@@ -91,7 +91,7 @@ public class AssignmentController {
 //                .orElse(null);
 
         // 이 방법은 대규모 데이터셋에서도 효율적이다. 재사용성도 높아진다.
-        AssignmentFileDto assignmentFile = assignmentService.getAssignmentFile(assignmentId);
+        AssignmentFileDto assignmentFile = assignmentService.getUserAssignmentFile(loginInfo.getUserId());
 
         // 이것도 마찬가지
 //        List<AssignmentFile> assignmentFiles = assignment.getAssignmentFiles();
@@ -206,7 +206,7 @@ public class AssignmentController {
         }
 
         Course course = courseService.getCourse(courseId);
-        AssignmentFileDto assignmentFile = assignmentService.getAssignmentFile(assignmentId);
+        AssignmentFileDto assignmentFile = assignmentService.getUserAssignmentFile(loginInfo.getUserId());
         Assignment assignment = assignmentService.getAssignment(assignmentId);
 
         if(assignment.getCourse().getUser().getUserId() == loginInfo.getUserId()){
