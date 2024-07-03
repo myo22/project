@@ -10,6 +10,7 @@ import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.dto.AssignmentFileDto;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

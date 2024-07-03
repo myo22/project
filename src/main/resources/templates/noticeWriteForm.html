@@ -5,43 +5,52 @@
 
 <head>
   <title>공지 작성</title>
+  <!-- Bootstrap CSS link here -->
 </head>
 
-<div layout:fragment="content">
-  <div class="row mt-3">
-    <div class="col">
+<body>
+<div layout:fragment="content" class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
       <div class="card">
         <div class="card-header">
           공지 작성
         </div>
         <div class="card-body">
           <form action="/writeNotice" method="post">
-              <input type="hidden" name="courseId" th:value="${course.courseId}" />
+            <input type="hidden" name="courseId" th:value="${course.courseId}" />
 
-              <div class="input-group mb-3">
-                <span class="input-group-text">제목</span>
-                <input type="text" name="title" class="form-control" placeholder="공지 제목">
-              </div>
-
-              <div class="input-group mb-3">
-                <span class="input-group-text">내용</span>
-                <textarea class="form-control col-sm-5" rows="5" name="content" placeholder="공지 설명"></textarea>
-              </div>
-
-            <div class="my-4">
-              <div class="float-end">
-                <button type="submit" class="btn btn-primary">확인</button>
-                <button type="reset" class="btn btn-secondary">다시 입력</button>
-              </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">제목</span>
+              <input type="text" name="title" class="form-control" placeholder="공지 제목">
             </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">내용</span>
+              <textarea class="form-control" rows="5" name="content" placeholder="공지 설명"></textarea>
+            </div>
+
           </form>
-        </div><!--end card body-->
+        </div><!-- end card body -->
+      </div><!-- end card -->
 
-      </div><!--end card-->
-    </div><!-- end col-->
-  </div><!-- end row-->
-</div>
+      <div class="my-4">
+        <div class="text-center">
+          <button id="submitBtn" type="submit" class="btn btn-primary">확인</button>
+          <button type="reset" class="btn btn-secondary">다시 입력</button>
+        </div>
+      </div>
 
+
+    </div><!-- end col -->
+  </div><!-- end row -->
+</div><!-- end container -->
 
 <script layout:fragment="script" th:inline="javascript">
+  document.getElementById('submitBtn').addEventListener("click", function(e) {
+    document.querySelector("form").submit();
+  });
 </script>
+
+</body>
+</html>
