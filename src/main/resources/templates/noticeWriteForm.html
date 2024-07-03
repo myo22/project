@@ -36,7 +36,7 @@
 
       <div class="my-4">
         <div class="text-center">
-          <button id="submitBtn" type="submit" class="btn btn-primary">확인</button>
+          <button type="submit" class="btn btn-primary">확인</button>
           <button type="reset" class="btn btn-secondary">다시 입력</button>
         </div>
       </div>
@@ -47,7 +47,7 @@
 </div><!-- end container -->
 
 <script layout:fragment="script" th:inline="javascript">
-  document.getElementById('submitBtn').addEventListener("click", function(e) {
+  document.querySelector(".btn-primary").addEventListener("click", function(e) {
     document.querySelector("form").submit();
   });
 </script>

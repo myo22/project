@@ -40,14 +40,14 @@
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('noticeForm').submit()">
           <form id="noticeForm" th:action="@{/noticeList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>공지</span>
           </form>
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('courseForm').submit()">
           <form id="courseForm" th:action="@{/coursePlan}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>수업계획서</span>
           </form>
         </div>
@@ -57,21 +57,21 @@
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('studyHubForm').submit()">
           <form id="studyHubForm" th:action="@{/studyHubList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>강의자료실</span>
           </form>
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('videoForm').submit()">
           <form id="videoForm" th:action="@{/videoList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit"  style="display:none;"></button>
             <span>강의콘텐츠</span>
           </form>
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('assignmentForm').submit()">
           <form id="assignmentForm" th:action="@{/assignmentList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>과제 및 평가</span>
           </form>
         </div>
@@ -81,7 +81,7 @@
         <div class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${isAdmin}" onclick="document.getElementById('gradeForm').submit()">
           <form id="gradeForm" th:action="@{/gradeForm}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>성적</span>
           </form>
         </div>
@@ -91,14 +91,14 @@
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
           <form id="listForm" th:action="@{/list}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>토론</span>
           </form>
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('participantForm').submit()">
           <form id="participantForm" th:action="@{/participantList}" method="get">
             <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}" >
-            <button type="submit" class="btn btn-primary" style="display:none;"></button>
+            <button type="submit" style="display:none;"></button>
             <span>사용자 및 그룹</span>
           </form>
         </div>
