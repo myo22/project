@@ -20,3 +20,12 @@ spring:
 file:
   upload:
     dir: C:/Users/user/directory/
+
+logging:
+  level:
+    org:
+      springframework: info
+    com:
+      example:
+        board: debug
+

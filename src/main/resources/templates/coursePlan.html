@@ -69,7 +69,10 @@
   const courseId = [[${course.courseId}]];
 
   document.querySelector(".btn-primary").addEventListener("click", function (e){
-  self.location = `/courseUpdateForm?courseId=${courseId}`;
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location = `/courseUpdateForm?courseId=${courseId}`;
 
   }, false);
 </script>
