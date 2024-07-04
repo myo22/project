@@ -9,7 +9,9 @@ spring:
       dialect: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
+#       JPA가 실행하는 SQL을 같이 출력하도록 한다.
         show_sql: true
+#       실제로 실행되는 SQL을 포맷팅해서 알아보기 쉽게 출력해준다.
         format_sql: true
 
   servlet:
