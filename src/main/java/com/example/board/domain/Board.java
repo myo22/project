@@ -1,9 +1,6 @@
 package com.example.board.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,23 +10,23 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "board")
 @Getter
-@Setter
 @NoArgsConstructor
-public class Board {
+@AllArgsConstructor
+@Builder
+@ToString
+public class Board extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Integer boardId;
 
-    @Column(length = 100)
+    @Column(length = 500, nullable = false) // 칼럼의 길이와 null허용여부
     private String title;
 
-    @Lob // 이걸 붙여줘야 대용량 텍스트로 인지한다.
+    @Column(length = 2000, nullable = false)
     private String content; // text type
 
-    @CreationTimestamp
-    private LocalDateTime regdate;
-
+    @Column(name = "view_cnt")
     private Integer viewCnt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,17 +37,25 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Override
-    public String toString() {
-        return "Board{" +
-                "boardId=" + boardId +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", regdate=" + regdate +
-                ", viewCnt=" + viewCnt +
-                '}';
+//    @Override
+//    public String toString() {
+//        return "Board{" +
+//                "boardId=" + boardId +
+//                ", title='" + title + '\'' +
+//                ", content='" + content + '\'' +
+//                ", regdate=" + regdate +
+//                ", viewCnt=" + viewCnt +
+//                '}';
+//    }
+
+    public void changeView(int viewCnt){
+        this.viewCnt = viewCnt;
     }
 
+    public void change(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 
 }
 

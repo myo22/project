@@ -27,13 +27,14 @@ public class BoardService {
     public void addBoard(int userId, int courseId, String title, String content) {
         User user = userRepository.findById(userId).orElseThrow();
         Course course = courseRepository.getcourse(courseId);
-        Board board = new Board();
-        board.setUser(user);
-        board.setCourse(course);
-        board.setTitle(title);
-        board.setContent(content);
-        board.setRegdate(LocalDateTime.now());
-        board.setViewCnt(0);
+        Board board = Board.builder()
+                .user(user)
+                .course(course)
+                .title(title)
+                .content(content)
+                .viewCnt(0)
+                .build();
+
         boardRepository.save(board);
     }
 
@@ -46,7 +47,7 @@ public class BoardService {
     @Transactional(readOnly = true) // 마찬가지로 읽어오기만 할거니
     public List<Board> getBoards(int page) { // page : 0 - 첫번째 페이지.
         Pageable pageable = PageRequest.of(page, 10);
-        return boardRepository.findByOrderByRegdateDesc(pageable).getContent();
+        return boardRepository.findByOrderByRegDateDesc(pageable).getContent();
     }
 
     @Transactional
@@ -62,7 +63,7 @@ public class BoardService {
     public Board getBoard(int boardId, boolean updateViewCnt) {
         Board board = boardRepository.findById(boardId).orElseThrow();
         if (updateViewCnt){ // jpa에서는 트랜잭션이 종료가 될때 -> 메소드가 끝날때 기존 메소드가 변경이 되어 있으면 자동 업데이트가 실행된다.
-            board.setViewCnt(board.getViewCnt() + 1); // 해당 메소드가 종료될 때 update가 실행된다.
+            board.changeView(board.getViewCnt() + 1); // 해당 메소드가 종료될 때 update가 실행된다.
         }
         return board;
     }
@@ -83,7 +84,7 @@ public class BoardService {
     @Transactional
     public void updateBoard(int boardId, String title, String content){
         Board board = boardRepository.findById(boardId).orElseThrow();
-        board.setTitle(title);
-        board.setContent(content);
+        board.change(title, content);
+        boardRepository.save(board);
     }
 }

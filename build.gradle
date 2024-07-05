@@ -1,3 +1,9 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
@@ -44,6 +50,16 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    //Querydsl 설정
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+
+    //Querydsl 설정
+    annotationProcessor(
+            "javax.persistence:javax.persistence-api",
+
+            "javax.annotation:javax.annotation-api",
+
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
@@ -52,4 +68,12 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+        }
+    }
 }
