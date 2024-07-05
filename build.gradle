@@ -4,6 +4,7 @@ buildscript {
     }
 }
 
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
@@ -55,11 +56,13 @@ dependencies {
 
     //Querydsl 설정
     annotationProcessor(
+
             "javax.persistence:javax.persistence-api",
 
             "javax.annotation:javax.annotation-api",
 
             "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
@@ -70,10 +73,22 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def generatedDir =  "src/main/generated"
+
+
 sourceSets {
     main {
         java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+            srcDirs = ['src/main/java']
+        }
+        // Mybatis 쿼리 xml 위치때문에 조정
+        resources{
+            srcDir "${project.projectDir}/src/main/java"
         }
     }
+}
+
+
+clean {
+    delete file(generatedDir)
 }
