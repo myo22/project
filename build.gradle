@@ -81,9 +81,9 @@ sourceSets {
         java {
             srcDirs = ['src/main/java']
         }
-        // Mybatis 쿼리 xml 위치때문에 조정
+
         resources{
-            srcDir "${project.projectDir}/src/main/java"
+            srcDirs "$projectDir/build/generated"
         }
     }
 }
