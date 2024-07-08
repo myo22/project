@@ -24,14 +24,14 @@
                         </tr>
                         </thead>
 
-                        <tr th:each="board : ${list}"  >
-                            <th scope="row">[[${board.boardId}]]</th>
+                        <tr th:each="boardDTO : ${list}"  >
+                            <th scope="row">[[${boardDTO.boardId}]]</th>
                             <td>
-                                <a class="text-decoration-none" th:href="|@{/board/(boardId=${board.boardId})}&courseId=${course.courseId}|"> [[${board.title}]] </a>
+                                <a class="text-decoration-none" th:href="|@{/boardDTO/(boardId=${boardDTO.boardId})}&courseId=${course.courseId}|"> [[${boardDTO.title}]] </a>
                             </td>
-                            <td>[[${board.viewCnt}]]</td>
-                            <td>[[${board.user.name}]]</td>
-                            <td>[[${#temporals.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+                            <td>[[${boardDTO.viewCnt}]]</td>
+                            <td>[[${boardDTO.user.name}]]</td>
+                            <td>[[${#temporals.format(boardDTO.regdate, 'yyyy-MM-dd')}]]</td>
                         </tr>
 
                     </table>

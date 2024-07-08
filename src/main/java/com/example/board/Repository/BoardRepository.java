@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface BoardRepository extends JpaRepository<Board, Integer>, BoardSearch { // 게시물같은 경우는 글을 많이 쓸 수 있어서 Long으로 하는것이 좋다.
+public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch { // 게시물같은 경우는 글을 많이 쓸 수 있어서 Long으로 하는것이 좋다.
     // JPQL을 사용할 수 있다.
     // JPQL은 SQL과 모양이 비슷하지만, SQL이 아니다.
     // JPQL은 객체지향 언어이다.

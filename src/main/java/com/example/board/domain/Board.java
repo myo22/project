@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 public class Board extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
-    private Integer boardId;
+    private Long bno;
 
     @Column(length = 500, nullable = false) // 칼럼의 길이와 null허용여부
     private String title;

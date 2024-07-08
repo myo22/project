@@ -31,7 +31,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         booleanBuilder.or(board.content.contains("11")); // content like
 
         query.where(booleanBuilder);
-        query.where(board.boardId.gt(0L));
+        query.where(board.bno.gt(0L));
 
 //        query.where(board.title.contains("예시")); // where title like ...
 //
@@ -73,7 +73,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         }
 
-        query.where(board.boardId.gt(0L));
+        query.where(board.bno.gt(0L));
 
         //paging
         this.getQuerydsl().applyPagination(pageable, query);

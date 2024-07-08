@@ -1,27 +1,23 @@
 package com.example.board.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
-public class Board {
-    private int boardId;
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class BoardDTO {
+    private Long bno;
     private String title;
     private String content;
     private String name; // 추가해줘야한다. Join 했기 때문에
+    private int viewCnt;
+    private LocalDateTime regDate;
+    private LocalDateTime modDate;
     private int courseId;
     private int userId;
-    private LocalDateTime regdate;
-    private int viewCnt;
-
-
-
 }
 
 // b.user_id, b.board_id, b.title, b.regdate, b.view_cnt, u.name

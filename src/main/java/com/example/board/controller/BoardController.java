@@ -3,7 +3,7 @@ package com.example.board.controller;
 import com.example.board.domain.Board;
 import com.example.board.domain.Course;
 import com.example.board.dto.LoginInfo;
-import com.example.board.service.BoardService;
+import com.example.board.service.BoardServiceImpl;
 import com.example.board.service.CourseService;
 import com.example.board.service.ProgressService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final BoardService boardService;
+    private final BoardServiceImpl boardService;
     private final CourseService courseService;
     private final ProgressService progressService;
 
@@ -82,7 +82,7 @@ public class BoardController {
     // /board?id=3
     // /board?id=3
     @GetMapping("/board")
-    public String board(@RequestParam("boardId") int boardId,
+    public String board(@RequestParam("boardId") Long boardId,
                         @RequestParam("courseId") int courseId,
                         Model model, HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
@@ -149,7 +149,7 @@ public class BoardController {
 
     @GetMapping("/delete")
     public String delete(
-            @RequestParam("boardId") int boardId,
+            @RequestParam("boardId") Long boardId,
             HttpSession httpSession
     ){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
@@ -169,7 +169,7 @@ public class BoardController {
     }
 
     @GetMapping("/updateform")
-    public String updateform(@RequestParam("boardId") int boardId,
+    public String updateform(@RequestParam("boardId") Long boardId,
                              Model model,
                              HttpSession httpSession,
                              @RequestParam("courseId") int courseId){
@@ -189,7 +189,7 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam("boardId") int boardId,
+    public String update(@RequestParam("boardId") Long boardId,
                          @RequestParam("title") String title,
                          @RequestParam("content") String content,
                          HttpSession httpSession){

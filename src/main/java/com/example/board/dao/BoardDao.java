@@ -1,6 +1,6 @@
 package com.example.board.dao;
 
-import com.example.board.dto.Board;
+import com.example.board.dto.BoardDTO;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -33,12 +33,12 @@ public class BoardDao {
 
     @Transactional
     public void addBoard(int userId, String title, String content) {
-        Board board = new Board();
-        board.setUserId(userId);
-        board.setTitle(title);
-        board.setContent(content);
-        board.setRegdate(LocalDateTime.now());
-        SqlParameterSource params = new BeanPropertySqlParameterSource(board);
+        BoardDTO boardDTO = new BoardDTO();
+        boardDTO.setUserId(userId);
+        boardDTO.setTitle(title);
+        boardDTO.setContent(content);
+        boardDTO.setRegDate(LocalDateTime.now());
+        SqlParameterSource params = new BeanPropertySqlParameterSource(boardDTO);
         insertBoard.execute(params);
     }
 
@@ -50,22 +50,22 @@ public class BoardDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Board> getBoards(int page) {
+    public List<BoardDTO> getBoards(int page) {
         // start는 0, 10, 20, 30 는 1page, 2page, 3page를 나타냄
         int start = (page -1) * 10;
         String sql ="select b.user_id, b.board_id, b.title, b.regdate, b.view_cnt, u.name from board b, user u where b.user_id = u.user_id  limit :start, 10";
-        RowMapper<Board> rowMapper = BeanPropertyRowMapper.newInstance(Board.class);
-        List<Board> list = jdbcTemplate.query(sql, Map.of("start", start), rowMapper);
+        RowMapper<BoardDTO> rowMapper = BeanPropertyRowMapper.newInstance(BoardDTO.class);
+        List<BoardDTO> list = jdbcTemplate.query(sql, Map.of("start", start), rowMapper);
         return list;
     }
 
     @Transactional(readOnly = true)
-    public Board getBoard(int boardId) {
+    public BoardDTO getBoard(int boardId) {
         String sql = "select b.user_id, b.board_id, b.title, b.regdate, b.view_cnt, u.name, b.content from board b, user u where b.user_id = u.user_id  and b.board_id = :boardId";
-        RowMapper<Board> rowMapper = BeanPropertyRowMapper.newInstance(Board.class);
+        RowMapper<BoardDTO> rowMapper = BeanPropertyRowMapper.newInstance(BoardDTO.class);
 //        SqlParameterSource params = new MapSqlParameterSource("boardId", boardId);
-        Board board = jdbcTemplate.queryForObject(sql, Map.of("boardId", boardId), rowMapper);
-        return board;
+        BoardDTO boardDTO = jdbcTemplate.queryForObject(sql, Map.of("boardId", boardId), rowMapper);
+        return boardDTO;
     }
 
     @Transactional
@@ -85,15 +85,15 @@ public class BoardDao {
     }
 
     @Transactional
-    public void updateBoard(int boardId, String title, String content){
+    public void updateBoard(Long boardId, String title, String content){
         String sql = "update board\n" +
                 "set title = :title , content = :content\n" +
                 "where board_id = :boardId";
-        Board board = new Board();
-        board.setBoardId(boardId);
-        board.setTitle(title);
-        board.setContent(content);
-        SqlParameterSource params = new BeanPropertySqlParameterSource(board);
+        BoardDTO boardDTO = new BoardDTO();
+        boardDTO.setBno(boardId);
+        boardDTO.setTitle(title);
+        boardDTO.setContent(content);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(boardDTO);
         jdbcTemplate.update(sql, params);
 //        jdbcTemplate.update(sql, Map.of("boardId", boardId, "title", title, "content", content));
     }

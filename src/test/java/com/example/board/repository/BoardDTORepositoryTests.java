@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 @Log4j2
 @SpringBootTest
-public class BoardRepositoryTests {
+public class BoardDTORepositoryTests {
 
     @Autowired
     private BoardRepository boardRepository;
