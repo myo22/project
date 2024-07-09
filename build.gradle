@@ -51,6 +51,9 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // @Valid 검증 방식
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     //Querydsl 설정
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 
