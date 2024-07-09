@@ -2,7 +2,10 @@ package com.example.board.controller;
 
 import com.example.board.domain.Board;
 import com.example.board.domain.Course;
+import com.example.board.dto.BoardDTO;
 import com.example.board.dto.LoginInfo;
+import com.example.board.dto.PageRequestDTO;
+import com.example.board.dto.PageResponseDTO;
 import com.example.board.service.BoardServiceImpl;
 import com.example.board.service.CourseService;
 import com.example.board.service.ProgressService;
@@ -29,39 +32,24 @@ public class BoardController {
     // http://localhost:8080/ -----> "list"라는 이름의 템플릿을 사용(forward)하여 화면에 출력.
     // list를 리턴한다는 것은 classpath:/templates/list.html을 사용한다는 뜻이다. classpath:/경로나  .html(확장자)를 바꿔주고 싶다면 prefix랑 suffix를 바꿔주면 가능하다.
     @GetMapping("/list")
-    public String list(HttpSession httpSession, Model model,@RequestParam(name = "page", defaultValue = "0") int page,
+    public String list(HttpSession httpSession,
+                       Model model,
+                       PageRequestDTO pageRequestDTO,
                        @RequestParam("currentCourseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
 
-        // 게시물 목록을 읽어온다. 페이징 처리한다.
-        long total = boardService.getTotalCount(); // 11
-        List<Board> list = boardService.getBoards(page); // page가 1,2,3,4 ....
-        long pageCount = total / 10; // 1;
-        if (total % 10> 0) { // 나머지가 있을 경우 1page를 추가
-            pageCount++;
-        }
-        int currentPage = page;
+        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
 
-//        int end = (int)(Math.ceil(page / 10.0)) * 10;
+//        // 게시물 목록을 읽어온다. 페이징 처리한다.
+//        long total = boardService.getTotalCount(); // 11
+//        List<Board> list = boardService.getBoards(page); // page가 1,2,3,4 ....
+//        long pageCount = total / 10; // 1;
 //        if (total % 10> 0) { // 나머지가 있을 경우 1page를 추가
-//            end++;
+//            pageCount++;
 //        }
-//        int start = end - 9;
-//
-//        boolean prev = start > 1;
-//
-//        boolean next = total > 10 * end;
+//        int currentPage = page;
 
-//        model.addAttribute("next", next);
-//        model.addAttribute("prev", prev);
-//        model.addAttribute("start", start);
-//        model.addAttribute("end", end);
-
-//        System.out.println("totalCount : " + totalCount);
-//        for(Board board : list){
-//            System.out.println(board);
-//        }
 
         Course course = courseService.getCourse(courseId);
 
@@ -70,9 +58,7 @@ public class BoardController {
         }
 
         model.addAttribute(course);
-        model.addAttribute("list", list);
-        model.addAttribute("pageCount", pageCount);
-        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("responseDTO", responseDTO);
 
 
         return "list"; // 컨트롤러의 메소드가 리턴하는 문자열은 템플릿 이름이다.

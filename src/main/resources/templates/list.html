@@ -24,14 +24,14 @@
                         </tr>
                         </thead>
 
-                        <tr th:each="boardDTO : ${list}"  >
-                            <th scope="row">[[${boardDTO.boardId}]]</th>
+                        <tr th:each="dto : ${responseDTO.dtoList}"  >
+                            <th scope="row" th:text="${dto.bno}"></th>
                             <td>
                                 <a class="text-decoration-none" th:href="|@{/boardDTO/(boardId=${boardDTO.boardId})}&courseId=${course.courseId}|"> [[${boardDTO.title}]] </a>
                             </td>
-                            <td>[[${boardDTO.viewCnt}]]</td>
-                            <td>[[${boardDTO.user.name}]]</td>
-                            <td>[[${#temporals.format(boardDTO.regdate, 'yyyy-MM-dd')}]]</td>
+                            <td th:text="${dto.viewCnt}"></td>
+                            <td th:text="${dto.name}"></td>
+                            <td th:text="${#temporals.format(dto.regDate, 'yyyy-MM-dd')}"></td>
                         </tr>
 
                     </table>
@@ -39,25 +39,25 @@
                     <div class="float-end">
                         <ul class="pagination flex-wrap">
 
-                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">
-                                <li th:class="${page == i}?'page-item active':'page-item'" >
-                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
+                            </li>
+
+                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i} ? 'page-item active' : 'page-item'">
+                                    <a class="page-link" th:data-num="${i}" th:text="${i}"></a>
                                 </li>
                             </th:block>
 
-                            <!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">-->
-                            <!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >-->
-                            <!--                                    <a class="page-link"  th:data-num="${i}">[[${i}]]</a>-->
-                            <!--                                </li>-->
-                            <!--                            </th:block>-->
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end + 1}">Next</a>
+                            </li>
 
-                            <!--                            <li class="page-item" th:if="${prev}">-->
-                            <!--                                <a class="page-link" th:data-num="${start -1}">Previous</a>-->
-                            <!--                            </li>-->
-
-                            <!--                            <li class="page-item" th:if="${next}">-->
-                            <!--                                <a class="page-link"  th:data-num="${end + 1}">Next</a>-->
-                            <!--                            </li>-->
+<!--                            <th:block th:each="i: ${#numbers.sequence(1, pageCount)}">-->
+<!--                                <li th:class="${page == i}?'page-item active':'page-item'" >-->
+<!--                                    <a class="page-link"  th:data-num="${i}" th:href="@{/(page=${i})}">[[${i}]]</a>-->
+<!--                                </li>-->
+<!--                            </th:block>-->
 
                         </ul>
                     </div>
