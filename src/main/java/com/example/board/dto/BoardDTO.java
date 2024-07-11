@@ -2,6 +2,8 @@ package com.example.board.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -10,14 +12,30 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BoardDTO {
     private Long bno;
+
+    @NotEmpty
+    @Size(min = 3, max = 100)
     private String title;
+
+    @NotEmpty
     private String content;
+
+    @NotEmpty
     private String name; // 추가해줘야한다. Join 했기 때문에
-    private int viewCnt;
+
+    @Builder.Default
+    private int viewCnt = 0;
+
     private LocalDateTime regDate;
+
     private LocalDateTime modDate;
+
+    @NotEmpty
     private int courseId;
+
+    @NotEmpty
     private int userId;
+
 }
 
 // b.user_id, b.board_id, b.title, b.regdate, b.view_cnt, u.name

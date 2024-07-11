@@ -10,20 +10,25 @@ import com.example.board.service.BoardServiceImpl;
 import com.example.board.service.CourseService;
 import com.example.board.service.ProgressService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 // HTTP요청을 받아서 응답을 받는 컴포넌트, 스프링 부트가 자동으로 Bean으로 생성한다.
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
+@Log4j2
 public class BoardController {
 
     private final BoardServiceImpl boardService;
@@ -91,33 +96,28 @@ public class BoardController {
     // 삭제한다. 관리자는 모든 글을 삭제할 수 있다.
     // 수정한다.
 
-    @GetMapping("/writeForm")
-    public String writeForm(HttpSession httpSession, Model model,
+    @GetMapping("/register")
+    public void registerGET(HttpSession httpSession, Model model,
                             @RequestParam("courseId") int courseId){
         // 로그인한 사용자만 글을 써야한다. 로그인을 하지 않았다면 리스트 보기로 자동 이동 시킨다.
         // 세션에서 로그인한 정보를 읽어들인다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
-        if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
-            return "redirect:/loginForm";
-        }
 
         Course course = courseService.getCourse(courseId);
 
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo);
 
-        return "writeForm";
     }
 
-    @PostMapping("/write")
-    public String write(
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("courseId") int courseId,
+    @PostMapping("/register")
+    public String RegisterPOST(
+            @Valid BoardDTO boardDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
             HttpSession httpSession
     ){
-        System.out.println("title : " + title);
-        System.out.println("content: " + content);
+        log.info("board POST register...");
 
         // 로그인한 사용자만 글을 써야한다. 로그인을 하지 않았다면 리스트 보기로 자동 이동 시킨다.
         // 세션에서 로그인한 정보를 읽어들인다.
@@ -125,12 +125,24 @@ public class BoardController {
         if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
             return "redirect:/loginForm";
         }
-        boardService.addBoard(loginInfo.getUserId(), courseId ,title, content);
-        progressService.incrementDiscussionCount(courseId);
 
-        // 로그인 한 회원정보 + 제목, 내용을 저장한다.
+        if (bindingResult.hasErrors()) {
+            log.info("has errors.....");
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
-        return "redirect:/list"; // 리스트 보기로 리다이렉트한다.
+            return "redirect:/board/register";
+        }
+
+        log.info(boardDTO);
+
+        Long bno = boardService.register(boardDTO);
+
+        redirectAttributes.addFlashAttribute("result", bno);
+
+        progressService.incrementDiscussionCount(boardDTO.getCourseId());
+
+
+        return "redirect:/board/list"; // 리스트 보기로 리다이렉트한다.
 
     }
 

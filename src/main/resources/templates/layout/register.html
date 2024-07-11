@@ -15,11 +15,11 @@
                     글쓰기
                 </div>
                 <div class="card-body">
-                    <form action="/write" method="post">
+                    <form action="/board/register" method="post">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
 
                         <div class="input-group mb-3">
-                            <span th:text="${loginInfo.name}"></span>
+                            <input type="text" name="userId" th:value="${loginInfo.name}" readonly></span>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
@@ -48,4 +48,17 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
+
+    const errors = [[${errors}]]
+    console.log(errors)
+
+    let errorMsg = ''
+
+    if(errors){
+        for(let i = 0; i < errors.length ; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+
 </script>

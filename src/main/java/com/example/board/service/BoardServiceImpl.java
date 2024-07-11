@@ -17,7 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,14 +35,29 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
+    @PostConstruct
+    public void init() {
+        modelMapper.createTypeMap(BoardDTO.class, Board.class).addMappings(mapper -> {
+            mapper.skip(Board::setCourse);
+        });
+    }
+
+
     @Override
     public Long register(BoardDTO boardDTO) {
         Board board = modelMapper.map(boardDTO, Board.class);
+
+        courseRepository.getcourse(boardDTO.getCourseId());
+        userRepository.findById(boardDTO.getUserId());
+
+        board
 
         Long bno = boardRepository.save(board).getBno();
 
         return bno;
     }
+
+
 
     @Override
     public BoardDTO readOne(Long bno) {
@@ -86,20 +103,20 @@ public class BoardServiceImpl implements BoardService {
                 .build();
     }
 
-    @Transactional
-    public void addBoard(int userId, int courseId, String title, String content) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Course course = courseRepository.getcourse(courseId);
-        Board board = Board.builder()
-                .user(user)
-                .course(course)
-                .title(title)
-                .content(content)
-                .viewCnt(0)
-                .build();
-
-        boardRepository.save(board);
-    }
+//    @Transactional
+//    public void addBoard(int userId, int courseId, String title, String content) {
+//        User user = userRepository.findById(userId).orElseThrow();
+//        Course course = courseRepository.getcourse(courseId);
+//        Board board = Board.builder()
+//                .user(user)
+//                .course(course)
+//                .title(title)
+//                .content(content)
+//                .viewCnt(0)
+//                .build();
+//
+//        boardRepository.save(board);
+//    }
 
     @Transactional(readOnly = true) // select만 할때는 readOnly = true하는게 성능상 좋다.
     public Long getTotalCount() {
