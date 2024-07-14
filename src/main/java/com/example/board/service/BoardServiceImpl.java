@@ -39,6 +39,7 @@ public class BoardServiceImpl implements BoardService {
     public void init() {
         modelMapper.createTypeMap(BoardDTO.class, Board.class).addMappings(mapper -> {
             mapper.skip(Board::setCourse);
+            mapper.skip(Board::setUser);
         });
     }
 
@@ -47,10 +48,11 @@ public class BoardServiceImpl implements BoardService {
     public Long register(BoardDTO boardDTO) {
         Board board = modelMapper.map(boardDTO, Board.class);
 
-        courseRepository.getcourse(boardDTO.getCourseId());
-        userRepository.findById(boardDTO.getUserId());
+        Course course = courseRepository.getcourse(boardDTO.getCourseId());
+        User user = userRepository.findByUserId(boardDTO.getUserId());
 
-        board
+        board.setCourse(course);
+        board.setUser(user);
 
         Long bno = boardRepository.save(board).getBno();
 

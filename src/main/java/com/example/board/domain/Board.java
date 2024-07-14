@@ -56,12 +56,12 @@ public class Board extends BaseEntity{
         this.content = content;
     }
 
-    // 커스텀 매퍼에서만 접근할 수 있도록 protected로 변경
-    protected void setCourse(Course course){
+    // 커스텀 매퍼에서만 접근할 수 있도록 public로 변경
+    public void setCourse(Course course){
         this.course = course;
     }
 
-    protected void setUser(User user){
+    public void setUser(User user){
         this.user = user;
     }
 
