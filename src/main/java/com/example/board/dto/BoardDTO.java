@@ -2,6 +2,7 @@ package com.example.board.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -30,10 +31,10 @@ public class BoardDTO {
 
     private LocalDateTime modDate;
 
-    @NotEmpty
+    @Min(value = 1)
     private int courseId;
 
-    @NotEmpty
+    @Min(value = 1)
     private int userId;
 
 }

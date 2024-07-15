@@ -36,25 +36,13 @@ public class BoardServiceImpl implements BoardService {
     private final CourseRepository courseRepository;
 
 
-    // 자동 매핑의 한계가 있기 때문에 수동으로 매핑시켜줘야하기 때문에 특정 필드를 건너 뛴다.
-    @PostConstruct
-    public void init() {
-        modelMapper.createTypeMap(BoardDTO.class, Board.class).addMappings(mapper -> {
-            mapper.skip(Board::setCourse);
-            mapper.skip(Board::setUser);
-        });
-    }
-
-
     @Override
     public Long register(BoardDTO boardDTO) {
         Board board = modelMapper.map(boardDTO, Board.class);
 
-        Course course = courseRepository.getcourse(boardDTO.getCourseId());
-        User user = userRepository.findByUserId(boardDTO.getUserId());
+        Course course = courseRepository.findById(boardDTO.getCourseId()).orElseThrow();
+        User user = userRepository.findById(boardDTO.getUserId()).orElseThrow();
 
-        board.setCourse(course);
-        board.setUser(user);
 
         Long bno = boardRepository.save(board).getBno();
 

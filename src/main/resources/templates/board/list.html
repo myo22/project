@@ -91,7 +91,7 @@
                 </div><!--end card body-->
             </div><!--end card-->
             <div class="mt-4 text-center">
-                <a th:href="@{/writeForm(courseId=${course.courseId})}" class="text-decoration-none" th:if="${loginInfo != null}">
+                <a th:href="@{/board/register(courseId=${course.courseId})}" class="text-decoration-none" th:if="${loginInfo != null}">
                     <button type="button" class="btn btn-primary">글쓰기</button>
                 </a>
             </div>
