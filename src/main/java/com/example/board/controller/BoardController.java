@@ -141,7 +141,7 @@ public class BoardController {
         progressService.incrementDiscussionCount(boardDTO.getCourseId());
 
 
-        return "redirect:/board/list"; // 리스트 보기로 리다이렉트한다.
+        return "redirect:/board/list?currentCourseId=" + boardDTO.getCourseId(); // 리스트 보기로 리다이렉트한다.
 
     }
 
