@@ -14,7 +14,7 @@ public class RootConfig {
         modelMapper.getConfiguration()
                 .setFieldMatchingEnabled(true) //필드 매칭 활성화
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE) // 필즈 접근 수준 설정
-                .setMatchingStrategy(MatchingStrategies.LOOSE); // 매칭 전략 설정, 느슨한 매칭으로 이름이 유사해도 매핑할 수 있게 함.
+                .setMatchingStrategy(MatchingStrategies.STRICT); // 매칭 전략 설정, 느슨한 매칭으로 이름이 유사해도 매핑할 수 있게 함. -> 오류가 발생해서 STRICT 바꾸니 해결
 
         return modelMapper;
 

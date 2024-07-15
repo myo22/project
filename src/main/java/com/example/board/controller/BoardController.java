@@ -44,7 +44,6 @@ public class BoardController {
                        PageRequestDTO pageRequestDTO,
                        @RequestParam("currentCourseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
-        model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
 
         PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
 
@@ -64,9 +63,9 @@ public class BoardController {
             model.addAttribute("isAdmin", true);
         }
 
+        model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
         model.addAttribute(course);
         model.addAttribute("responseDTO", responseDTO);
-
 
     }
 
@@ -130,7 +129,7 @@ public class BoardController {
             log.info("has errors.....");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
-            return "redirect:/board/register";
+            return "redirect:/board/register?courseId=" + boardDTO.getCourseId();
         }
 
         log.info(boardDTO);

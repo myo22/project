@@ -53,7 +53,7 @@
                         <tr th:each="dto : ${responseDTO.dtoList}"  >
                             <th scope="row" th:text="${dto.bno}"></th>
                             <td>
-                                <a class="text-decoration-none" th:href="|@{/boardDTO/(boardId=${boardDTO.boardId})}&courseId=${course.courseId}|"> [[${boardDTO.title}]] </a>
+                                <a class="text-decoration-none" th:href="|@{/read/(bno=${dto.bno})}&courseId=${course.courseId}|"> [[${dto.title}]] </a>
                             </td>
                             <td th:text="${dto.viewCnt}"></td>
                             <td th:text="${dto.name}"></td>
@@ -91,7 +91,7 @@
                 </div><!--end card body-->
             </div><!--end card-->
             <div class="mt-4 text-center">
-                <a th:href="@{/board/register(courseId=${course.courseId})}" class="text-decoration-none" th:if="${loginInfo != null}">
+                <a th:href="@{/board/register(courseId=${course.courseId})}" class="text-decoration-none">
                     <button type="button" class="btn btn-primary">글쓰기</button>
                 </a>
             </div>

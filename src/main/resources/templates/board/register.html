@@ -17,9 +17,11 @@
                 <div class="card-body">
                     <form action="/board/register" method="post">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
+                        <input type="hidden" name="userId" th:value="${loginInfo.userId}">
 
                         <div class="input-group mb-3">
-                            <input type="text" name="userId" th:value="${loginInfo.name}" readonly></span>
+                            <span class="input-group-text">이름</span>
+                            <input type="text" name="name" th:value="${loginInfo.name}" readonly>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
