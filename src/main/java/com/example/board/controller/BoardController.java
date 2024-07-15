@@ -129,7 +129,7 @@ public class BoardController {
             log.info("has errors.....");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
-            return "redirect:/board/register?courseId=" + boardDTO.getCourseId();
+            return "redirect:/board/register?currentCourseId=" + boardDTO.getCourseId();
         }
 
         log.info(boardDTO);

@@ -38,9 +38,12 @@ public class BoardServiceImpl implements BoardService {
     @PostConstruct
     public void init() {
         modelMapper.createTypeMap(BoardDTO.class, Board.class).addMappings(mapper -> {
-            mapper.map(BoardDTO::getCourseId, Board::setCourse);
-            mapper.map(BoardDTO::getUserId, Board::setUser);
+            mapper.skip(Board::setCourse);
+            mapper.skip(Board::setUser);
         });
+
+        modelMapper.createTypeMap(Board.class, BoardDTO.class)
+                .addMappings(mapper -> mapper.map(src -> src.getUser().getName(), BoardDTO::setName));
     }
 
     @Override
