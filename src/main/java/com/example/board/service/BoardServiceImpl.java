@@ -35,6 +35,8 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
+
+    // 자동 매핑의 한계가 있기 때문에 수동으로 매핑시켜줘야하기 때문에 특정 필드를 건너 뛴다.
     @PostConstruct
     public void init() {
         modelMapper.createTypeMap(BoardDTO.class, Board.class).addMappings(mapper -> {
