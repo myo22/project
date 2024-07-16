@@ -72,24 +72,21 @@ public class BoardController {
     // /board?id=3 // 물음표 뒤에 값은 파라미터 id, 파라미터 id의 값은 3
     // /board?id=3
     // /board?id=3
-    @GetMapping("/board")
-    public String board(@RequestParam("boardId") Long boardId,
-                        @RequestParam("courseId") int courseId,
-                        Model model, HttpSession httpSession){
+    @GetMapping("/read")
+    public void read(PageRequestDTO pageRequestDTO,
+                        Long bno,
+                        Model model,
+                        HttpSession httpSession){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
-        model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
-
-        System.out.println("boardId : " + boardId);
 
         // id에 해당하는 게시물을 읽어온다.
         // id에 해당하는 게시물의 조회수도 1증가한다.
-        Board board = boardService.getBoard(boardId);
-        Course course = courseService.getCourse(courseId);
-        progressService.watchDiscussions(courseId, loginInfo.getUserId());
+        BoardDTO boardDTO = boardService.readOne(bno);
+        progressService.watchDiscussions(boardDTO.getCourseId(), loginInfo.getUserId());
 
-        model.addAttribute("course", course);
-        model.addAttribute("board", board);
-        return "board"; // 컨트롤러의 메소드가 리턴하는 문자열은 템플릿 이름이다.
+        model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
+        model.addAttribute("dto", boardDTO);
+
     }
 
     // 삭제한다. 관리자는 모든 글을 삭제할 수 있다.
@@ -110,7 +107,7 @@ public class BoardController {
     }
 
     @PostMapping("/register")
-    public String RegisterPOST(
+    public String registerPOST(
             @Valid BoardDTO boardDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
@@ -140,7 +137,7 @@ public class BoardController {
 
         progressService.incrementDiscussionCount(boardDTO.getCourseId());
 
-
+        // 컨트롤러의 메소드가 리턴하는 문자열은 템플릿 이름이다.
         return "redirect:/board/list?currentCourseId=" + boardDTO.getCourseId(); // 리스트 보기로 리다이렉트한다.
 
     }

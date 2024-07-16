@@ -53,7 +53,7 @@
                         <tr th:each="dto : ${responseDTO.dtoList}"  >
                             <th scope="row" th:text="${dto.bno}"></th>
                             <td>
-                                <a class="text-decoration-none" th:href="|@{/read/(bno=${dto.bno})}&courseId=${course.courseId}|"> [[${dto.title}]] </a>
+                                <a class="text-decoration-none" th:href="|@{/read/(bno=${dto.bno})}|" th:text="${dto.title}"></a>
                             </td>
                             <td th:text="${dto.viewCnt}"></td>
                             <td th:text="${dto.name}"></td>
