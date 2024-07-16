@@ -59,10 +59,6 @@ public class BoardController {
 
         Course course = courseService.getCourse(courseId);
 
-        if(course.getUser().getUserId() == loginInfo.getUserId()){
-            model.addAttribute("isAdmin", true);
-        }
-
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
         model.addAttribute("course", course);
         model.addAttribute("responseDTO", responseDTO);
@@ -86,6 +82,10 @@ public class BoardController {
         progressService.watchDiscussions(courseId, loginInfo.getUserId());
 
         Course course = courseService.getCourse(courseId);
+
+        if(course.getUser().getUserId() == loginInfo.getUserId()){
+            model.addAttribute("isAdmin", true);
+        }
 
         model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
@@ -130,7 +130,7 @@ public class BoardController {
             log.info("has errors.....");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
-            return "redirect:/board/register?currentCourseId=" + boardDTO.getCourseId();
+            return "redirect:/board/register?courseId=" + boardDTO.getCourseId();
         }
 
         log.info(boardDTO);
@@ -138,73 +138,73 @@ public class BoardController {
         Long bno = boardService.register(boardDTO);
 
         redirectAttributes.addFlashAttribute("result", bno);
+        redirectAttributes.addAttribute("courseId", boardDTO.getCourseId());
 
         progressService.incrementDiscussionCount(boardDTO.getCourseId());
 
         // 컨트롤러의 메소드가 리턴하는 문자열은 템플릿 이름이다.
-        return "redirect:/board/list?currentCourseId=" + boardDTO.getCourseId(); // 리스트 보기로 리다이렉트한다.
+        return "redirect:/board/list"; // 리스트 보기로 리다이렉트한다.
 
     }
 
-    @GetMapping("/delete")
-    public String delete(
-            @RequestParam("boardId") Long boardId,
-            HttpSession httpSession
+    @PostMapping("/modify")
+    public String modify(@Valid BoardDTO boardDTO,
+                         PageRequestDTO pageRequestDTO,
+                         HttpSession httpSession,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         @RequestParam("courseId") int courseId){
+        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
+        if(loginInfo == null){
+            return "redirect:/loginForm";
+        }
+
+        log.info("board modify post......." + boardDTO);
+
+        if(bindingResult.hasErrors()){
+            log.info("has errors.....");
+
+            String link = pageRequestDTO.getLink();
+
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+
+            redirectAttributes.addAttribute("bno", boardDTO.getBno());
+            redirectAttributes.addAttribute("courseId", courseId);
+
+            // link 변수가 이미 완성된 URL 쿼리 문자열이기 때문에 addAttribute() 메서드를 사용하지 않습니다.
+            return "redirect:/board/modify?" + link;
+        }
+
+        boardService.modify(boardDTO);
+
+        redirectAttributes.addFlashAttribute("result", "modified");
+
+        redirectAttributes.addAttribute("bno", boardDTO.getBno());
+        redirectAttributes.addAttribute("courseId", courseId);
+
+        return "redirect:/board/read";
+    }
+
+
+    @PostMapping("/remove")
+    public String remove(
+            @RequestParam("bno") Long bno,
+            @RequestParam("courseId") int courseId,
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
     ){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
             return "redirect:/loginForm";
         }
 
-        // loginInfo.getUserId() 사용자가 쓴 글일 경우에만 삭제한다.
-        List<String> roles = loginInfo.getRoles();
-        if(roles.contains("ROLE_ADMIN")){
-            boardService.deleteBoard(boardId);
-        }else{
-            boardService.deleteBoard(loginInfo.getUserId(), boardId);
-        }
+        log.info("remove post.. " + bno);
 
-        return "redirect:/"; // 리스트 보기로 리다이렉트한다.
-    }
+        boardService.remove(bno);
 
-    @GetMapping("/updateform")
-    public String updateform(@RequestParam("boardId") Long boardId,
-                             Model model,
-                             HttpSession httpSession,
-                             @RequestParam("courseId") int courseId){
-        LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
-        if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
-            return "redirect:/loginForm";
-        }
+        redirectAttributes.addAttribute("result", "removed");
+        redirectAttributes.addAttribute("courseId", courseId);
 
-        //boardId에 해당하는 정보를 읽어와서 updateform 템플릿에게 전달한다.
-        Board board =boardService.getBoard(boardId, false);
-        Course course = courseService.getCourse(courseId);
-
-        model.addAttribute("course", course);
-        model.addAttribute("board", board);
-        model.addAttribute("loginInfo", loginInfo);
-        return "updateform";
-    }
-
-    @PostMapping("/update")
-    public String update(@RequestParam("boardId") Long boardId,
-                         @RequestParam("title") String title,
-                         @RequestParam("content") String content,
-                         HttpSession httpSession){
-        LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
-        if(loginInfo == null){ // 세션에 로그인 정보가 없으면 /loginform으로 redirect
-            return "redirect:/loginForm";
-        }
-
-        Board board =boardService.getBoard(boardId, false);
-        if(board.getUser().getUserId() != loginInfo.getUserId()){
-            return "redirect:/board?boardId=" + boardId; // 글보기로 이동한다.
-        }
-
-        // boardId에 해당하는 글의 제목과 내용을 수정한다.
-        boardService.updateBoard(boardId, title, content);
-        // 글쓴이만 수정 가능.
-        return "redirect:/board?boardId=" + boardId; // 수정된 글 보기로 리다이렉트한다.
+        return "redirect:/board/list"; // 리스트 보기로 리다이렉트한다.
     }
 }

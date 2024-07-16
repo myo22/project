@@ -55,7 +55,7 @@
                             <a th:href="|@{board/list}?courseId=${course.courseId}&${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">목록</button>
                             </a>
-                            <a th:href="|@{board/modify(bno=${dto.bno})}&courseId=${course.courseId}&${link}|" class="text-decoration-none">
+                            <a th:href="|@{board/modify(bno=${dto.bno})}&courseId=${course.courseId}&${link}|" class="text-decoration-none" th:if="${isAdmin}">
                                 <button type="button" class="btn btn-secondary">수정</button>
                             </a>
                         </div>
@@ -69,7 +69,8 @@
     </div><!-- end row-->
 </div>
 
+<script layout:fragment="script" th:inline="javascript">
 
 </script>
-
+</html>
 

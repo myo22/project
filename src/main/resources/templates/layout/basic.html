@@ -90,7 +90,7 @@
         </div>
         <div class="list-group-item list-group-item-action list-group-item-light p-3" onclick="document.getElementById('listForm').submit()">
           <form id="listForm" th:action="@{/board/list}" method="get">
-            <input type="hidden" name="currentCourseId" th:value="${course != null ? course.courseId : ''}"  />
+            <input type="hidden" name="courseId" th:value="${course != null ? course.courseId : ''}"  />
             <button type="submit" style="display:none;"></button>
             <span>토론</span>
           </form>
