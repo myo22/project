@@ -45,6 +45,9 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         return null;
     }
 
+
+    /* @ManyToOne(fetch = FetchType.LAZY)로 설정되어 있으므로 기본적으로 지연 로딩(lazy loading)됩니다.
+    지연 로딩은 관련 엔티티를 실제로 접근할 때 로드되도록 하는 전략입니다. 즉, Board 엔티티를 가져올 때 course와 user 필드는 초기에는 프록시 객체로 설정되고, 이 필드들에 접근할 때 데이터베이스에서 실제 데이터를 가져옵니다. */
     @Override
     public Page<Board> searchAll(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;

@@ -49,17 +49,17 @@
                             <th scope="col">등록일</th>
                         </tr>
                         </thead>
-
-                        <tr th:each="dto : ${responseDTO.dtoList}"  >
+                        <tbody th:with="link = ${pageRequestDTO.getLink()}">
+                        <tr th:each="dto : ${responseDTO.dtoList}" >
                             <th scope="row" th:text="${dto.bno}"></th>
                             <td>
-                                <a class="text-decoration-none" th:href="|@{/read/(bno=${dto.bno})}|" th:text="${dto.title}"></a>
+                                <a class="text-decoration-none" th:href="|@{/board/read/(bno=${dto.bno})}&courseId=${course.courseId}&${link}|" th:text="${dto.title}"></a>
                             </td>
                             <td th:text="${dto.viewCnt}"></td>
                             <td th:text="${dto.name}"></td>
                             <td th:text="${#temporals.format(dto.regDate, 'yyyy-MM-dd')}"></td>
                         </tr>
-
+                        </tbody>
                     </table>
 
                     <div class="float-end">

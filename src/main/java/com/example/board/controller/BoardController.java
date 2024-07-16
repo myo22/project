@@ -64,7 +64,7 @@ public class BoardController {
         }
 
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
-        model.addAttribute(course);
+        model.addAttribute("course", course);
         model.addAttribute("responseDTO", responseDTO);
 
     }
@@ -72,18 +72,22 @@ public class BoardController {
     // /board?id=3 // 물음표 뒤에 값은 파라미터 id, 파라미터 id의 값은 3
     // /board?id=3
     // /board?id=3
-    @GetMapping("/read")
+    @GetMapping(value = {"/read", "/modify"})
     public void read(PageRequestDTO pageRequestDTO,
                         Long bno,
                         Model model,
-                        HttpSession httpSession){
+                        HttpSession httpSession,
+                        @RequestParam("courseId") int courseId){
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
 
         // id에 해당하는 게시물을 읽어온다.
         // id에 해당하는 게시물의 조회수도 1증가한다.
         BoardDTO boardDTO = boardService.readOne(bno);
-        progressService.watchDiscussions(boardDTO.getCourseId(), loginInfo.getUserId());
+        progressService.watchDiscussions(courseId, loginInfo.getUserId());
 
+        Course course = courseService.getCourse(courseId);
+
+        model.addAttribute("course", course);
         model.addAttribute("loginInfo", loginInfo); // 모델은 템플릿에 값을 넘겨주기위한 객체
         model.addAttribute("dto", boardDTO);
 
