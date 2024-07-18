@@ -66,6 +66,10 @@ dependencies {
 
             "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
+    // swagger ui maven
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
