@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.Repository.BoardRepository;
 import com.example.board.Repository.ReplyRepository;
 import com.example.board.domain.Board;
 import com.example.board.domain.Reply;
@@ -27,11 +28,15 @@ public class ReplyServiceImpl implements ReplyService{
 
     private final ModelMapper modelMapper;
     private final ReplyRepository replyRepository;
+    private final BoardRepository boardRepository;
 
     @Override
     public Long register(ReplyDTO replyDTO) {
-        Reply reply = modelMapper.map(replyDTO, Reply.class);
 
+        Reply reply = modelMapper.map(replyDTO, Reply.class);
+        Board board = boardRepository.findById(replyDTO.getBno()).orElseThrow();
+
+        reply.setBoard(board);
         Long rno = replyRepository.save(reply).getRno();
 
         return rno;

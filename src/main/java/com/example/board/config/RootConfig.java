@@ -1,7 +1,9 @@
 package com.example.board.config;
 
 import com.example.board.domain.Board;
+import com.example.board.domain.Reply;
 import com.example.board.dto.BoardDTO;
+import com.example.board.dto.ReplyDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,9 @@ public class RootConfig {
         modelMapper.createTypeMap(Board.class, BoardDTO.class)
                 .addMappings(mapper -> mapper.map(src -> src.getUser().getName(), BoardDTO::setName));
 
+        modelMapper.createTypeMap(ReplyDTO.class, Reply.class).addMappings(mapper -> {
+            mapper.skip(Reply::setBoard);
+        });
 
         return modelMapper;
 
