@@ -1,7 +1,9 @@
 package com.example.board.controller;
 
 import com.example.board.dto.ReplyDTO;
+import com.example.board.service.ReplyService;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +22,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/replies")
 @Log4j2
+@RequiredArgsConstructor
 public class ReplyController {
+
+    private final ReplyService replyService;
 
     // APiOperation은 Swagger UI에서 해당 기능의 설명으로 출력된다.
     @ApiOperation(value = "Replies Post", notes = "POST 방식으로 댓글 등록")
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE) // 메소드를 받아서 소비하는 데이터가 어떤 종류인지 명시
-    public Map<String, Long> register(@Valid @RequestBody ReplyDTO replyDTO,
-                                                      BindingResult bindingResult)throws BindException{ // @RequestBody는 JSON문자열을 replyDTO로 바꾸기 위해 사용됩니다.
+    public Map<String, Long> register(@Valid @RequestBody ReplyDTO replyDTO, // @RequestBody는 JSON문자열을 replyDTO로 바꾸기 위해 사용됩니다.
+                                                      BindingResult bindingResult)throws BindException{
 
         log.info(replyDTO);
 
@@ -35,7 +40,10 @@ public class ReplyController {
         }
 
         Map<String, Long> resultMap = new HashMap<>();
-        resultMap.put("rno", 111L);
+
+        Long rno = replyService.register(replyDTO);
+
+        resultMap.put("rno", rno);
 
         return resultMap;
     }
