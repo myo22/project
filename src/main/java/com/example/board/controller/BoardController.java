@@ -2,10 +2,7 @@ package com.example.board.controller;
 
 import com.example.board.domain.Board;
 import com.example.board.domain.Course;
-import com.example.board.dto.BoardDTO;
-import com.example.board.dto.LoginInfo;
-import com.example.board.dto.PageRequestDTO;
-import com.example.board.dto.PageResponseDTO;
+import com.example.board.dto.*;
 import com.example.board.service.BoardServiceImpl;
 import com.example.board.service.CourseService;
 import com.example.board.service.ProgressService;
@@ -42,10 +39,10 @@ public class BoardController {
     public void list(HttpSession httpSession,
                        Model model,
                        PageRequestDTO pageRequestDTO,
-                       @RequestParam("currentCourseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
+                       @RequestParam("courseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
 
-        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
 
 //        // 게시물 목록을 읽어온다. 페이징 처리한다.
 //        long total = boardService.getTotalCount(); // 11

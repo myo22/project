@@ -7,6 +7,7 @@ import com.example.board.domain.Board;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import com.example.board.dto.BoardDTO;
+import com.example.board.dto.BoardListReplyCountDTO;
 import com.example.board.dto.PageRequestDTO;
 import com.example.board.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -94,7 +95,22 @@ public class BoardServiceImpl implements BoardService {
                 .build();
     }
 
-//    @Transactional
+    @Override
+    public PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO) {
+
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getType();
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+
+        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+
+        return PageResponseDTO.<BoardListReplyCountDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int) result.getTotalElements())
+                .build();
+    }
+    //    @Transactional
 //    public void addBoard(int userId, int courseId, String title, String content) {
 //        User user = userRepository.findById(userId).orElseThrow();
 //        Course course = courseRepository.getcourse(courseId);
