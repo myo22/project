@@ -25,8 +25,9 @@ public class RootConfig {
             mapper.skip(Board::setUser);
         });
 
-        modelMapper.createTypeMap(Board.class, BoardDTO.class)
-                .addMappings(mapper -> mapper.map(src -> src.getUser().getName(), BoardDTO::setName));
+        modelMapper.createTypeMap(Board.class, BoardDTO.class).addMappings(mapper -> {
+                mapper.map(src -> src.getUser().getName(), BoardDTO::setName);
+        });
 
         modelMapper.createTypeMap(ReplyDTO.class, Reply.class).addMappings(mapper -> {
             mapper.skip(Reply::setBoard);
