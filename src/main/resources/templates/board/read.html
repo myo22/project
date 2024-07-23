@@ -102,12 +102,13 @@
 
             for (const dto of dtoList) {
 
-                str += `<li class="list-group-item d-flex replyItem>
+                str += `<li class="list-group-item d-flex replyItem">
                     <span class="col-2">${dto.rno}</span>
-                    <span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>"
+                    <span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
                     <span class="col-2">${dto.replyer}</span>
-                    <span class="col-2">${dto.regDate}></span>
+                    <span class="col-2">${dto.regDate}</span>
                   </li>`
+
             }
         }
         replyList.innerHTML = str
