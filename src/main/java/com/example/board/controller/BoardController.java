@@ -65,7 +65,7 @@ public class BoardController {
     // /board?id=3 // 물음표 뒤에 값은 파라미터 id, 파라미터 id의 값은 3
     // /board?id=3
     // /board?id=3
-    @GetMapping(value = {"/read", "/modify"})
+    @GetMapping({"/read", "/modify"})
     public void read(PageRequestDTO pageRequestDTO,
                         Long bno,
                         Model model,
