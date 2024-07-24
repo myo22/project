@@ -83,6 +83,32 @@
         </div>
     </div>
 
+    <div class="modal registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">댓글 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">내용</span>
+                        <input type="text" class="form-control replyText">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">작성자</span>
+                        <input type="text" class="form-control replyer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary registerBtn">등록</button>
+                    <button type="button" class="btn btn-outline-dark closeRegisterBtn">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="/js/reply.js"></script>
@@ -94,6 +120,14 @@
 
     const replyList = document.querySelector(".replyList") // 댓글 목록 DOM
     const replyPaging = document.querySelector(".replyPaging") // 페이지 목록 DOM
+
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+
+    const registerBtn = document.querySelector(".registerBtn")
+    const replyText = document.querySelector(".replyText")
+    const replyer = document.querySelector(".replyer")
+    const closeRegisterBtn = document.querySelector(".closeRegisterBtn")
+
 
     function printList(dtoList) {
         let str = '';
@@ -145,6 +179,33 @@
     }
 
     printReplies(1, 10, true) // 무조건 호출
+
+    document.querySelector(".addReplyBtn").addEventListener("click", function (e){
+        registerModal.show()
+    },false)
+
+    closeRegisterBtn.addEventListener("click", function (e){
+        registerModal.hide()
+    },false)
+
+    registerBtn.addEventListener("click", function (e) {
+        const replyObj = {
+            bno:bno,
+            replyText:replyText.value,
+            replyer:replyer.value
+        }
+
+
+        addReply(replyObj).then(result => {
+            alert(result.rno)
+            registerModal.hide()
+            replyText.value = ''
+            replyer.value = ''
+            printReplies(1, 10, true) // 댓글 목록 갱신
+        }).catch(e => {
+            alert("Exception....")
+        })
+    },false)
 
 
 </script>
