@@ -37,3 +37,8 @@ async function modifyReply(replyObj){
     const response = await axios.put(`/replies/${replyObj.rno}`, replyObj)
     return response.data
 }
+
+async function removeReply(rno){
+    const result = await axios.delete(`/replies/${rno}`)
+    return result.data
+}
