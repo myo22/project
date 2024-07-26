@@ -16,8 +16,11 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      enabled: true
+      location: C:\\upload
+      max-request-size: 30MB
+      max-file-size: 10MB
+
 
 file:
   upload:
@@ -30,4 +33,9 @@ logging:
     com:
       example:
         board: debug
+
+org:
+  zerock:
+    upload:
+      path: C:\\upload
 
