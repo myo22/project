@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 // @Entity(name = "Board") 이렇게 적어줘야하는데 안적으면 클래스 이름이 엔티티 이름이 된다.
 @Entity
@@ -35,6 +37,10 @@ public class Board extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY) // 게시물 N --- 1 사용자, FetchType.EAGER(안써줘도 기본값이다) -> 무조건 데이터를 가지고와라.
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany // @OneToMany는 기본적으로 각 엔티티에 해당하는 테이블을 독립적으로 생성하고 중간에 매핑해 주는 테이블이 생성된다.
+    @Builder.Default
+    private Set<BoardImage> imageSet = new HashSet<>();
 
 //    @Override
 //    public String toString() {
