@@ -145,4 +145,24 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         return new PageImpl<>(dtolist, pageable, count);
     }
+
+    @Override
+    public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+        QBoard board = QBoard.board;
+        QReply reply = QReply.reply;
+
+        JPQLQuery<Board> boardJPQLQuery = from(board);
+        boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board)); // left join
+
+        getQuerydsl().applyPagination(pageable, boardJPQLQuery);
+
+        List<Board> boardList = boardJPQLQuery.fetch();
+
+        boardList.forEach(board1 -> {
+            System.out.println(board1.getBno());
+            System.out.println(board1.getImageSet());
+            System.out.println("------------------");
+        });
+        return null;
+    }
 }

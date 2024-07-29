@@ -1,6 +1,7 @@
 package com.example.board.domain;
 
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -44,6 +45,7 @@ public class Board extends BaseEntity{
             fetch = FetchType.LAZY,
             orphanRemoval = true) // cascade 속성으로 인해 상위 엔티티의 변화가 하위 엔티티에 영향을 주긴했지만 삭제되지는 않기 때문에 orphanRemoval을 이용해야한다.
     @Builder.Default
+    @BatchSize(size = 20) // size 속성값은 지정된 수만큼은 BoardImage를 조회할 때 한번에 in 조건으로 사용됩니다.
     private Set<BoardImage> imageSet = new HashSet<>();
 
     //상위 엔티티가 하위 엔티티 객체들을 관리하는 경우에는 별도의 JPARepository를 생성하지 않고, Board 엔티티에 하위 엔티티 객체들을 관리하는 기능을 추가해서 사용합니다.

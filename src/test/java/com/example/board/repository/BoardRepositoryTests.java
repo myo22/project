@@ -2,6 +2,7 @@ package com.example.board.repository;
 
 import com.example.board.Repository.BoardRepository;
 import com.example.board.Repository.CourseRepository;
+import com.example.board.Repository.ReplyRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.domain.Board;
 import com.example.board.domain.BoardImage;
@@ -12,7 +13,13 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,6 +34,9 @@ public class BoardRepositoryTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Test
     public void testInsertWithImages(){
@@ -76,5 +86,53 @@ public class BoardRepositoryTests {
         }
 
         boardRepository.save(board);
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void testRemoveAll(){
+
+        Long bno = 1L;
+
+        replyRepository.deleteByBoard_Bno(bno);
+
+        boardRepository.deleteById(bno);
+    }
+
+    @Test
+    public void testInsertALl(){
+
+        Course course = courseRepository.getcourse(1);
+        User user = userRepository.findByUserId(3);
+
+        for (int i = 1; i < 100; i++){
+
+            Board board = Board.builder()
+                    .title("Title..." + i)
+                    .content("Content..." + i)
+                    .course(course)
+                    .user(user)
+                    .build();
+
+            for (int j = 0; j < 3; j++){
+
+                if (i % 5 == 0){
+                    continue;
+                }
+
+                board.addImage(UUID.randomUUID().toString(), i+"file"+j+".jpg");
+
+            }
+            boardRepository.save(board);
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testSearchImageReplyCount(){
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        boardRepository.searchWithAll(null, null, pageable);
     }
 }
