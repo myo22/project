@@ -61,4 +61,20 @@ public class BoardRepositoryTests {
             log.info(boardImage);
         }
     }
+
+    @Test
+    public void testModifyImages(){
+
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+        Board board = result.orElseThrow();
+
+        board.clearImages();
+
+        for (int i = 0; i < 2; i++){
+
+             board.addImage(UUID.randomUUID().toString(), "file" + i + ".jpg");
+        }
+
+        boardRepository.save(board);
+    }
 }

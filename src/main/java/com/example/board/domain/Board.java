@@ -39,9 +39,10 @@ public class Board extends BaseEntity{
     private User user;
 
     // @OneToMany는 기본적으로 각 엔티티에 해당하는 테이블을 독립적으로 생성하고 중간에 매핑해 주는 테이블이 생성된다.
-    @OneToMany(mappedBy = "board",
+    @OneToMany(mappedBy = "board", // BoardImage의 board변수
             cascade = {CascadeType.ALL},
-            fetch = FetchType.LAZY) // BoardImage의 board변수
+            fetch = FetchType.LAZY,
+            orphanRemoval = true) // cascade 속성으로 인해 상위 엔티티의 변화가 하위 엔티티에 영향을 주긴했지만 삭제되지는 않기 때문에 orphanRemoval을 이용해야한다.
     @Builder.Default
     private Set<BoardImage> imageSet = new HashSet<>();
 
@@ -58,6 +59,7 @@ public class Board extends BaseEntity{
     }
 
     public void clearImages(){
+
         imageSet.forEach(boardImage -> boardImage.changeBoard(null));
 
         this.imageSet.clear();

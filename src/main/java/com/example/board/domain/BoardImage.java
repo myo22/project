@@ -22,7 +22,7 @@ public class BoardImage implements Comparable<BoardImage>{ // Comparable 적용�
     private int ord;
 
     @ManyToOne
-    public Board board;
+    private Board board;
 
     @Override
     public int compareTo(BoardImage other) {
