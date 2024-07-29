@@ -8,11 +8,13 @@ import com.example.board.domain.Board;
 import com.example.board.domain.BoardImage;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
+import com.example.board.dto.BoardListAllDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -133,6 +135,13 @@ public class BoardRepositoryTests {
     public void testSearchImageReplyCount(){
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
 
-        boardRepository.searchWithAll(null, null, pageable);
+//        boardRepository.searchWithAll(null, null, pageable);
+
+        Page<BoardListAllDTO> result = boardRepository.searchWithAll(null, null , pageable);
+
+        log.info("---------------------");
+        log.info(result.getTotalElements());
+
+        result.getContent().forEach(boardListAllDTO -> log.info(boardListAllDTO));
     }
 }

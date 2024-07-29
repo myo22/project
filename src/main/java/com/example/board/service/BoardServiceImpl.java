@@ -6,10 +6,7 @@ import com.example.board.Repository.UserRepository;
 import com.example.board.domain.Board;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
-import com.example.board.dto.BoardDTO;
-import com.example.board.dto.BoardListReplyCountDTO;
-import com.example.board.dto.PageRequestDTO;
-import com.example.board.dto.PageResponseDTO;
+import com.example.board.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -110,6 +107,12 @@ public class BoardServiceImpl implements BoardService {
                 .total((int) result.getTotalElements())
                 .build();
     }
+
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageResponseDTO pageResponseDTO) {
+        return null;
+    }
+
     //    @Transactional
 //    public void addBoard(int userId, int courseId, String title, String content) {
 //        User user = userRepository.findById(userId).orElseThrow();

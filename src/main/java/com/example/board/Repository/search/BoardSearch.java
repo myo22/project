@@ -1,6 +1,7 @@
 package com.example.board.Repository.search;
 
 import com.example.board.domain.Board;
+import com.example.board.dto.BoardListAllDTO;
 import com.example.board.dto.BoardListReplyCountDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,7 @@ public interface BoardSearch {
                                                       String keyword,
                                                       Pageable pageable);
 
-    Page<BoardListReplyCountDTO> searchWithAll(String[] types,
-                                               String keyword,
-                                               Pageable pageable);
+    Page<BoardListAllDTO> searchWithAll(String[] types,
+                                        String keyword,
+                                        Pageable pageable);
 }
