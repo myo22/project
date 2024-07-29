@@ -38,20 +38,30 @@ public class Board extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany // @OneToMany는 기본적으로 각 엔티티에 해당하는 테이블을 독립적으로 생성하고 중간에 매핑해 주는 테이블이 생성된다.
+    // @OneToMany는 기본적으로 각 엔티티에 해당하는 테이블을 독립적으로 생성하고 중간에 매핑해 주는 테이블이 생성된다.
+    @OneToMany(mappedBy = "board",
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.LAZY) // BoardImage의 board변수
     @Builder.Default
     private Set<BoardImage> imageSet = new HashSet<>();
 
-//    @Override
-//    public String toString() {
-//        return "Board{" +
-//                "boardId=" + boardId +
-//                ", title='" + title + '\'' +
-//                ", content='" + content + '\'' +
-//                ", regdate=" + regdate +
-//                ", viewCnt=" + viewCnt +
-//                '}';
-//    }
+    //상위 엔티티가 하위 엔티티 객체들을 관리하는 경우에는 별도의 JPARepository를 생성하지 않고, Board 엔티티에 하위 엔티티 객체들을 관리하는 기능을 추가해서 사용합니다.
+    public void addImage(String uuid, String fileName){
+
+        BoardImage boardImage = BoardImage.builder()
+                .uuid(uuid)
+                .fileName(fileName)
+                .board(this)
+                .ord(imageSet.size())
+                .build();
+        imageSet.add(boardImage);
+    }
+
+    public void clearImages(){
+        imageSet.forEach(boardImage -> boardImage.changeBoard(null));
+
+        this.imageSet.clear();
+    }
 
     public void changeView(int viewCnt){
         this.viewCnt = viewCnt;
@@ -72,6 +82,18 @@ public class Board extends BaseEntity{
     }
 
 }
+
+//    @Override
+//    public String toString() {
+//        return "Board{" +
+//                "boardId=" + boardId +
+//                ", title='" + title + '\'' +
+//                ", content='" + content + '\'' +
+//                ", regdate=" + regdate +
+//                ", viewCnt=" + viewCnt +
+//                '}';
+//    }
+
 
 //'board_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'
 //'title', 'varchar(100)', 'NO', '', NULL, ''
