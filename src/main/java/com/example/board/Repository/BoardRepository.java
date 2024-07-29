@@ -4,13 +4,22 @@ import com.example.board.Repository.search.BoardSearch;
 import com.example.board.domain.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch { // 게시물같은 경우는 글을 많이 쓸 수 있어서 Long으로 하는것이 좋다.
+
+    // 기본적인 방법인 지연 로딩을 이용하면서 한번에 조인 처리해서 select가 이루어지도록 하는 방법
+    @EntityGraph(attributePaths = {"imageSet"}) // 같이 로딩해야하는 속성을명시할 수 있습니다.
+    @Query("select b from Board b where b.bno = :bno")
+    Optional<Board> findByIdWithImages(Long bno);
+
+
     // JPQL을 사용할 수 있다.
     // JPQL은 SQL과 모양이 비슷하지만, SQL이 아니다.
     // JPQL은 객체지향 언어이다.

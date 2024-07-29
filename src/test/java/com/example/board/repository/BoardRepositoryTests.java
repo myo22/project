@@ -4,6 +4,7 @@ import com.example.board.Repository.BoardRepository;
 import com.example.board.Repository.CourseRepository;
 import com.example.board.Repository.UserRepository;
 import com.example.board.domain.Board;
+import com.example.board.domain.BoardImage;
 import com.example.board.domain.Course;
 import com.example.board.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -51,11 +52,13 @@ public class BoardRepositoryTests {
     public void testReadWithImages(){
 
         // 반드시 존재하는 bno로 확인
-        Optional<Board> result = boardRepository.findById(1L);
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
         Board board = result.orElseThrow();
 
         log.info(board);
         log.info("--------------------");
-        log.info(board.getImageSet());
+        for (BoardImage boardImage : board.getImageSet()){
+            log.info(boardImage);
+        }
     }
 }
