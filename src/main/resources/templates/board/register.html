@@ -15,13 +15,14 @@
                     글쓰기
                 </div>
                 <div class="card-body">
-                    <form action="/board/register" method="post">
+                    <form action="/board/register" method="post" id="1">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
                         <input type="hidden" name="userId" th:value="${loginInfo.userId}">
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">이름</span>
                             <input type="text" name="name" class="form-control" th:value="${loginInfo.name}" readonly>
+                        </div>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
@@ -32,11 +33,17 @@
                             <span class="input-group-text">내용</span>
                             <textarea class="form-control col-sm-5" rows="5" name="content" placeholder="토론할 내용"></textarea>
                         </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">이미지</span>
+                            <div class="float-end uploadHidden">
+                                <button type="button" class="btn btn-primary uploadFileBtn">파일 추가</button>
+                            </div>
                         </div>
 
                         <div class="my-4">
                             <div class="float-end">
-                                <button type="submit" class="btn btn-primary">확인</button>
+                                <button type="submit" class="btn btn-primary submitBtn">확인</button>
                                 <button type="reset" class="btn btn-secondary">다시 입력</button>
                             </div>
                         </div>
