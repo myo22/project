@@ -6,6 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -36,6 +37,9 @@ public class BoardDTO {
 
     @Min(value = 1)
     private int userId;
+
+    // 첨부파일의 이름들, Board에서 Set<BoardImage> 타입으로 변환 되어야함.
+    private List<String> fileNames;
 
 }
 
