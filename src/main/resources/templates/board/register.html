@@ -53,6 +53,41 @@
             </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
+
+<!--    첨부파일 썸네일을 보여줄 부분-->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap;">
+
+            </div>
+        </div>
+    </div>
+
+<!--    첨부파일 추가를 위한 모달창-->
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">업로드 파일</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="file" name="files" class="form-control" multiple>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">업로드</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dis/axios.min.js"></script>
+
+    <script src="/js/upload.js"></script>
+
 </div>
 
 
@@ -69,5 +104,45 @@
         }
         alert(errorMsg)
     }
+
+    const submitBtn = document.querySelector(".submitBtn");
+    const closeModifyBtn = document.querySelector(".closeModifyBtn");
+
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+
+    document.querySelector(".uploadFileBtn").addEventListener("click", function (e) {
+
+        e.stopPropagation()
+        e.preventDefault()
+        uploadModal.show()
+
+    }, false)
+
+    document.querySelector(".uploadBtn").addEventListener("click", function (e) {
+
+        e.stopPropagation()
+        e.preventDefault()
+
+        const formObj = new FormData();
+
+        const fileInput = document.querySelector("input[name='files']")
+
+        console.log(fileInput.files)
+
+        const files = fileInput.files
+
+        for(let i = 0; i < files.length; i++){
+            formObj.append("files", files[i])
+        }
+
+        uploadToServer(formObj).then(result => {
+            console.log(result)
+            uploadModal.hide()
+        }).catch(e => {
+            uploadModal.show()
+        })
+
+
+    },false)
 
 </script>
