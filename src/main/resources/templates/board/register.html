@@ -160,8 +160,54 @@
         uploadResult.innerHTML += str;
     }
 
+    // 여기서 우리가 중요한건 따로 이렇게 만드는 이유를 알아야한다.
+    // SRP를 위반하면 안되기 때문에 서버와의 통신만 처리하는 removeFileToServer에 UI 업데이트 로직을 포함하면 안된다는걸 알아야 한다.
+    function removeFile(uuid, fileName, obj){
+
+        console.log(uuid)
+        console.log(fileName)
+
+        console.log(obj)
+
+        // `obj`는 이벤트를 발생시킨 요소로, 이 요소를 기준으로 가장 가까운 `.card` 클래스를 가진 부모 요소를 찾습니다.
+        const targetDiv = obj.closest(".card")
+
+        removeFileToServer(uuid, fileName).then(data => {
+            // 서버에서 파일이 성공적으로 삭제되면, UI에서도 해당 파일의 요소를 제거합니다.
+            targetDiv.remove()
+        })
+    }
+
     document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
         uploadModal.hide()
     })
+
+    document.querySelector(".submitBtn").addEventListener("click", function (e) {
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = document.querySelector(".uploadHidden")
+
+        // 해당하는 모든 DOM요소를 반환해준다. 즉, NodeList 객체로, 유사 배열 형태
+        const uploadFiles = uploadResult.querySelectorAll("img")
+
+        let str = '';
+
+        for(let i = 0; i < uploadFiles.length; i++){
+            const uploadFile = uploadFiles[i]
+            const imgLink = uploadFile.getAttribute("data-src")
+
+            str += `<input type="hidden" name="fileNames" value="${imgLink}">`
+        }
+
+        target.innerHTML += str;
+
+        const formObj = document.querySelector("form");
+
+        formObj.submit();
+        formObj.reset();
+
+    }, false)
 
 </script>
