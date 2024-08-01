@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dis/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="/js/upload.js"></script>
 
@@ -141,23 +141,27 @@
             uploadModal.hide()
         })
 
-        const uploadResult = document.querySelector(".uploadResult");
+    },false)
 
-        function showUploadFile({uuid, fileName, link}){
+    const uploadResult = document.querySelector(".uploadResult");
 
-            const str = `<div class = "card col-4">
+    function showUploadFile({uuid, fileName, link}){
+
+        const str = `<div class = "card col-4">
+                <div class="card-header d-flex justify-content-center">
                     ${fileName}
-                    <button class="btn-sm btn-danger" onclick="javascript:removeFile('${
-                uuid}', '${fileName}', this)">X</button>
+                    <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)">X</button>
                  </div>
                  <div class="card-body">
-                 <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
+                     <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
                  </div>
              </div><!-- card -->`
 
-            uploadResult.innerHTML += str;
-        }
+        uploadResult.innerHTML += str;
+    }
 
-    },false)
+    document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
+        uploadModal.hide()
+    })
 
 </script>
