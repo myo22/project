@@ -42,8 +42,12 @@ public class BoardController {
                        @RequestParam("courseId") int courseId){ // HttpSession, Model은 Spring이 자동으로 넣어준다.
         LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
 
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
+//        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
 
+        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
+
+        log.info(responseDTO);
+        
 //        // 게시물 목록을 읽어온다. 페이징 처리한다.
 //        long total = boardService.getTotalCount(); // 11
 //        List<Board> list = boardService.getBoards(page); // page가 1,2,3,4 ....
