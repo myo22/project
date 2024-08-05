@@ -15,7 +15,7 @@
                     글쓰기
                 </div>
                 <div class="card-body">
-                    <form action="/board/register" method="post">
+                    <form id="registerForm" action="/board/register" method="post">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
                         <input type="hidden" name="userId" th:value="${loginInfo.userId}">
 
@@ -47,6 +47,7 @@
                                 <button type="reset" class="btn btn-secondary">다시 입력</button>
                             </div>
                         </div>
+
                     </form>
                 </div><!--end card body-->
 
@@ -105,8 +106,6 @@
         alert(errorMsg)
     }
 
-    const submitBtn = document.querySelector(".submitBtn");
-
     const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
 
     document.querySelector(".uploadFileBtn").addEventListener("click", function (e) {
@@ -143,7 +142,7 @@
 
     },false)
 
-    const uploadResult = document.querySelector(".uploadResult");
+    const uploadResult = document.querySelector(".uploadResult")
 
     function showUploadFile({uuid, fileName, link}){
 
@@ -154,7 +153,7 @@
                  </div>
                  <div class="card-body">
                      <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
-                 </div>
+              </div>
              </div><!-- card -->`
 
         uploadResult.innerHTML += str;
@@ -178,10 +177,6 @@
         })
     }
 
-    document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
-        uploadModal.hide()
-    })
-
     document.querySelector(".submitBtn").addEventListener("click", function (e) {
 
         e.preventDefault()
@@ -192,7 +187,7 @@
         // 해당하는 모든 DOM요소를 반환해준다. 즉, NodeList 객체로, 유사 배열 형태
         const uploadFiles = uploadResult.querySelectorAll("img")
 
-        let str = '';
+        let str = ''
 
         for(let i = 0; i < uploadFiles.length; i++){
             const uploadFile = uploadFiles[i]
@@ -203,11 +198,14 @@
 
         target.innerHTML += str;
 
-        const formObj = document.querySelector("form");
+        const formObj = document.querySelector("#registerForm");
 
         formObj.submit();
-        formObj.reset();
 
     }, false)
+
+    document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
+        uploadModal.hide()
+    })
 
 </script>

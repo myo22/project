@@ -32,6 +32,7 @@ public interface BoardService{
                 .bno(boardDTO.getBno())
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
+                .viewCnt(0)
                 .build();
 
         if(boardDTO.getFileNames() != null){
