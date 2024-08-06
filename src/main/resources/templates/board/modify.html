@@ -37,11 +37,11 @@
                     게시물 수정
                 </div>
                 <div class="card-body">
-                    <form action="/board/modify" method="post" id="f1">
+                    <form id="modifyForm" action="/board/modify" method="post">
                         <input type="hidden" name="courseId" th:value="${course.courseId}">
                         <div class="input-group mb-3">
-                            <span class="input-group-text">번호</span>
-                            <input type="text" class="form-control"  name="bno" th:value="${dto.bno}" readonly>
+                            <span class="input-group-text">글쓴이</span>
+                            <input type="text" class="form-control" th:value="${dto.name}" name="writer" readonly>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
@@ -54,13 +54,15 @@
                         </div>
 
                         <div class="input-group mb-3">
-                            <span class="input-group-text">글쓴이</span>
-                            <input type="text" class="form-control" th:value="${dto.name}" name="writer" readonly>
+                            <span class="input-group-text">작성일</span>
+                            <input type="text" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy-MM-dd')}" readonly>
                         </div>
 
                         <div class="input-group mb-3">
-                            <span class="input-group-text">작성일</span>
-                            <input type="text" class="form-control" th:value="${dto.regDate}" readonly>
+                            <span class="input-group-text">이미지</span>
+                            <div class="float-end uploadHidden">
+                                <button type="button" class="btn btn-primary uploadFileBtn">파일 추가</button>
+                            </div>
                         </div>
 
                         <div class="my-4">
@@ -77,7 +79,51 @@
             </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
-</div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap">
+                <th:block th:each="fileName:${dto.fileNames}">
+                    <div class="card col-4" th:with = "arr = ${fileName.split('_')}">
+                        <div class="card-header d-flex justify-content-center">
+                            [[${arr[1]}]]
+                            <button class="btn-sm btn-danger"
+                                    th:onclick="removeFile([[${arr[0]}]], [[${arr[1]}]], this)">X</button>
+                        </div>
+                        <div class="card-body">
+                            <img th:src="|/view/s_${fileName}|" th:data-src="${fileName}" >
+                        </div>
+                    </div><!-- card -->
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title">업로드 파일</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group-text">
+                        <input type="file" name="files" class="form-control" multiple>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">업로드</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="/js/upload.js"></script>
+
+</div><!--end layout fragment -->
 
 
 <script layout:fragment="script" th:inline="javascript">
@@ -97,7 +143,7 @@
     }
 
     const link = [[${pageRequestDTO.getLink()}]]
-    const formObj = document.querySelector("#f1")
+    const formObj = document.querySelector("#modifyForm")
 
     document.querySelector(".modBtn").addEventListener("click", function (e){
         e.preventDefault()
@@ -127,5 +173,82 @@
         formObj.submit()
 
     }, false)
+
+    // 최종적으로 삭제될 파일들의 목록
+    const removeFileList = []
+
+    function removeFile(uuid, fileName, obj){
+
+        // 브라우저에서 제공하는 함수, 사용자에게 확인 대화 상자를 표시
+        if(!confirm("파일을 삭제하시겠습니까?")){
+            return
+        }
+
+        console.log(uuid)
+        console.log(fileName)
+
+        console.log(obj)
+
+        removeFileList.push({uuid, fileName})
+
+        const targetDiv = obj.closest(".card")
+        targetDiv.remove()
+    }
+
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+
+
+    document.querySelector(".uploadFileBtn").addEventListener("click", function (e){
+
+        e.preventDefault()
+        e.stopPropagation()
+        uploadModal.show()
+
+    },false)
+
+    document.querySelector(".uploadBtn").addEventListener("click", function (e){
+
+        const formObj = new FormData();
+
+        const fileInput = document.querySelector("input[name='files']")
+
+        console.log(fileInput.files)
+
+        const files = fileInput.files
+
+        for(let i = 0; i < files.length; i++){
+            formObj.append("files", files[i]);
+        }
+
+        uploadToServer(formObj).then(result => {
+            console.log(result)
+            for(const uploadResult of result){
+                showUploadFile(uploadResult)
+            }
+            uploadModal.hide()
+        }).catch(e => {
+            uploadModal.hide()
+        })
+
+    },false)
+
+    const uploadResult = document.querySelector(".uploadResult")
+
+    function showUploadFile({uuid, fileName, link}){
+
+        const str = `<div class="card col-4">
+                        <div class="card-header d-flex justify-content-center">
+                            ${fileName}
+                            <button class="btn-sm btn-danger"
+                                    th:onclick="javascript:removeFile(${uuid}, ${fileName} , this)">X</button>
+                        </div>
+                        <div class="card-body">
+                            <img th:src="|/view/${link}|" th:data-src="${uuid + "_" + fileName}" >
+                        </div>
+                    </div>`
+
+        uploadResult.innerHTML += str
+
+    }
 
 </script>
