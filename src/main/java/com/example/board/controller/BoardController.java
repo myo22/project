@@ -155,9 +155,8 @@ public class BoardController {
                          PageRequestDTO pageRequestDTO,
                          HttpSession httpSession,
                          BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes,
-                         @RequestParam("courseId") int courseId){
-        LoginInfo loginInfo = (LoginInfo) httpSession.getAttribute("LoginInfo");
+                         RedirectAttributes redirectAttributes){
+        LoginInfo loginInfo = (LoginInfo)httpSession.getAttribute("loginInfo");
         if(loginInfo == null){
             return "redirect:/loginForm";
         }
@@ -172,7 +171,7 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
             redirectAttributes.addAttribute("bno", boardDTO.getBno());
-            redirectAttributes.addAttribute("courseId", courseId);
+            redirectAttributes.addAttribute("courseId", boardDTO.getCourseId());
 
             // link 변수가 이미 완성된 URL 쿼리 문자열이기 때문에 addAttribute() 메서드를 사용하지 않습니다.
             return "redirect:/board/modify?" + link;
@@ -183,7 +182,7 @@ public class BoardController {
         redirectAttributes.addFlashAttribute("result", "modified");
 
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
-        redirectAttributes.addAttribute("courseId", courseId);
+        redirectAttributes.addAttribute("courseId", boardDTO.getCourseId());
 
         return "redirect:/board/read";
     }
