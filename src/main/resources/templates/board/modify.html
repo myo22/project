@@ -161,6 +161,23 @@
 
     }
 
+    function appendNotShownData(){
+
+        if(removeFileList.length == 0){
+            return
+        }
+
+        const target = document.querySelector(".uploadHidden")
+        let str = ''
+
+        removeFileList.forEach( ({uuid, fileName}) => {
+            str += `<input type="hidden" name="fileNames" value="${uuid + "_" + fileName}" >`
+        })
+
+        target.innerHTML += str
+
+    }
+
     function callRemoveFiles(){
 
         removeFileList.forEach( ({uuid, fileName}) => {
@@ -180,6 +197,13 @@
     document.querySelector(".removeBtn").addEventListener("click", function (e){
         e.preventDefault()
         e.stopPropagation()
+
+        //화면에 보이는 파일들을 form태그에 추가
+        appendFileData()
+
+        //화면에서 안보이도록 처리된 파일들을 form태그에 추가
+        appendNotShownData()
+
 
         formObj.action = `board/remove`
         formObj.method = 'post'
