@@ -212,6 +212,7 @@ public class BoardController {
 
         boardService.remove(bno);
 
+        // 게시물이 삭제되었다면 첨부 파일 삭제
         log.info(boardDTO.getFileNames());
         List<String> fileNames = boardDTO.getFileNames();
         if(fileNames.size() > 0 && fileNames != null){
