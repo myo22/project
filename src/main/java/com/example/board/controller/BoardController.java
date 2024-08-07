@@ -8,6 +8,9 @@ import com.example.board.service.CourseService;
 import com.example.board.service.ProgressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
 // HTTP요청을 받아서 응답을 받는 컴포넌트, 스프링 부트가 자동으로 Bean으로 생성한다.
@@ -27,6 +32,9 @@ import java.util.List;
 @RequestMapping("/board")
 @Log4j2
 public class BoardController {
+
+    @Value("${org.zerock.upload.path}") // import 시에 springframework으로 시작하는 Value
+    private String uploadPath;
 
     private final BoardServiceImpl boardService;
     private final CourseService courseService;
@@ -190,8 +198,7 @@ public class BoardController {
 
     @PostMapping("/remove")
     public String remove(
-            @RequestParam("bno") Long bno,
-            @RequestParam("courseId") int courseId,
+            @Valid BoardDTO boardDTO,
             HttpSession httpSession,
             RedirectAttributes redirectAttributes
     ){
@@ -200,13 +207,42 @@ public class BoardController {
             return "redirect:/loginForm";
         }
 
+        Long bno = boardDTO.getBno();
         log.info("remove post.. " + bno);
 
         boardService.remove(bno);
 
+        log.info(boardDTO.getFileNames());
+        List<String> fileNames = boardDTO.getFileNames();
+        if(fileNames.size() > 0 && fileNames != null){
+            removeFiles(fileNames);
+        }
+
         redirectAttributes.addAttribute("result", "removed");
-        redirectAttributes.addAttribute("courseId", courseId);
+        redirectAttributes.addAttribute("courseId", boardDTO.getCourseId());
 
         return "redirect:/board/list"; // 리스트 보기로 리다이렉트한다.
+    }
+
+    public void removeFiles(List<String> files){
+
+        for(String fileName : files){
+
+            Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
+            String resourceName = resource.getFilename();
+
+            try {
+                String contentType = Files.probeContentType(resource.getFile().toPath());
+                resource.getFile().delete();
+
+                // 섬네일이 존재한다면
+                if (contentType.startsWith("image")) {
+                    File tumbnailFile = new File(uploadPath + File.separator + "s_" + fileName);
+                    tumbnailFile.delete();
+                }
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
+        }
     }
 }
