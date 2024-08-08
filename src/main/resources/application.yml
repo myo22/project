@@ -30,6 +30,7 @@ logging:
   level:
     org:
       springframework: info
+      springframework.security: trace
     com:
       example:
         board: debug
