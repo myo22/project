@@ -72,6 +72,9 @@ dependencies {
 
     implementation 'net.coobird:thumbnailator:0.4.16'
 
+    // 스프링 시큐리티 설정
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
