@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic.html}">
 
@@ -21,7 +22,7 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">이름</span>
-                            <input type="text" name="name" class="form-control" th:value="${loginInfo.name}" readonly>
+                            <input type="text" name="name" class="form-control" th:value="${#authentication.principal.username}" readonly>
                         </div>
 
                         <div class="input-group mb-3">
@@ -93,6 +94,9 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
+
+    // 자바 스크립트로 현재 사용자 정보를 이용할려면 사용
+    const auth = [[${#authentication.principal}]]
 
     const errors = [[${errors}]]
     console.log(errors)
