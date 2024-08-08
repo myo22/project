@@ -160,6 +160,7 @@ public class BoardController {
 
     }
 
+    @PreAuthorize("principal.username == #boardDTO.name") // #boardDTO는 현재 파라미터가 수집된 BoardDTO를 의미한다.
     @PostMapping("/modify")
     public String modify(@Valid BoardDTO boardDTO,
                          PageRequestDTO pageRequestDTO,
@@ -197,7 +198,7 @@ public class BoardController {
         return "redirect:/board/read";
     }
 
-
+    @PreAuthorize("principal.username == #boardDTO.name")
     @PostMapping("/remove")
     public String remove(
             @Valid BoardDTO boardDTO,
