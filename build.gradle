@@ -78,6 +78,9 @@ dependencies {
     // Thymeleaf에서 인증 정보 설정
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
+    // 소셜 로그인
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
@@ -85,7 +88,7 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform()  f
 }
 
 def generatedDir =  "src/main/generated"
