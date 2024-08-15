@@ -13,7 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class MemberSecurityDTO extends User implements OAuth2User {
+public class MemberSecurityDTO extends User implements OAuth2User { // 소셜 로그인에서도 사용할 수 있도록 변경
 
     private String mid;
     private String mpw;
