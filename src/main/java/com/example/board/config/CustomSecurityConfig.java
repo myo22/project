@@ -54,6 +54,9 @@ public class CustomSecurityConfig {
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); // 403
 
+        // OAuth2 로그인을 사용한다는 설정 추가
+        http.oauth2Login().loginPage("/member/login");
+
         return http.build();
     }
 
