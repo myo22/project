@@ -88,7 +88,7 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()  f
+    useJUnitPlatform()
 }
 
 def generatedDir =  "src/main/generated"
