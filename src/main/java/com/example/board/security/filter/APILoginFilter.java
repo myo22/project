@@ -21,7 +21,7 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        log.info("MemberLoginFilter---------------------------------------");
+        log.info("APILoginFilter---------------------------------------");
 
         return null;
     }

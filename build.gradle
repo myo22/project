@@ -81,6 +81,9 @@ dependencies {
     // 소셜 로그인
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // JSON 처리를 쉽게 할 수 있는 라이브러리
+    implementation 'com.google.code.gson:gson:2.8.9'
+
 
     // KOMORAN 한글 형태소 분석기
 //    implementation 'com.github.shin285:KOMORAN:3.3.9'
