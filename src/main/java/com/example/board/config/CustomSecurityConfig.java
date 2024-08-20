@@ -1,26 +1,23 @@
 package com.example.board.config;
 
 import com.example.board.security.CustomUserDetailsService;
-import com.example.board.security.handler.Custom403Handler;
-import com.example.board.security.handler.CustomSocialLoginSuccessHandler;
+import com.example.board.security.filter.APILoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -54,12 +51,6 @@ public class CustomSecurityConfig {
 
         log.info("--------configure----------");
 
-        // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
-        http.formLogin().loginPage("/member/login");
-
-        // CSRF 토큰 비활성화
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션을 사용하지 않음
 
 //        http.rememberMe()
 //                .key("12345678") // 쿠기의 값을 인코딩하기 위한 키값
@@ -71,6 +62,36 @@ public class CustomSecurityConfig {
 //
 //        // OAuth2 로그인을 사용한다는 설정 추가, 로그인 관련해서 로그인 성공 처리 시 이용하도록 하는 부분
 //        http.oauth2Login().loginPage("/member/login").successHandler(authenticationSuccessHandler());
+
+        // AuthenticationManager 설정
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+        // Get AuthenticationManager
+        AuthenticationManager authenticationManager =
+                authenticationManagerBuilder.build();
+
+        // 반드시 필요
+        http.authenticationManager(authenticationManager);
+
+        // APILoginFilter
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        apiLoginFilter.setAuthenticationManager(authenticationManager);
+
+        // APILoginFilter의 위치 조정
+        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
+        http.formLogin().loginPage("/member/login");
+
+        // CSRF 토큰 비활성화
+        http.csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션을 사용하지 않음
+
 
         return http.build();
     }
