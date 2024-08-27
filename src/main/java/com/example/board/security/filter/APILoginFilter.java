@@ -45,6 +45,7 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
+    // POST 방식으로 들어올 때 JSON 문자열을 처리하는 메소드
     private Map<String, String> parseRequestJSON(HttpServletRequest request) {
 
         // JSON 데이터를 분석해서 mid, mpw 전달 값을 Map으로 처리
