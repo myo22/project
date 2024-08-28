@@ -61,4 +61,7 @@ org:
   zerock:
     upload:
       path: C:\\upload
+#   JWT에서 사용할 비밀키
+    jwt:
+      secret: hello1234567890
 
