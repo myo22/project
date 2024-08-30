@@ -63,5 +63,5 @@ org:
       path: C:\\upload
 #   JWT에서 사용할 비밀키
     jwt:
-      secret: hello1234567890
+      secret: hello1234567890hello1234567890hello1234567890
 

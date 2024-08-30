@@ -19,6 +19,7 @@ public class JWTUtil {
     @Value("${org.zerock.jwt.secret}")
     private String key;
 
+
     public String generateToken(Map<String, Object> valueMap, int days){
 
         log.info("generateKey..." + key);
@@ -47,9 +48,14 @@ public class JWTUtil {
         return jwtStr;
     }
 
-    public Map<String, Object> validateToken(String Token) throws JwtException {
+    public Map<String, Object> validateToken(String token) throws JwtException {
 
         Map<String, Object> claim = null;
+
+        claim = Jwts.parser()
+                .setSigningKey(key.getBytes()) // Set Key
+                .parseClaimsJws(token) // 파싱 및 검증, 실패시 에러
+                .getBody();
 
         return claim;
     }
