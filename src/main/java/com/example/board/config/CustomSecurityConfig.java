@@ -3,6 +3,7 @@ package com.example.board.config;
 import com.example.board.security.CustomUserDetailsService;
 import com.example.board.security.filter.APILoginFilter;
 import com.example.board.security.handler.APILoginSuccessHandler;
+import com.example.board.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -27,10 +28,11 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 원하는 곳에 @PreAuthorize 혹은 @PostAuthorize를 통해서 사전, 사후의 권한 체크 가능
-public class CustomSecurityConfig {
+    public class CustomSecurityConfig {
 
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -84,7 +86,7 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         // APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
         // SuccessHandler 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
