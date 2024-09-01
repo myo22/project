@@ -2,6 +2,7 @@ package com.example.board.config;
 
 import com.example.board.security.CustomUserDetailsService;
 import com.example.board.security.filter.APILoginFilter;
+import com.example.board.security.filter.TokenCheckFilter;
 import com.example.board.security.handler.APILoginSuccessHandler;
 import com.example.board.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -93,14 +94,20 @@ import javax.sql.DataSource;
         // APILoginFilter의 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        //api로 시작하는 모든 경로는 TokenCheckFilter 동작
+        http.addFilterBefore(
+                tokenCheckFilter(jwtUtil),
+                UsernamePasswordAuthenticationFilter.class
+        );
+
         // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
         http.formLogin().loginPage("/member/login");
 
         // CSRF 토큰 비활성화
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션을 사용하지 않음
-
         return http.build();
+
     }
 
 //    @Bean
@@ -122,4 +129,9 @@ import javax.sql.DataSource;
 //        return repo;
 //    }
 
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil){
+        return new TokenCheckFilter(jwtUtil);
+    }
+
 }
+
