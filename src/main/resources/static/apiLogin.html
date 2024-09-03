@@ -15,7 +15,10 @@
 
     const data = {mid: "member1", mpw:"1111"}
 
-    axios.post("http://localhost:8080/generateToken", data)
+    // 내용을 쉽게 복사할 수 있도록 잠깐 수정
+    axios.post("http://localhost:8080/generateToken", data).then(res => {
+        console.log(res.data.accessToken)
+    })
 
   }, false)
 </script>
