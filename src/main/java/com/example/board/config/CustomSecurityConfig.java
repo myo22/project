@@ -2,6 +2,7 @@ package com.example.board.config;
 
 import com.example.board.security.CustomUserDetailsService;
 import com.example.board.security.filter.APILoginFilter;
+import com.example.board.security.filter.RefreshTokenFilter;
 import com.example.board.security.filter.TokenCheckFilter;
 import com.example.board.security.handler.APILoginSuccessHandler;
 import com.example.board.util.JWTUtil;
@@ -99,6 +100,10 @@ import javax.sql.DataSource;
                 tokenCheckFilter(jwtUtil),
                 UsernamePasswordAuthenticationFilter.class
         );
+
+        // refreshToken 호출처리
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil),
+                TokenCheckFilter.class);
 
         // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
         http.formLogin().loginPage("/member/login");
