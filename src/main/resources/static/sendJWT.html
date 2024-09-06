@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="result">
+
+
+</div>
+
+<button class="btn1">CALL SERVER</button>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+  const callServer = async() => {
+    console.log("call server 1...")
+  }
+
+  const resultDiv = document.querySelector(".result")
+
+  document.querySelector(".btn1").addEventListener("click", () => {
+
+      callServer().then(result => {
+        console.log(result)
+      })
+  }, false)
+
+</script>
+
+</body>
+</html>
