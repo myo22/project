@@ -24,11 +24,39 @@
           throw 'Cannot Fine Access Token'
       }
 
-      const authHeader = {'Authentication': `Bearer ${accessToken}`}
+      const authHeader = {'Authorization': `Bearer ${accessToken}`}
 
-      const res = await axios.get("https://localhost:8080/api/sample/doA", {header:authHeader})
+      try {
+          const res = await axios.get("http://localhost:8080/api/sample/doA", {headers:authHeader})
 
-      return res.data
+          return res.data
+      }catch (err) {
+
+          if(err.response.data.msg === 'Expired Token'){ // 오래된 Access Token
+              console.log("Refresh Your Token")
+
+              try{
+                  await callRefresh() // refreshToken 호출
+                  console.log("new tokens....saved..") // 새로운 토큰 저장후 다시 원래기 기능 호출
+                  return callServer()
+
+              }catch (refreshErr){
+                  throw refreshErr.response.data.msg
+              }
+              throw err.response.data.msg
+          }
+      }
+  }
+
+  const callRefresh = async () => {
+
+      const accessToken = localStorage.getItem("accessToken")
+      const refreshToken = localStorage.getItem("refreshToken")
+
+      const tokens = {accessToken, refreshToken}
+      const res = await axios.post("http://localhost:8080/refreshToken", tokens)
+      localStorage.setItem("accessToken", res.data.accessToken)
+      localStorage.setItem("refreshToken", res.data.refreshToken)
   }
 
   const resultDiv = document.querySelector(".result")
