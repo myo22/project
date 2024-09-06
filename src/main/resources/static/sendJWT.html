@@ -16,7 +16,19 @@
 <script>
 
   const callServer = async() => {
-    console.log("call server 1...")
+      console.log("call server 1...")
+
+      const accessToken = localStorage.getItem("accessToken")
+
+      if(!accessToken){
+          throw 'Cannot Fine Access Token'
+      }
+
+      const authHeader = {'Authentication': `Bearer ${accessToken}`}
+
+      const res = await axios.get("https://localhost:8080/api/sample/doA", {header:authHeader})
+
+      return res.data
   }
 
   const resultDiv = document.querySelector(".result")
@@ -25,6 +37,8 @@
 
       callServer().then(result => {
         console.log(result)
+      }).catch(error => {
+          alert(error)
       })
   }, false)
 
