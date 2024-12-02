@@ -3,10 +3,7 @@ spring:
     url: jdbc:mysql://127.0.0.1/exampledb?useUnicode=true&serverTimezone=Asia/Seoul
     username: root
     password: 220211
-  jpa:
-    hibernate:
-      ddl-auto: update
-      dialect: org.hibernate.dialect.MySQL8Dialect
+
     properties:
       hibernate:
 #       JPA가 실행하는 SQL을 같이 출력하도록 한다.
