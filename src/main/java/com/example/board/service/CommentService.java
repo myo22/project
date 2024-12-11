@@ -125,6 +125,51 @@ public class CommentService {
     // 불용어 리스트
     private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
 
+    // TF-IDF를 사용하여 댓글을 벡터화하는 함수
+    public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
+        Map<String, Map<String, Double>> tfidfMatrix = new HashMap<>();
+        int totalComments = comments.size();
+
+        // 각 댓글의 단어 빈도수 계산
+        Map<String, Integer> wordCountMap = new HashMap<>();
+        for (String comment : comments) {
+            String[] words = preprocessText(comment).split("\\s+");
+            for (String word : words) {
+                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+            }
+        }
+
+        // TF 계산
+        for (String comment : comments) {
+            String[] words = preprocessText(comment).split("\\s+");
+            Map<String, Double> tfMap = new HashMap<>();
+            for (String word : words) {
+                double tf = (double) Collections.frequency(Arrays.asList(words), word) / words.length;
+                tfMap.put(word, tf);
+            }
+            tfidfMatrix.put(comment, tfMap);
+        }
+
+        // IDF 계산
+        Map<String, Double> idfMap = new HashMap<>();
+        for (String word : wordCountMap.keySet()) {
+            int wordCount = wordCountMap.get(word);
+            double idf = Math.log((totalComments + 1.0) / (wordCount + 1.0)) + 1.0; // 스무딩 적용
+            idfMap.put(word, idf);
+        }
+
+        // TF-IDF 계산
+        for (String comment : comments) {
+            Map<String, Double> tfidfMap = tfidfMatrix.get(comment);
+            for (String word : tfidfMap.keySet()) {
+                double tfidf = tfidfMap.get(word) * idfMap.getOrDefault(word, 0.0);
+                tfidfMap.put(word, tfidf);
+            }
+        }
+
+        return tfidfMatrix;
+    }
+
     // 텍스트 전처리 함수
     public String preprocessText(String text) {
         // 소문자 변환, 구두점 제거 등
@@ -218,6 +263,9 @@ public class CommentService {
             }
         }
 
+        // TF-IDF 계산 및 tfidfMatrix 초기화
+        tfidfMatrix = calculateTFIDF(allCommentTexts);
+
         // 댓글 쌍 생성
         List<Pair<String, String>> commentPairs = createCommentPairs(allCommentTexts);
 
@@ -234,52 +282,6 @@ public class CommentService {
 //    private Map<String, Integer> wordCountMap; // 단어의 빈도를 저장하는 맵
 //    private RealMatrix tfidfMatrix; // TF-IDF 행렬
 //    private RealMatrix similarityMatrix; // 유사도 행렬
-//
-//
-//    // TF-IDF를 사용하여 댓글을 벡터화하는 함수
-//    public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
-//        Map<String, Map<String, Double>> tfidfMatrix = new HashMap<>();
-//        int totalComments = comments.size();
-//
-//        // 각 댓글의 단어 빈도수 계산
-//        Map<String, Integer> wordCountMap = new HashMap<>();
-//        for (String comment : comments) {
-//            String[] words = preprocessText(comment).split("\\s+");
-//            for (String word : words) {
-//                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
-//            }
-//        }
-//
-//        // TF 계산
-//        for (String comment : comments) {
-//            String[] words = preprocessText(comment).split("\\s+");
-//            Map<String, Double> tfMap = new HashMap<>();
-//            for (String word : words) {
-//                double tf = (double) Collections.frequency(Arrays.asList(words), word) / words.length;
-//                tfMap.put(word, tf);
-//            }
-//            tfidfMatrix.put(comment, tfMap);
-//        }
-//
-//        // IDF 계산
-//        Map<String, Double> idfMap = new HashMap<>();
-//        for (String word : wordCountMap.keySet()) {
-//            int wordCount = wordCountMap.get(word);
-//            double idf = Math.log((totalComments + 1.0) / (wordCount + 1.0)) + 1.0; // 스무딩 적용
-//            idfMap.put(word, idf);
-//        }
-//
-//        // TF-IDF 계산
-//        for (String comment : comments) {
-//            Map<String, Double> tfidfMap = tfidfMatrix.get(comment);
-//            for (String word : tfidfMap.keySet()) {
-//                double tfidf = tfidfMap.get(word) * idfMap.getOrDefault(word, 0.0);
-//                tfidfMap.put(word, tfidf);
-//            }
-//        }
-//
-//        return tfidfMatrix;
-//    }
 //
 //    // 코사인 유사도 계산 함수
 //    public double calculateCosineSimilarity(Map<String, Double> vector1, Map<String, Double> vector2) {
