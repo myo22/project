@@ -63,20 +63,20 @@
               </button>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal">
-                  코사인 유사도 기반 댓글 추천
+                  댓글 추천
                 </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal2">
-                  자카드 유사도 기반 댓글 추천
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal3">
-                  피어슨 상관계수 기반 댓글 추천
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal4">
-                  모델 기반 댓글 추천
-                </a>
+<!--                <div class="dropdown-divider"></div>-->
+<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal2">-->
+<!--                  자카드 유사도 기반 댓글 추천-->
+<!--                </a>-->
+<!--                <div class="dropdown-divider"></div>-->
+<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal3">-->
+<!--                  피어슨 상관계수 기반 댓글 추천-->
+<!--                </a>-->
+<!--                <div class="dropdown-divider"></div>-->
+<!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal4">-->
+<!--                  모델 기반 댓글 추천-->
+<!--                </a>-->
               </div>
             </div>
           </div>
@@ -160,14 +160,14 @@
 
                   <!-- Modal Header -->
                   <div class="modal-header">
-                    <h4 class="modal-title">코사인 유사도 기반 댓글 추천</h4>
+                    <h4 class="modal-title">댓글 추천</h4>
                     <button type="button" class="close"
                             data-dismiss="modal">&times;
                     </button>
                   </div>
 
                   <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${recommendedCosineComments}">
+                  <div class="modal-body" th:each="comment : ${recommendedSiameseComments}">
                     <span th:text="${comment}"></span>
                   </div>
 
@@ -182,90 +182,90 @@
               </div>
             </div>
 
-            <div class="modal fade" id="myModal2"> <!-- 다른 ID를 부여 -->
-              <div class="modal-dialog modal-dialog-top-right">
-                <div class="modal-content">
-                  <!-- Modal Header -->
-                  <div class="modal-header">
-                    <h4 class="modal-title">자카드 유사도 기반 댓글 추천</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${recommendJaccardComments}">
-                    <span th:text="${comment}"></span>
-                  </div>
-                  <!-- Modal footer -->
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!--            <div class="modal fade" id="myModal2"> &lt;!&ndash; 다른 ID를 부여 &ndash;&gt;-->
+<!--              <div class="modal-dialog modal-dialog-top-right">-->
+<!--                <div class="modal-content">-->
+<!--                  &lt;!&ndash; Modal Header &ndash;&gt;-->
+<!--                  <div class="modal-header">-->
+<!--                    <h4 class="modal-title">자카드 유사도 기반 댓글 추천</h4>-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal body &ndash;&gt;-->
+<!--                  <div class="modal-body" th:each="comment : ${recommendJaccardComments}">-->
+<!--                    <span th:text="${comment}"></span>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal footer &ndash;&gt;-->
+<!--                  <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="modal fade" id="myModal3"> <!-- 다른 ID를 부여 -->
-              <div class="modal-dialog modal-dialog-top-right">
-                <div class="modal-content">
-                  <!-- Modal Header -->
-                  <div class="modal-header">
-                    <h4 class="modal-title">피어슨 상관계수 기반 댓글 추천</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <!-- Modal body -->
-                  <div class="modal-body" th:each="comment : ${recommendPearsonComments}">
-                    <span th:text="${comment}"></span>
-                  </div>
-                  <!-- Modal footer -->
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!--            <div class="modal fade" id="myModal3"> &lt;!&ndash; 다른 ID를 부여 &ndash;&gt;-->
+<!--              <div class="modal-dialog modal-dialog-top-right">-->
+<!--                <div class="modal-content">-->
+<!--                  &lt;!&ndash; Modal Header &ndash;&gt;-->
+<!--                  <div class="modal-header">-->
+<!--                    <h4 class="modal-title">피어슨 상관계수 기반 댓글 추천</h4>-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal body &ndash;&gt;-->
+<!--                  <div class="modal-body" th:each="comment : ${recommendPearsonComments}">-->
+<!--                    <span th:text="${comment}"></span>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal footer &ndash;&gt;-->
+<!--                  <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="modal fade" id="myModal4"> <!-- 다른 ID를 부여 -->
-              <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg 클래스를 사용하여 크기 조정 -->
-                <div class="modal-content">
-                  <!-- Modal Header -->
-                  <div class="modal-header">
-                    <h4 class="modal-title">모델 기반 댓글 추천</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <!-- Modal body -->
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="text-center border rounded p-3">
-                          <h6 class="mb-3">대</h6>
-                          <div th:each="comment : ${recommendedModelComments['highImportance']}" class="mb-3">
-                            <span th:text="${comment}"></span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="text-center border rounded p-3">
-                          <h6 class="mb-3">중</h6>
-                          <div th:each="comment : ${recommendedModelComments['mediumImportance']}" class="mb-3">
-                            <span th:text="${comment}"></span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="text-center border rounded p-3">
-                          <h6 class="mb-3">소</h6>
-                          <div th:each="comment : ${recommendedModelComments['lowImportance']}" class="mb-3">
-                            <span th:text="${comment}"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Modal footer -->
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!--            <div class="modal fade" id="myModal4"> &lt;!&ndash; 다른 ID를 부여 &ndash;&gt;-->
+<!--              <div class="modal-dialog modal-dialog-centered modal-lg"> &lt;!&ndash; modal-lg 클래스를 사용하여 크기 조정 &ndash;&gt;-->
+<!--                <div class="modal-content">-->
+<!--                  &lt;!&ndash; Modal Header &ndash;&gt;-->
+<!--                  <div class="modal-header">-->
+<!--                    <h4 class="modal-title">모델 기반 댓글 추천</h4>-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal body &ndash;&gt;-->
+<!--                  <div class="modal-body">-->
+<!--                    <div class="row">-->
+<!--                      <div class="col-md-4">-->
+<!--                        <div class="text-center border rounded p-3">-->
+<!--                          <h6 class="mb-3">대</h6>-->
+<!--                          <div th:each="comment : ${recommendedModelComments['highImportance']}" class="mb-3">-->
+<!--                            <span th:text="${comment}"></span>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <div class="col-md-4">-->
+<!--                        <div class="text-center border rounded p-3">-->
+<!--                          <h6 class="mb-3">중</h6>-->
+<!--                          <div th:each="comment : ${recommendedModelComments['mediumImportance']}" class="mb-3">-->
+<!--                            <span th:text="${comment}"></span>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <div class="col-md-4">-->
+<!--                        <div class="text-center border rounded p-3">-->
+<!--                          <h6 class="mb-3">소</h6>-->
+<!--                          <div th:each="comment : ${recommendedModelComments['lowImportance']}" class="mb-3">-->
+<!--                            <span th:text="${comment}"></span>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Modal footer &ndash;&gt;-->
+<!--                  <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
 
 

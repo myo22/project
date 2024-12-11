@@ -49,7 +49,7 @@ public class CourseController {
 //        // 모델 기반 댓글 추천
 //        Map<String, List<String>> recommendedModelComments = commentService.recommendModelComments(user, 3);
 
-        List<String> recommendedComments = commentService.recommendCosineComments(user, 3);
+        List<String> recommendedSiameseComments = commentService.recommendSiameseComments(user, 3);
 
         Set<Progress> progresses = progressService.getProgresses(user.getUserId());
         Set<Course> courses = user.getCourses();
@@ -74,7 +74,7 @@ public class CourseController {
 //        model.addAttribute("recommendPearsonComments", recommendPearsonComments);
 //        model.addAttribute("recommendJaccardComments", recommendJaccardComments);
 //        model.addAttribute("recommendedModelComments", recommendedModelComments);
-        model.addAttribute("recommendedCosineComments", recommendedComments);
+        model.addAttribute("recommendedSiameseComments", recommendedSiameseComments);
         model.addAttribute("loginInfo", loginInfo);
         model.addAttribute("list", list);
         model.addAttribute("pageCount", pageCount);
