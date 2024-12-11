@@ -126,44 +126,35 @@ public class CommentService {
     private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
 
     // TF-IDF를 사용하여 댓글을 벡터화하는 함수
+    // TF-IDF 계산 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
         Map<String, Map<String, Double>> tfidfMatrix = new HashMap<>();
+        Map<String, Integer> documentFrequency = new HashMap<>();
         int totalComments = comments.size();
 
-        // 각 댓글의 단어 빈도수 계산
-        Map<String, Integer> wordCountMap = new HashMap<>();
+        // 각 댓글의 단어 빈도수 및 DF 계산
         for (String comment : comments) {
+            Set<String> uniqueWords = new HashSet<>();
             String[] words = preprocessText(comment).split("\\s+");
             for (String word : words) {
-                wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
-            }
-        }
+                // TF 계산
+                tfidfMatrix.computeIfAbsent(comment, k -> new HashMap<>())
+                        .merge(word, 1.0, Double::sum);
 
-        // TF 계산
-        for (String comment : comments) {
-            String[] words = preprocessText(comment).split("\\s+");
-            Map<String, Double> tfMap = new HashMap<>();
-            for (String word : words) {
-                double tf = (double) Collections.frequency(Arrays.asList(words), word) / words.length;
-                tfMap.put(word, tf);
+                // DF 계산
+                if (uniqueWords.add(word)) {
+                    documentFrequency.merge(word, 1, Integer::sum);
+                }
             }
-            tfidfMatrix.put(comment, tfMap);
-        }
-
-        // IDF 계산
-        Map<String, Double> idfMap = new HashMap<>();
-        for (String word : wordCountMap.keySet()) {
-            int wordCount = wordCountMap.get(word);
-            double idf = Math.log((totalComments + 1.0) / (wordCount + 1.0)) + 1.0; // 스무딩 적용
-            idfMap.put(word, idf);
         }
 
         // TF-IDF 계산
-        for (String comment : comments) {
-            Map<String, Double> tfidfMap = tfidfMatrix.get(comment);
-            for (String word : tfidfMap.keySet()) {
-                double tfidf = tfidfMap.get(word) * idfMap.getOrDefault(word, 0.0);
-                tfidfMap.put(word, tfidf);
+        for (String comment : tfidfMatrix.keySet()) {
+            Map<String, Double> tfMap = tfidfMatrix.get(comment);
+            for (String word : tfMap.keySet()) {
+                double tf = tfMap.get(word) / tfMap.values().stream().mapToDouble(v -> v).sum(); // TF
+                double idf = Math.log((double) (totalComments + 1) / (documentFrequency.getOrDefault(word, 0) + 1)) + 1.0; // IDF
+                tfMap.put(word, tf * idf); // TF-IDF
             }
         }
 
