@@ -1,5 +1,7 @@
 package com.example.board.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import com.example.board.Repository.*;
 import com.example.board.domain.*;
@@ -125,7 +127,6 @@ public class CommentService {
     // 불용어 리스트
     private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
 
-    // TF-IDF를 사용하여 댓글을 벡터화하는 함수
     // TF-IDF 계산 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
         Map<String, Map<String, Double>> tfidfMatrix = new HashMap<>();
@@ -173,38 +174,60 @@ public class CommentService {
 
     private Map<String, Map<String, Double>> tfidfMatrix;
 
-    private float[] getTFIDFVector(String comment) {
-        String[] words = preprocessText(comment).split("\\s+");
-        float[] vector = new float[tfidfMatrix.size()]; // tfidfMatrix는 전역 변수로 유지
-        int index = 0;
+    private List<float[]> getTFIDFVectors(List<String> comments) {
+        List<float[]> vectors = new ArrayList<>();
+        for (String comment : comments) {
+            String[] words = preprocessText(comment).split("\\s+");
+            float[] vector = new float[tfidfMatrix.size()]; // tfidfMatrix는 전역 변수로 유지
+            int index = 0;
 
-        for (String word : tfidfMatrix.keySet()) {
-            vector[index] = tfidfMatrix.getOrDefault(comment, new HashMap<>()).getOrDefault(word, 0.0).floatValue();
-            index++;
+            for (String word : tfidfMatrix.keySet()) {
+                vector[index] = tfidfMatrix.getOrDefault(comment, new HashMap<>()).getOrDefault(word, 0.0).floatValue();
+                index++;
+            }
+            vectors.add(vector);
         }
-        return vector;
+        return vectors;
     }
 
-    public double callSiameseApi(float[] comment1Vector, float[] comment2Vector) {
+    public double[] callSiameseApi(List<float[]> comment1Vectors, List<float[]> comment2Vectors) {
         // Python API 호출 및 유사도 계산
         String url = "http://localhost:5000/predict";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String requestBody = String.format("{\"comment1\": [%s], \"comment2\": [%s]}",
-                Arrays.toString(comment1Vector), Arrays.toString(comment2Vector));
 
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        // 댓글 벡터들을 JSON으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // 리스트를 JSON으로 변환
+            String comment1Json = objectMapper.writeValueAsString(comment1Vectors);
+            String comment2Json = objectMapper.writeValueAsString(comment2Vectors);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            // 유사도 값 추출
-            String responseBody = response.getBody();
-            return Double.parseDouble(responseBody.split(":")[1].replace("}", "").trim());
-        } else {
-            throw new RuntimeException("Error calling Siamese API");
+            String requestBody = String.format("{\"comment1\": %s, \"comment2\": %s}", comment1Json, comment2Json);
+
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                // 유사도 값 추출
+                String responseBody = response.getBody();
+                // JSON 파싱을 통해 유사도 리스트를 안전하게 처리
+                ObjectMapper responseMapper = new ObjectMapper();
+                JsonNode rootNode = responseMapper.readTree(responseBody);
+                JsonNode similaritiesNode = rootNode.get("similarities");
+
+                // similarities 배열을 double[]로 변환
+                return objectMapper.convertValue(similaritiesNode, double[].class);
+            } else {
+                throw new RuntimeException("Error calling Siamese API");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing request or response", e);
         }
     }
+
+
 
     // 댓글 쌍을 생성하는 함수
     public List<Pair<String, String>> createCommentPairs(List<String> comments) {
@@ -217,20 +240,30 @@ public class CommentService {
         return pairs;
     }
 
-    // Siamese Network을 통한 유사도 계산
+    // Siamese 유사도 계산
     public List<Pair<String, Double>> getSiameseSimilarity(List<Pair<String, String>> commentPairs) {
         List<Pair<String, Double>> similarities = new ArrayList<>();
-        for (Pair<String, String> pair : commentPairs) {
-            // TF-IDF 벡터화
-            String comment1 = pair.getLeft();
-            String comment2 = pair.getRight();
-            float[] comment1Vector = getTFIDFVector(comment1);
-            float[] comment2Vector = getTFIDFVector(comment2);
 
-            // Python API를 통해 Siamese Network 모델에 유사도 계산 요청
-            double similarity = callSiameseApi(comment1Vector, comment2Vector);
-            similarities.add(Pair.of(comment1, similarity));
+        // 댓글 쌍을 처리하기 위해 여러 개의 댓글 벡터 리스트 생성
+        List<String> comment1List = new ArrayList<>();
+        List<String> comment2List = new ArrayList<>();
+        for (Pair<String, String> pair : commentPairs) {
+            comment1List.add(pair.getLeft());
+            comment2List.add(pair.getRight());
         }
+
+        // 각 댓글 벡터를 얻음
+        List<float[]> comment1Vectors = getTFIDFVectors(comment1List);
+        List<float[]> comment2Vectors = getTFIDFVectors(comment2List);
+
+        // Python API를 통해 Siamese Network 모델에 유사도 계산 요청
+        double[] similaritiesArray = callSiameseApi(comment1Vectors, comment2Vectors);
+
+        // 유사도를 결과에 추가
+        for (int i = 0; i < commentPairs.size(); i++) {
+            similarities.add(Pair.of(commentPairs.get(i).getLeft(), similaritiesArray[i]));
+        }
+
         return similarities;
     }
 
