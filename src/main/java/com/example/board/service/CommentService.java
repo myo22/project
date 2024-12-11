@@ -251,7 +251,7 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> recommendCosineComments(User user, int topN) {
+    public List<String> recommendSiameseComments(User user, int topN) {
         List<Course> courses = courseRepository.findByUser(user);
         List<String> recommendedComments = new ArrayList<>();
 
