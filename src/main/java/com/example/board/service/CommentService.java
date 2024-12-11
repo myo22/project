@@ -126,6 +126,7 @@ public class CommentService {
 
     // 불용어 리스트
     private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
+    private final String apiUrl = "http://localhost:5000/predict"; // Flask API 주소
 
     // TF-IDF 계산 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
@@ -192,7 +193,6 @@ public class CommentService {
 
     public double[] callSiameseApi(List<float[]> comment1Vectors, List<float[]> comment2Vectors) {
         // Python API 호출 및 유사도 계산
-        String url = "http://localhost:5000/predict";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -207,7 +207,7 @@ public class CommentService {
 
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 // 유사도 값 추출
