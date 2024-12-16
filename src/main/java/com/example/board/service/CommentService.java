@@ -126,7 +126,6 @@ public class CommentService {
 
     // 불용어 리스트
     private static final Set<String> STOP_WORDS = Set.of("그", "저", "것", "수", "등", "을", "를", "가", "에", "의", "으로", "들");
-    private final String apiUrl = "http://localhost:5000/predict"; // Flask API 주소
 
     // TF-IDF 계산 함수
     public Map<String, Map<String, Double>> calculateTFIDF(List<String> comments) {
@@ -175,28 +174,39 @@ public class CommentService {
 
     private Map<String, Map<String, Double>> tfidfMatrix;
 
-    public List<float[]> getTFIDFVectors(List<String> comments) {
+    private List<float[]> getTFIDFVectors(List<String> comments) {
         List<float[]> vectors = new ArrayList<>();
+
+        // 각 댓글에 대해
         for (String comment : comments) {
             String[] words = preprocessText(comment).split("\\s+");
-            float[] vector = new float[words.length]; // 벡터 크기를 단어 수에 맞춤
+
+            // 벡터의 크기는 tfidfMatrix에 저장된 단어 수와 같아야 함
+            float[] vector = new float[tfidfMatrix.size()];
+
             int index = 0;
-            // comment에 해당하는 Map<String, Double>을 가져옴
-            Map<String, Double> wordMap = tfidfMatrix.getOrDefault(comment, new HashMap<>());
-            for (String word : words) {
-                // 각 단어에 대한 TF-IDF 값 조회
-                vector[index] = wordMap.getOrDefault(word, 0.0).floatValue(); // 0.0을 float로 변환
+
+            // tfidfMatrix의 모든 단어에 대해
+            for (String word : tfidfMatrix.keySet()) {
+                // 각 단어에 대해 해당 단어의 TF-IDF 값을 찾아서 벡터에 할당
+                Map<String, Double> wordTfidf = tfidfMatrix.get(word);
+                // comment 내에서 word의 TF-IDF 값이 있으면 그것을 사용하고, 없으면 0
+                vector[index] = wordTfidf.getOrDefault(comment, 0.0).floatValue();
                 index++;
             }
+
             vectors.add(vector);
         }
+
         return vectors;
     }
 
 
 
+
     public double[] callSiameseApi(List<float[]> comment1Vectors, List<float[]> comment2Vectors) {
         // Python API 호출 및 유사도 계산
+        String apiUrl = "http://localhost:5000/predict";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -207,10 +217,6 @@ public class CommentService {
             String comment1Json = objectMapper.writeValueAsString(comment1Vectors);
             String comment2Json = objectMapper.writeValueAsString(comment2Vectors);
 
-            System.out.println("apiUrl: " +apiUrl);
-            System.out.println("Comment1 JSON: " + comment1Json);
-            System.out.println("Comment2 JSON: " + comment2Json);
-
             String requestBody = String.format("{\"comment1\": %s, \"comment2\": %s}", comment1Json, comment2Json);
 
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
@@ -220,6 +226,7 @@ public class CommentService {
             if (response.getStatusCode() == HttpStatus.OK) {
                 // 유사도 값 추출
                 String responseBody = response.getBody();
+                System.out.println("Response Body: " + responseBody);
                 // JSON 파싱을 통해 유사도 리스트를 안전하게 처리
                 ObjectMapper responseMapper = new ObjectMapper();
                 JsonNode rootNode = responseMapper.readTree(responseBody);
