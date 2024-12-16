@@ -175,21 +175,25 @@ public class CommentService {
 
     private Map<String, Map<String, Double>> tfidfMatrix;
 
-    private List<float[]> getTFIDFVectors(List<String> comments) {
+    public List<float[]> getTFIDFVectors(List<String> comments) {
         List<float[]> vectors = new ArrayList<>();
         for (String comment : comments) {
             String[] words = preprocessText(comment).split("\\s+");
-            float[] vector = new float[tfidfMatrix.size()]; // tfidfMatrix는 전역 변수로 유지
+            float[] vector = new float[words.length]; // 벡터 크기를 단어 수에 맞춤
             int index = 0;
-
-            for (String word : tfidfMatrix.keySet()) {
-                vector[index] = tfidfMatrix.getOrDefault(comment, new HashMap<>()).getOrDefault(word, 0.0).floatValue();
+            // comment에 해당하는 Map<String, Double>을 가져옴
+            Map<String, Double> wordMap = tfidfMatrix.getOrDefault(comment, new HashMap<>());
+            for (String word : words) {
+                // 각 단어에 대한 TF-IDF 값 조회
+                vector[index] = wordMap.getOrDefault(word, 0.0).floatValue(); // 0.0을 float로 변환
                 index++;
             }
             vectors.add(vector);
         }
         return vectors;
     }
+
+
 
     public double[] callSiameseApi(List<float[]> comment1Vectors, List<float[]> comment2Vectors) {
         // Python API 호출 및 유사도 계산
@@ -202,6 +206,10 @@ public class CommentService {
             // 리스트를 JSON으로 변환
             String comment1Json = objectMapper.writeValueAsString(comment1Vectors);
             String comment2Json = objectMapper.writeValueAsString(comment2Vectors);
+
+            System.out.println("apiUrl: " +apiUrl);
+            System.out.println("Comment1 JSON: " + comment1Json);
+            System.out.println("Comment2 JSON: " + comment2Json);
 
             String requestBody = String.format("{\"comment1\": %s, \"comment2\": %s}", comment1Json, comment2Json);
 
