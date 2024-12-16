@@ -285,8 +285,9 @@ public class CommentService {
     public List<String> extractImportantComments(List<Pair<String, Double>> similarities, int topN) {
         return similarities.stream()
                 .sorted((a, b) -> Double.compare(b.getRight(), a.getRight())) // 유사도 기준 내림차순 정렬
-                .limit(topN)
                 .map(Pair::getLeft) // 댓글 텍스트 추출
+                .distinct() // 중복 댓글 제거
+                .limit(topN) // 상위 N개만 선택
                 .collect(Collectors.toList());
     }
 
