@@ -67,6 +67,7 @@
 
 
 2. 교육자 페이지
+   
    ![image](https://github.com/user-attachments/assets/a5746eac-9bff-4035-93f6-f4dfeabbfb14)
 
 
