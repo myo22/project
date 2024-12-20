@@ -59,11 +59,11 @@
             <span>나의 과목 <span style="color: #6a77ce" th:text="${courseCount}"></span></span>
             <div class="dropdown">
               <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${professor}" style="color: #1aafd0">
-                댓글 추천
+                메시지
               </button>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal">
-                  댓글 추천
+                  최근 댓글 알림
                 </a>
 <!--                <div class="dropdown-divider"></div>-->
 <!--                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#myModal2">-->
@@ -160,7 +160,7 @@
 
                   <!-- Modal Header -->
                   <div class="modal-header">
-                    <h4 class="modal-title">댓글 추천</h4>
+                    <h4 class="modal-title">가장 많이 나온 질문</h4>
                     <button type="button" class="close"
                             data-dismiss="modal">&times;
                     </button>
