@@ -29,6 +29,12 @@
 - MYSQL - SQL
 - thymeleaf 템플릿 엔진
 - Deep Learning
+- Python
+- Flask
+- Siamese Network
+- Dezero
+- BERT
+
 
 ## 아키텍처
 
